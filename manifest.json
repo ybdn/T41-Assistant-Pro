@@ -23,13 +23,6 @@
         "https://faed.sso.gendarmerie.fr/*"
       ],
       "js": ["content/alphaMatchers.js"]
-    },
-    {
-      "matches": [
-        "https://faed.ppsso.gendarmerie.fr/*",
-        "https://faed.sso.gendarmerie.fr/*"
-      ],
-      "js": ["content/progressBar.js"]
     }
   ],
   "action": {

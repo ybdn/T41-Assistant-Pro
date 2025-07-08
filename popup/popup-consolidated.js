@@ -154,19 +154,18 @@ document.addEventListener("DOMContentLoaded", async () => {
       scriptCard.classList.toggle("active-card", isActive && !hasError);
     }
 
-    // Mise à jour de la barre de progression
-    if (progressContainer) {
-      progressContainer.style.display = isActive ? "block" : "none";
-
-      if (isActive && progressBar && progressText) {
-        progressBar.style.width = `${progress}%`;
-        if (currentDossier !== null && totalDossiers !== null) {
-          progressText.textContent = `${currentDossier}/${totalDossiers}`;
-        } else {
-          progressText.textContent = `${Math.round(progress)}%`;
-        }
-      }
-    }
+    // Progress bar removed per user request - extension works perfectly without it
+    // if (progressContainer) {
+    //   progressContainer.style.display = isActive ? "block" : "none";
+    //   if (isActive && progressBar && progressText) {
+    //     progressBar.style.width = `${progress}%`;
+    //     if (currentDossier !== null && totalDossiers !== null) {
+    //       progressText.textContent = `${currentDossier}/${totalDossiers}`;
+    //     } else {
+    //       progressText.textContent = `${Math.round(progress)}%`;
+    //     }
+    //   }
+    // }
 
     // Mise à jour du bouton d'action
     if (nextActionButton) {
@@ -241,11 +240,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
         if (popupLoopStateActive) {
-          // Arrêter la simulation si elle est active
-          if (demoInterval) {
-            clearInterval(demoInterval);
-            demoInterval = null;
-          }
+          // Progress bar removed - no need to stop demo interval
 
           // Arrêter le traitement
           console.log("Bouton 'Arrêter la Boucle' cliqué.");
@@ -332,21 +327,21 @@ document.addEventListener("DOMContentLoaded", async () => {
               // Initialiser l'interface utilisateur avec la boucle active
               updatePopupUIForLoopState(true, 0, null, null);
 
-              // Simuler la progression pour l'effet visuel en attendant les mises à jour réelles
-              demoProgress = 0;
-              demoInterval = setInterval(() => {
-                demoProgress += Math.floor(Math.random() * 5) + 1;
-                if (demoProgress >= 95) {
-                  demoProgress = 95; // Plafond à 95% pendant le traitement actif
-                }
-                // On n'utilise la progression simulée que si aucune mise à jour réelle n'a été reçue récemment
-                if (
-                  !lastRealProgressTime ||
-                  Date.now() - lastRealProgressTime > 3000
-                ) {
-                  updatePopupUIForLoopState(true, demoProgress, null, null);
-                }
-              }, 500);
+              // Progress simulation removed per user request
+              // demoProgress = 0;
+              // demoInterval = setInterval(() => {
+              //   demoProgress += Math.floor(Math.random() * 5) + 1;
+              //   if (demoProgress >= 95) {
+              //     demoProgress = 95; // Plafond à 95% pendant le traitement actif
+              //   }
+              //   // On n'utilise la progression simulée que si aucune mise à jour réelle n'a été reçue récemment
+              //   if (
+              //     !lastRealProgressTime ||
+              //     Date.now() - lastRealProgressTime > 3000
+              //   ) {
+              //     updatePopupUIForLoopState(true, demoProgress, null, null);
+              //   }
+              // }, 500);
 
               if (response.validationResult === false) {
                 updatePopupUIForLoopState(false, 0, null, null);
@@ -463,26 +458,27 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log("Message reçu dans popup.js:", message);
 
     if (sender.tab) {
-      if (
-        message.command === "progressUpdate" &&
-        message.progressPercentage !== undefined
-      ) {
-        // Mise à jour de la progression réelle à partir de "Dossier en cours"
-        console.log(
-          `Mise à jour de progression reçue: ${message.progressPercentage}%`
-        );
-        if (popupLoopStateActive) {
-          // Mettre à jour le timestamp de la dernière progression réelle
-          lastRealProgressTime = Date.now();
-          // Remplacer la progression simulée par la progression réelle
-          updatePopupUIForLoopState(
-            true,
-            message.progressPercentage,
-            message.currentDossier,
-            message.totalDossiers
-          );
-        }
-      } else if (message.command === "stepCompleted") {
+      // Progress updates removed per user request
+      // if (
+      //   message.command === "progressUpdate" &&
+      //   message.progressPercentage !== undefined
+      // ) {
+      //   // Mise à jour de la progression réelle à partir de "Dossier en cours"
+      //   console.log(
+      //     `Mise à jour de progression reçue: ${message.progressPercentage}%`
+      //   );
+      //   if (popupLoopStateActive) {
+      //     // Mettre à jour le timestamp de la dernière progression réelle
+      //     lastRealProgressTime = Date.now();
+      //     // Remplacer la progression simulée par la progression réelle
+      //     updatePopupUIForLoopState(
+      //       true,
+      //       message.progressPercentage,
+      //       message.currentDossier,
+      //       message.totalDossiers
+      //     );
+      //   }
+      // } else if (message.command === "stepCompleted") {
         console.log(
           `Étape ${message.stepIndex} (${
             message.stepName || "N/A"
@@ -497,45 +493,14 @@ document.addEventListener("DOMContentLoaded", async () => {
           statusMessage.textContent =
             "Fiche terminée, en attente de la suivante...";
         }
-        // Si le traitement est terminé, mettre la progression à 100%
-        if (demoInterval) {
-          clearInterval(demoInterval);
-          demoInterval = null;
-          demoProgress = 100;
-          updatePopupUIForLoopState(true, demoProgress, null, null);
-
-          // Terminer après 1 seconde à 100%
-          setTimeout(() => {
-            updatePopupUIForLoopState(false, 0, null, null);
-            demoProgress = 0;
-            showNotification("Traitement effectué", "success");
-          }, 1000);
-        }
+        // Progress bar removed - no need to update progress to 100%
       } else if (message.status === "done") {
         console.log("Traitement terminé reçu avec status 'done'");
 
-        // Si le message contient une progression réelle, l'utiliser
-        if (message.progressPercentage !== undefined) {
-          console.log(
-            `Progression finale reçue: ${message.progressPercentage}%`
-          );
-          // Mettre à jour le timestamp de la dernière progression réelle
-          lastRealProgressTime = Date.now();
-          // Arrêter la progression simulée si elle est active
-          if (demoInterval) {
-            clearInterval(demoInterval);
-            demoInterval = null;
-          }
-          // Afficher la progression finale réelle
-          updatePopupUIForLoopState(true, message.progressPercentage, message.currentDossier, message.totalDossiers);
-        } else {
-          // Fallback sur 100% si aucune progression n'est fournie
-          if (demoInterval) {
-            clearInterval(demoInterval);
-            demoInterval = null;
-            demoProgress = 100;
-            updatePopupUIForLoopState(true, demoProgress, null, null);
-          }
+        // Progress bar removed - simply stop any demo interval
+        if (demoInterval) {
+          clearInterval(demoInterval);
+          demoInterval = null;
         }
 
         // Terminer après 1 seconde
@@ -561,11 +526,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         );
         updatePopupUIForLoopState(false);
 
-        // Arrêter la simulation de progression
-        if (demoInterval) {
-          clearInterval(demoInterval);
-          demoInterval = null;
-        }
+        // Progress bar removed - no need to stop progress simulation
 
         if (
           message.reason === "error" ||
