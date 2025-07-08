@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>T41 Assistant</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="styles-additional.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Chargement d'abord du polyfill pour s'assurer que l'API browser est disponible -->
+    <script src="browser-polyfill-fixed.js"></script>
+  </head>
+  <body>
+    <div class="popup" id="popup-container">
+      <!-- En-tête avec logo et titre -->
+      <header class="header">
+        <div class="header-content">
+          <button id="icon-trigger" class="icon-button tooltip">
+            <img src="/icons/icon-48.png" alt="T41 Logo" class="app-icon" />
+            <span class="tooltip-text">Vérifier les données</span>
+          </button>
+          <h1 class="app-title">T41 Assistant</h1>
+          <div class="theme-toggle tooltip">
+            <button id="theme-switch" class="icon-button">
+              <i class="fas fa-moon"></i>
+              <span class="tooltip-text">Changer le thème</span>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Carte principale avec statut et actions -->
+      <div class="card slide-in" id="script-card">
+        <div class="card-header">
+          <h2 class="card-title">Traitement des fiches</h2>
+          <div class="status-badge" id="status-badge">
+            <i class="fas fa-circle-info"></i>
+            <span>Prêt</span>
+          </div>
+        </div>
+
+        <div class="status-indicator" id="status-container">
+          <div class="status-animation">
+            <span class="status-dot" id="status-dot"></span>
+            <svg class="status-ring" width="20" height="20" viewBox="0 0 20 20">
+              <circle cx="10" cy="10" r="8" fill="none" stroke-width="2" />
+            </svg>
+          </div>
+          <span class="status-message" id="status-message"
+            >Boucle inactive</span
+          >
+        </div>
+
+        <div class="progress-container" id="progress-container">
+          <div class="progress-bar" id="progress-bar">
+            <div class="progress-value" id="progress-value"></div>
+          </div>
+          <div class="progress-text" id="progress-text">0%</div>
+        </div>
+
+        <div class="button-container">
+          <button class="btn btn-primary" id="next-action">
+            <i class="fas fa-play"></i>
+            <span>Lancer</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Section des crédits et informations -->
+      <div class="card info-card">
+        <p class="info-text">
+          T41 Assistant • © 2025
+          <a
+            href="https://github.com/ybdn"
+            target="_blank"
+            rel="noopener"
+            class="dev-link"
+          >
+            <i class="fab fa-github github-icon"></i>ybdn
+          </a>
+        </p>
+        <div class="version-info">Version 2.1.0</div>
+        <div id="debug-info" style="display: none"></div>
+      </div>
+    </div>
+
+    <!-- Template pour les notifications -->
+    <div class="notification-container" id="notification-container"></div>
+
+    <!-- Chargement du script JS principal -->
+    <script src="popup-consolidated.js"></script>
+    <script src="ripple-fix.js"></script>
+  </body>
+</html>

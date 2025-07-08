@@ -1,0 +1,802 @@
+/* Styles additionnels pour la popup améliorée */
+
+/* Thème sombre */
+:root {
+  /* Variables du thème clair (par défaut) */
+  --theme-bg: var(--neutral-50);
+  --theme-card-bg: white;
+  --theme-text: var(--neutral-700);
+  --theme-text-dark: var(--neutral-900);
+  --theme-text-light: var(--neutral-600);
+  --theme-border: var(--neutral-200);
+  --theme-shadow: var(--shadow-md);
+  --theme-shadow-hover: var(--shadow-lg);
+  --theme-primary-bg: var(--primary-bg);
+  --theme-header-border: var(--neutral-200);
+  --theme-input-bg: white;
+  --theme-badge-bg: var(--neutral-100);
+  --theme-badge-text: var(--neutral-600);
+  --theme-button-hover: var(--primary-bg);
+  --theme-link: var(--primary);
+  --theme-gradient: linear-gradient(
+    135deg,
+    var(--primary-bg),
+    var(--neutral-50)
+  );
+  --theme-glass: rgba(255, 255, 255, 0.7);
+}
+
+body.dark-theme {
+  /* Palette de couleurs sombres plus raffinée et cohérente */
+  --theme-bg: #121212; /* Fond principal */
+  --theme-card-bg: #1e1e1e; /* Fond des cartes */
+  --theme-text: #e0e0e0; /* Texte normal */
+  --theme-text-dark: #ffffff; /* Texte important */
+  --theme-text-light: #a0a0a0; /* Texte secondaire */
+  --theme-border: #2d2d2d; /* Bordures */
+  --theme-shadow: 0 4px 6px rgba(0, 0, 0, 0.4); /* Ombres normales */
+  --theme-shadow-hover: 0 8px 15px rgba(0, 0, 0, 0.5); /* Ombres au survol */
+  --theme-primary-bg: rgba(
+    59,
+    130,
+    246,
+    0.15
+  ); /* Fond bleu ajusté pour le thème sombre */
+  --theme-header-border: #2d2d2d; /* Bordure d'en-tête */
+  --theme-input-bg: #262626; /* Fond des champs de saisie */
+  --theme-badge-bg: #262626; /* Fond des badges */
+  --theme-badge-text: #b0b0b0; /* Texte des badges */
+  --theme-button-hover: rgba(
+    59,
+    130,
+    246,
+    0.2
+  ); /* Couleur de survol des boutons */
+  --theme-link: #93c5fd; /* Couleur des liens */
+  --theme-gradient: linear-gradient(
+    135deg,
+    rgba(59, 130, 246, 0.15),
+    #121212
+  ); /* Dégradé de fond */
+  --theme-glass: rgba(30, 30, 30, 0.7); /* Effet verre en mode sombre */
+}
+
+body {
+  background-color: var(--theme-bg);
+  color: var(--theme-text);
+  transition: background-color var(--transition-normal),
+    color var(--transition-normal);
+}
+
+.popup {
+  background: var(--theme-gradient);
+  background-size: 400% 400%;
+  transition: background var(--transition-normal);
+}
+
+.card {
+  background-color: var(--theme-card-bg);
+  border-color: var(--theme-border);
+  box-shadow: var(--theme-shadow);
+  transition: all var(--transition-normal);
+}
+
+.card:hover {
+  box-shadow: var(--theme-shadow-hover);
+}
+
+.card-title {
+  color: var(--theme-text-dark);
+}
+
+.app-title {
+  color: var(--theme-text-dark);
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  background-clip: text;
+  -webkit-background-clip: text;
+}
+
+body.dark-theme .app-title {
+  /* Ajustement du dégradé pour le mode sombre */
+  background: linear-gradient(135deg, var(--primary-light), var(--primary));
+  background-clip: text;
+  -webkit-background-clip: text;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.header {
+  border-bottom-color: var(--theme-header-border);
+}
+
+.status-indicator {
+  background-color: var(--theme-card-bg);
+  border-color: var(--theme-border);
+}
+
+.status-message {
+  color: var(--theme-text);
+}
+
+.info-text,
+.version-info {
+  color: var(--theme-text-light);
+}
+
+/* Ajustements des badges pour le mode sombre */
+.status-badge {
+  background-color: var(--theme-badge-bg);
+  color: var(--theme-badge-text);
+}
+
+body.dark-theme .status-badge.active {
+  background-color: rgba(
+    16,
+    185,
+    129,
+    0.2
+  ); /* Fond vert plus visible en mode sombre */
+}
+
+body.dark-theme .status-badge.error {
+  background-color: rgba(
+    239,
+    68,
+    68,
+    0.2
+  ); /* Fond rouge plus visible en mode sombre */
+}
+
+/* Ajustements des icônes et boutons */
+.icon-button:hover {
+  background-color: var(--theme-button-hover);
+}
+
+body.dark-theme .icon-button::before {
+  background-color: rgba(
+    93,
+    155,
+    255,
+    0.25
+  ); /* Effet de ripple ajusté pour le mode sombre */
+}
+
+/* Ajustements de la barre de progression */
+body.dark-theme .progress-bar {
+  background-color: #2d2d2d;
+}
+
+body.dark-theme .progress-text {
+  color: var(--theme-text-light);
+}
+
+/* Amélioration des liens */
+.dev-link {
+  color: var(--theme-link);
+  transition: color var(--transition-normal), opacity var(--transition-normal);
+}
+
+.dev-link:hover {
+  opacity: 0.9;
+}
+
+/* Notification en mode sombre */
+body.dark-theme .notification {
+  background-color: var(--theme-card-bg);
+  color: var(--theme-text);
+  box-shadow: var(--theme-shadow);
+}
+
+body.dark-theme .notification.success {
+  border-left-color: var(--success);
+}
+
+body.dark-theme .notification.error {
+  border-left-color: var(--error);
+}
+
+body.dark-theme .notification.warning {
+  border-left-color: var(--warning);
+}
+
+body.dark-theme .notification.info {
+  border-left-color: var(--primary);
+}
+
+/* Status Badge */
+.status-badge {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background-color: var(--neutral-100);
+  border-radius: var(--border-radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--neutral-600);
+  transition: all var(--transition-normal);
+}
+
+.status-badge i {
+  font-size: var(--font-size-xs);
+}
+
+.status-badge.active {
+  background-color: var(--success-light);
+  color: var(--success);
+}
+
+.status-badge.error {
+  background-color: var(--error-light);
+  color: var(--error);
+}
+
+/* Status Animation */
+.status-animation {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.status-ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.status-ring circle {
+  stroke: var(--neutral-300);
+  stroke-dasharray: 50;
+  stroke-dashoffset: 50;
+  transform-origin: center;
+  transition: stroke var(--transition-normal);
+}
+
+.status-indicator.active .status-ring circle {
+  stroke: #10b981;
+  animation: circle-animation 2s ease infinite;
+}
+
+.status-indicator.error .status-ring circle {
+  stroke: var(--error);
+  animation: none;
+}
+
+@keyframes circle-animation {
+  0% {
+    stroke-dashoffset: 50;
+    transform: rotate(0deg);
+  }
+  50% {
+    stroke-dashoffset: 25;
+  }
+  100% {
+    stroke-dashoffset: 50;
+    transform: rotate(360deg);
+  }
+}
+
+/* Progress Bar */
+.progress-container {
+  width: 100%;
+  margin-top: var(--spacing-sm);
+  display: none;
+}
+
+.progress-bar {
+  height: 8px;
+  background-color: var(--neutral-200);
+  border-radius: var(--border-radius-full);
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-value {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary-light), var(--primary));
+  border-radius: var(--border-radius-full);
+  width: 0%;
+  transition: width 0.3s ease;
+  position: relative;
+}
+
+.progress-value::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: shineEnhanced 2s infinite;
+}
+
+.progress-text {
+  text-align: right;
+  font-size: var(--font-size-xs);
+  color: var(--neutral-600);
+  margin-top: var(--spacing-xs);
+  font-weight: 600;
+}
+
+/* Statistics Card - MASQUÉ */
+.stats-card {
+  display: none !important;
+}
+
+/*
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-md);
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  background-color: var(--neutral-100);
+  border-radius: var(--border-radius-md);
+  transition: all var(--transition-normal);
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.stat-item-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.stat-item:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.stat-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background-color: var(--primary-bg);
+  color: var(--primary);
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-lg);
+}
+
+.stat-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-value {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--theme-text-dark);
+}
+
+.stat-label {
+  font-size: var(--font-size-xs);
+  color: var(--neutral-600);
+}
+*/
+
+/* Refresh Button - MASQUÉ */
+.refresh-btn {
+  display: none !important;
+}
+
+/*
+.refresh-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--neutral-600);
+  font-size: var(--font-size-md);
+  transition: all var(--transition-normal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+}
+
+.refresh-btn:hover {
+  color: var(--primary);
+  background-color: var(--primary-bg);
+}
+
+.refresh-btn.refreshing i {
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+*/
+
+/* Version Info */
+.version-info {
+  font-size: var(--font-size-xs);
+  color: var(--neutral-400);
+  text-align: center;
+  margin-top: var(--spacing-xs);
+}
+
+/* Secondary Button - MASQUÉ */
+.btn-secondary {
+  display: none;
+}
+
+/*
+.btn-secondary {
+  background-color: var(--neutral-100);
+  color: var(--neutral-700);
+  border: 1px solid var(--neutral-300);
+}
+
+.btn-secondary:hover {
+  background-color: var(--neutral-200);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-secondary:active {
+  transform: translateY(0);
+}
+*/
+
+/* Notification System */
+.notification-container {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  z-index: 1000;
+}
+
+.notification {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius-md);
+  background-color: white;
+  box-shadow: var(--shadow-md);
+  max-width: 300px;
+  animation: slideIn 0.3s ease;
+}
+
+.notification.fade-out {
+  animation: fadeOut 0.3s ease forwards;
+}
+
+.notification-success {
+  border-left: 4px solid var(--success);
+}
+
+.notification-error {
+  border-left: 4px solid var(--error);
+}
+
+.notification-info {
+  border-left: 4px solid var(--primary);
+}
+
+.notification i {
+  font-size: var(--font-size-md);
+}
+
+.notification-success i {
+  color: var(--success);
+}
+
+.notification-error i {
+  color: var(--error);
+}
+
+.notification-info i {
+  color: var(--primary);
+}
+
+.notification-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--neutral-400);
+  margin-left: auto;
+  padding: var(--spacing-xs);
+  font-size: var(--font-size-xs);
+  border-radius: 50%;
+  transition: all var(--transition-normal);
+}
+
+.notification-close:hover {
+  background-color: var(--neutral-100);
+  color: var(--neutral-700);
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+}
+
+/* Debug Buttons */
+.debug-test-button {
+  background-color: var(--neutral-200);
+  border: none;
+  border-radius: var(--border-radius-sm);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  margin-right: var(--spacing-xs);
+  font-size: var(--font-size-xs);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+}
+
+.debug-test-button:hover {
+  background-color: var(--neutral-300);
+}
+
+/* Dark Mode Adaptations */
+body.dark-theme .notification {
+  background-color: #2a2a2a;
+  color: #e0e0e0;
+}
+
+body.dark-theme .stat-item {
+  background-color: #2a2a2a;
+}
+
+body.dark-theme .stat-icon {
+  background-color: rgba(59, 130, 246, 0.2);
+}
+
+body.dark-theme .btn-secondary {
+  background-color: #2a2a2a;
+  color: #e0e0e0;
+  border-color: #3a3a3a;
+}
+
+body.dark-theme .btn-secondary:hover {
+  background-color: #3a3a3a;
+}
+
+body.dark-theme .debug-test-button {
+  background-color: #3a3a3a;
+  color: #e0e0e0;
+}
+
+body.dark-theme .debug-test-button:hover {
+  background-color: #4a4a4a;
+}
+
+body.dark-theme .progress-bar {
+  background-color: #2a2a2a;
+}
+
+body.dark-theme .status-badge {
+  background-color: #2a2a2a;
+}
+
+/* Correction pour l'effet ripple */
+.ripple-fix-applied .icon-button::before,
+.ripple-fix-applied .btn::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: all 0.3s ease;
+  pointer-events: none;
+}
+
+.ripple-fix-applied .icon-button.ripple-active::before {
+  background-color: var(--primary-light);
+  animation: cleanRipple 0.6s forwards;
+}
+
+.ripple-fix-applied .btn.ripple-active::before {
+  background-color: rgba(255, 255, 255, 0.2);
+  animation: cleanButtonRipple 0.6s forwards;
+}
+
+@keyframes cleanRipple {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: 0;
+  }
+  40% {
+    width: 100%;
+    height: 100%;
+    opacity: 0.3;
+  }
+  100% {
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+  }
+}
+
+@keyframes cleanButtonRipple {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: 0;
+  }
+  40% {
+    width: 300px;
+    height: 300px;
+    opacity: 0.5;
+  }
+  100% {
+    width: 300px;
+    height: 300px;
+    opacity: 0;
+  }
+}
+
+/* Animation for active card */
+.card.active-card {
+  animation: pulseCard 2s infinite;
+}
+
+@keyframes pulseCard {
+  0% {
+    box-shadow: var(--theme-shadow);
+  }
+  50% {
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
+  }
+  100% {
+    box-shadow: var(--theme-shadow);
+  }
+}
+
+/* Styles du mode sombre améliorés */
+
+/* Amélioration du bouton principal en mode sombre */
+body.dark-theme .btn.btn-primary {
+  background: linear-gradient(135deg, #3a7bd5, #3b82f6);
+  box-shadow: 0 2px 10px rgba(59, 130, 246, 0.3);
+  border: 1px solid #3a7bd5;
+}
+
+body.dark-theme .btn.btn-primary:hover {
+  background: linear-gradient(135deg, #4a8bdf, #4c8ef7);
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+}
+
+body.dark-theme .btn.btn-primary:active {
+  background: linear-gradient(135deg, #3570c5, #3575e5);
+  box-shadow: 0 1px 5px rgba(59, 130, 246, 0.2);
+}
+
+/* Amélioration des animations en mode sombre */
+body.dark-theme .status-dot.active {
+  box-shadow: 0 0 15px rgba(16, 185, 129, 0.6);
+}
+
+body.dark-theme .status-dot.error {
+  box-shadow: 0 0 15px rgba(239, 68, 68, 0.6);
+}
+
+body.dark-theme .status-indicator.active .status-ring circle {
+  stroke: #10b981;
+}
+
+/* Amélioration de l'effet de transition des cartes */
+body.dark-theme .card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease,
+    background-color 0.25s ease;
+}
+
+/* Amélioration de la barre de progression */
+body.dark-theme .progress-value {
+  background: linear-gradient(90deg, #2563eb, #3b82f6);
+}
+
+body.dark-theme .progress-value::after {
+  background: linear-gradient(
+    90deg,
+    rgba(20, 20, 20, 0) 0%,
+    rgba(255, 255, 255, 0.15) 50%,
+    rgba(20, 20, 20, 0) 100%
+  );
+}
+
+/* Effet de focus des éléments interactifs */
+body.dark-theme .btn:focus,
+body.dark-theme .icon-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(93, 155, 255, 0.5);
+}
+
+/* Styliser le switch de thème */
+body.dark-theme #theme-switch {
+  color: #f8ce46;
+}
+
+body.dark-theme #theme-switch:hover {
+  color: #ffdb5c;
+}
+
+/* Styliser les tooltips en mode sombre */
+body.dark-theme .tooltip-text {
+  background-color: #2d2d2d;
+  color: #e0e0e0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-theme .tooltip-text::after {
+  border-color: #2d2d2d transparent transparent transparent;
+}
+
+/* Transitions plus fluides entre les thèmes */
+body,
+.card,
+.btn,
+.icon-button,
+.status-indicator,
+.status-badge,
+.header,
+.popup,
+.progress-bar,
+.notification,
+.dev-link,
+.app-title,
+.card-title,
+.info-text,
+.version-info,
+.status-message,
+.progress-text {
+  transition: all 0.3s ease;
+}
+
+/* Animation de changement de thème */
+@keyframes themeSwitch {
+  0% {
+    opacity: 0.7;
+    transform: scale(0.98);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.01);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Appliquer l'animation lors du changement de thème */
+body.theme-transition {
+  animation: themeSwitch 0.4s ease forwards;
+}

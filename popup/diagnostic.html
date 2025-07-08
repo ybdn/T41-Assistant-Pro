@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>T41 Assistant - Diagnostic</title>
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f5f5f5;
+        color: #333;
+        margin: 0;
+        padding: 20px;
+        width: 400px;
+      }
+
+      .diagnostic-container {
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+      }
+
+      h1 {
+        color: #2c3e50;
+        font-size: 20px;
+        margin: 0 0 20px 0;
+        text-align: center;
+      }
+
+      .debug-status {
+        background-color: #f8f9fa;
+        border-radius: 5px;
+        padding: 10px;
+        margin-bottom: 15px;
+        text-align: center;
+        font-weight: 500;
+      }
+
+      .debug-status.error {
+        background-color: #fee;
+        color: #c0392b;
+      }
+
+      .debug-status.info {
+        background-color: #e3f2fd;
+        color: #2980b9;
+      }
+
+      .debug-results {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .debug-result {
+        padding: 10px;
+        margin-bottom: 8px;
+        border-radius: 5px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .debug-result.success {
+        background-color: #d4edda;
+        color: #155724;
+      }
+
+      .debug-result.error {
+        background-color: #f8d7da;
+        color: #721c24;
+      }
+
+      .debug-result.info {
+        background-color: #e2e3e5;
+        color: #383d41;
+      }
+
+      .test-name {
+        font-weight: 600;
+      }
+
+      .button-container {
+        margin-top: 20px;
+        text-align: center;
+      }
+
+      button {
+        background-color: #3498db;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 15px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+      }
+
+      button:hover {
+        background-color: #2980b9;
+      }
+
+      .footer {
+        margin-top: 20px;
+        text-align: center;
+        font-size: 12px;
+        color: #7f8c8d;
+      }
+    </style>
+    <script src="browser-polyfill-fixed.js"></script>
+  </head>
+  <body>
+    <div class="diagnostic-container" id="debug-container">
+      <h1>T41 Assistant - Diagnostic</h1>
+
+      <div class="debug-status info" id="debug-status">
+        Initialisation du diagnostic...
+      </div>
+
+      <ul class="debug-results" id="debug-results"></ul>
+
+      <div class="button-container">
+        <button id="debug-action">Relancer le diagnostic</button>
+      </div>
+    </div>
+
+    <div class="footer">T41 Assistant • Version 2.1.0 • Diagnostic</div>
+
+    <script src="diagnostic.js"></script>
+  </body>
+</html>

@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>T41 Assistant</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="styles-additional.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Chargement d'abord du polyfill pour s'assurer que l'API browser est disponible -->
+    <script src="browser-polyfill-fixed.js"></script>
+  </head>
+  <body>
+    <div class="popup" id="popup-container">
+      <!-- En-tête avec logo et titre -->
+      <header class="header">
+        <div class="header-content">
+          <button id="icon-trigger" class="icon-button tooltip">
+            <img src="/icons/icon-48.png" alt="T41 Logo" class="app-icon" />
+            <span class="tooltip-text">Vérifier les données</span>
+          </button>
+          <h1 class="app-title">T41 Assistant</h1>
+          <div class="theme-toggle tooltip">
+            <button id="theme-switch" class="icon-button">
+              <i class="fas fa-moon"></i>
+              <span class="tooltip-text">Changer le thème</span>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Carte principale avec statut et actions -->
+      <div class="card slide-in" id="script-card">
+        <div class="card-header">
+          <h2 class="card-title">Traitement des fiches</h2>
+          <div class="status-badge" id="status-badge">
+            <i class="fas fa-circle-info"></i>
+            <span>Prêt</span>
+          </div>
+        </div>
+
+        <div class="status-indicator" id="status-container">
+          <div class="status-animation">
+            <span class="status-dot" id="status-dot"></span>
+            <svg class="status-ring" width="20" height="20" viewBox="0 0 20 20">
+              <circle cx="10" cy="10" r="8" fill="none" stroke-width="2" />
+            </svg>
+          </div>
+          <span class="status-message" id="status-message"
+            >Boucle inactive</span
+          >
+        </div>
+
+        <div class="progress-container" id="progress-container">
+          <div class="progress-bar" id="progress-bar">
+            <div class="progress-value" id="progress-value"></div>
+          </div>
+          <div class="progress-text" id="progress-text">0%</div>
+        </div>
+
+        <div class="button-container">
+          <button class="btn btn-primary" id="next-action">
+            <i class="fas fa-play"></i>
+            <span>Lancer</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Section des crédits et informations -->
+      <div class="card info-card">
+        <p class="info-text">
+          T41 Assistant • © 2025
+          <a
+            href="https://github.com/ybdn"
+            target="_blank"
+            rel="noopener"
+            class="dev-link"
+          >
+            <i class="fab fa-github github-icon"></i>ybdn
+          </a>
+        </p>
+        <div class="version-info">Version 2.1.0</div>
+        <div id="debug-info" style="display: none"></div>
+      </div>
+    </div>
+
+    <!-- Template pour les notifications -->
+    <div class="notification-container" id="notification-container"></div>
+
+    <!-- Chargement du script JS principal -->
+    <script src="popup-consolidated.js"></script>
+    <script src="ripple-fix.js"></script>
+
+    <!-- Script pour aider au débogage -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        console.log("Script de correction des boutons chargé");
+
+        // Vérifier si les boutons existent
+        const nextActionButton = document.getElementById("next-action");
+        const iconTrigger = document.getElementById("icon-trigger");
+        const themeSwitch = document.getElementById("theme-switch");
+
+        if (nextActionButton) {
+          console.log("Réattachement de l'événement pour le bouton d'action");
+          // Supprimer tous les gestionnaires d'événements existants
+          nextActionButton.replaceWith(nextActionButton.cloneNode(true));
+
+          // Récupérer le nouvel élément
+          const newNextActionButton = document.getElementById("next-action");
+
+          // Ajouter un nouvel écouteur d'événements
+          newNextActionButton.addEventListener("click", async function (event) {
+            console.log("🖱️ CLIC détecté sur le bouton d'action (fix)");
+
+            try {
+              // Simuler un clic sur le bouton original via le script de débogage
+              const testClickButton = document.createElement("button");
+              testClickButton.id = "test-click";
+              document.body.appendChild(testClickButton);
+
+              const testEvent = new MouseEvent("click", {
+                view: window,
+                bubbles: true,
+                cancelable: true,
+              });
+              testClickButton.dispatchEvent(testEvent);
+
+              // Supprimer le bouton temporaire
+              document.body.removeChild(testClickButton);
+            } catch (error) {
+              console.error("Erreur lors du fix du bouton:", error);
+            }
+          });
+        }
+
+        if (iconTrigger) {
+          console.log("Réattachement de l'événement pour l'icône");
+          // Même principe pour l'icône
+          iconTrigger.replaceWith(iconTrigger.cloneNode(true));
+          const newIconTrigger = document.getElementById("icon-trigger");
+
+          newIconTrigger.addEventListener("click", function () {
+            console.log("Icône cliquée (fix)");
+            // Activer la fonction de débogage pour tester l'icône
+            const debugButton = document.querySelector(".debug-button");
+            if (debugButton) {
+              debugButton.click();
+            }
+          });
+        }
+      });
+    </script>
+
+    <!-- Script pour aider au débogage -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        console.log("🔄 Script inline chargé");
+
+        // Ajouter un bouton de débogage
+        const infoCard = document.querySelector(".info-card");
+        const debugInfo = document.getElementById("debug-info");
+        const versionInfo = document.querySelector(".version-info");
+
+        if (infoCard && debugInfo) {
+          const debugButton = document.createElement("button");
+          debugButton.innerHTML = '<i class="fas fa-bug"></i> Mode Debug';
+          debugButton.className = "debug-button";
+          debugButton.style.fontSize = "11px";
+          debugButton.style.padding = "4px 10px";
+          debugButton.style.marginTop = "8px";
+          debugButton.style.marginLeft = "auto";
+          debugButton.style.marginRight = "auto";
+          debugButton.style.display = "flex";
+          debugButton.style.alignItems = "center";
+          debugButton.style.gap = "4px";
+          debugButton.style.background = "#f0f0f0";
+          debugButton.style.border = "1px solid #ccc";
+          debugButton.style.borderRadius = "20px";
+          debugButton.style.cursor = "pointer";
+          debugButton.style.opacity = "0.7";
+          debugButton.style.transition = "all 0.25s ease";
+
+          // Ajouter un effet de survol
+          debugButton.addEventListener("mouseover", function () {
+            this.style.opacity = "1";
+            this.style.transform = "translateY(-1px)";
+            this.style.boxShadow = "0 2px 5px rgba(0, 0, 0, 0.1)";
+          });
+
+          debugButton.addEventListener("mouseout", function () {
+            this.style.opacity = "0.7";
+            this.style.transform = "translateY(0)";
+            this.style.boxShadow = "none";
+          });
+
+          debugButton.addEventListener("click", function () {
+            debugInfo.style.display =
+              debugInfo.style.display === "none" ? "block" : "none";
+
+            if (debugInfo.style.display === "block") {
+              // Afficher des informations de débogage
+              const apiInfo =
+                typeof browser !== "undefined"
+                  ? "disponible"
+                  : "non disponible";
+              const nextActionButton = document.getElementById("next-action");
+              const buttonInfo = nextActionButton ? "trouvé" : "non trouvé";
+              const statsBadge = document.getElementById("status-badge");
+              const statsInfo = statsBadge ? "trouvé" : "non trouvé";
+
+              debugInfo.innerHTML = `
+              <div>API Browser: <strong>${apiInfo}</strong></div>
+              <div>Bouton next-action: <strong>${buttonInfo}</strong></div>
+              <div>Badge statut: <strong>${statsInfo}</strong></div>
+              <div>UserAgent: ${navigator.userAgent}</div>
+              <div>
+                <button id="test-click" class="debug-test-button">Tester le clic</button>
+                <button id="test-notification" class="debug-test-button">Tester notification</button>
+              </div>
+            `;
+
+              // Ajouter un bouton de test de clic
+              document
+                .getElementById("test-click")
+                .addEventListener("click", function () {
+                  const event = new MouseEvent("click", {
+                    view: window,
+                    bubbles: true,
+                    cancelable: true,
+                  });
+                  nextActionButton.dispatchEvent(event);
+                  debugInfo.innerHTML +=
+                    "<div>Événement de clic simulé envoyé</div>";
+                });
+
+              // Ajouter un bouton de test de notification
+              document
+                .getElementById("test-notification")
+                .addEventListener("click", function () {
+                  showNotification("Test de notification", "success");
+                });
+            }
+          });
+
+          // Insérer le bouton après l'info de version
+          if (versionInfo) {
+            versionInfo.after(debugButton);
+          } else {
+            infoCard.appendChild(debugButton);
+          }
+        }
+
+        // Fonction pour afficher des notifications
+        window.showNotification = function (message, type = "info") {
+          const container = document.getElementById("notification-container");
+          if (!container) return;
+
+          const notification = document.createElement("div");
+          notification.className = `notification notification-${type} scale-in`;
+
+          const icon = document.createElement("i");
+          icon.className =
+            type === "success"
+              ? "fas fa-check-circle"
+              : type === "error"
+              ? "fas fa-exclamation-circle"
+              : "fas fa-info-circle";
+
+          const text = document.createElement("span");
+          text.textContent = message;
+
+          const closeBtn = document.createElement("button");
+          closeBtn.className = "notification-close";
+          closeBtn.innerHTML = '<i class="fas fa-times"></i>';
+          closeBtn.addEventListener("click", function () {
+            notification.classList.add("fade-out");
+            setTimeout(() => {
+              container.removeChild(notification);
+            }, 300);
+          });
+
+          notification.appendChild(icon);
+          notification.appendChild(text);
+          notification.appendChild(closeBtn);
+          container.appendChild(notification);
+
+          setTimeout(() => {
+            notification.classList.add("fade-out");
+            setTimeout(() => {
+              if (container.contains(notification)) {
+                container.removeChild(notification);
+              }
+            }, 300);
+          }, 4000);
+        };
+
+        // Initialiser le thème
+        const themeSwitch = document.getElementById("theme-switch");
+        if (themeSwitch) {
+          themeSwitch.addEventListener("click", function () {
+            document.body.classList.toggle("dark-theme");
+            const isDark = document.body.classList.contains("dark-theme");
+            themeSwitch.querySelector("i").className = isDark
+              ? "fas fa-sun"
+              : "fas fa-moon";
+
+            // Sauvegarder la préférence
+            if (typeof browser !== "undefined" && browser.storage) {
+              browser.storage.local.set({ darkTheme: isDark });
+            }
+
+            showNotification(
+              `Thème ${isDark ? "sombre" : "clair"} activé`,
+              "success"
+            );
+          });
+
+          // Charger la préférence sauvegardée
+          if (typeof browser !== "undefined" && browser.storage) {
+            browser.storage.local
+              .get("darkTheme")
+              .then((result) => {
+                if (result.darkTheme) {
+                  document.body.classList.add("dark-theme");
+                  themeSwitch.querySelector("i").className = "fas fa-sun";
+                }
+              })
+              .catch((err) =>
+                console.error("Erreur de chargement du thème:", err)
+              );
+          }
+        }
+
+        // Initialiser la barre de progression
+        const progressContainer = document.getElementById("progress-container");
+        if (progressContainer) {
+          progressContainer.style.display = "none"; // Cacher par défaut
+        }
+      });
+    </script>
+  </body>
+</html>
