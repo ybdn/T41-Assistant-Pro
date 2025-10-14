@@ -2,6 +2,7 @@
 
 const fs = require("fs");
 const path = require("path");
+const vm = require("vm");
 
 // Fonction pour analyser les scripts JS et détecter les erreurs potentielles
 function analyzeJsFile(filePath) {
@@ -11,7 +12,10 @@ function analyzeJsFile(filePath) {
 
     // Vérifier les erreurs syntaxiques de base
     try {
-      new Function(content);
+      new vm.Script(content, {
+        filename: path.basename(filePath),
+        displayErrors: true,
+      });
       console.log("\x1b[32m✓ Pas d'erreurs de syntaxe\x1b[0m");
     } catch (e) {
       console.log(`\x1b[31m✗ Erreur de syntaxe: ${e.message}\x1b[0m`);

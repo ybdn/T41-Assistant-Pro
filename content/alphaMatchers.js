@@ -376,8 +376,13 @@
       }
 
       const extractedCodes = [];
+      let hasNonSensitiveCode = false;
       fieldValues.forEach(({ selector, value }) => {
         if (!value) {
+          return;
+        }
+        const trimmedValue = value.trim();
+        if (!trimmedValue) {
           return;
         }
         const match = NATINF_CODE_REGEX.exec(value);
@@ -385,10 +390,17 @@
           const normalized = match[1].toUpperCase();
           extractedCodes.push(normalized);
           logInfo(`NATINF extrait depuis ${selector}: ${normalized}`);
+          if (!sensitiveSet.has(normalized)) {
+            logInfo(
+              `NATINF ${normalized} non inscrit detecte (selector: ${selector})`
+            );
+            hasNonSensitiveCode = true;
+          }
         } else {
           logInfo(
             `Valeur NATINF ignoree (format non reconnu) pour ${selector}: "${value}"`
           );
+          hasNonSensitiveCode = true;
         }
       });
 
@@ -401,6 +413,13 @@
       const sensitiveMatches = uniqueCodes.filter((code) =>
         sensitiveSet.has(code)
       );
+
+      if (hasNonSensitiveCode) {
+        logInfo(
+          "Presence de NATINF non inscrit detectee, aucun commentaire NATINF requis."
+        );
+        return { shouldWrite: false, detectedCodes: [], message: "" };
+      }
 
       if (sensitiveMatches.length === 0) {
         logInfo("Aucun NATINF sensible detecte parmi les codes trouves.");
@@ -2170,14 +2189,6 @@
         progressUpdateTimer = null;
       }
 
-      // Nettoyer la barre de progression si progressBar.js est chargé
-      if (
-        window.t41_cleanupProgressBar &&
-        typeof window.t41_cleanupProgressBar === "function"
-      ) {
-        window.t41_cleanupProgressBar();
-      }
-
       browser.storage.local
         .set({ loopProcessingActive: false })
         .then(() => {
@@ -2496,31 +2507,6 @@
           `Envoi de la mise à jour de progression: ${progressPercentage}% (Dossier: ${dossierValue})`
         );
 
-        // Notification à progressBar.js si disponible
-        if (
-          window.t41_updateProgressBarFromAlphaMatchers &&
-          typeof window.t41_updateProgressBarFromAlphaMatchers === "function"
-        ) {
-          try {
-            window.t41_isUpdatingProgressBar = true;
-            window.t41_updateProgressBarFromAlphaMatchers(
-              current,
-              total,
-              dossierValue
-            );
-          } catch (error) {
-            logInfo(
-              "Erreur lors de la mise à jour de la barre de progression:",
-              error
-            );
-          } finally {
-            // Libérer le verrou dans un bloc finally pour garantir qu'il soit toujours libéré
-            setTimeout(() => {
-              window.t41_isUpdatingProgressBar = false;
-            }, 100);
-          }
-        }
-
         // Envoyer au popup
         browser.runtime
           .sendMessage({
@@ -2562,8 +2548,4 @@
   }
 
   // Exposer les fonctions pour le script progressBar.js
-  window.t41_getDossierProgress = getDossierProgress;
-  window.t41_calculateProgressPercentage = calculateProgressPercentage;
-  window.t41_currentDialogElement = null; // Pour partager la référence au dialogue
-  window.t41_isUpdatingProgressBar = false; // Pour éviter les mises à jour simultanées
 })(); // Fin de l'IIFE

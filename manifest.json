@@ -23,13 +23,6 @@
         "https://faed.sso.gendarmerie.fr/*"
       ],
       "js": ["content/alphaMatchers.js"]
-    },
-    {
-      "matches": [
-        "https://faed.ppsso.gendarmerie.fr/*",
-        "https://faed.sso.gendarmerie.fr/*"
-      ],
-      "js": ["content/progressBar.js"]
     }
   ],
   "action": {
@@ -50,7 +43,10 @@
 
   "browser_specific_settings": {
     "gecko": {
-      "id": "t41-assistant-auto@ybdn-dfaedgn"
+      "id": "t41-assistant-auto@ybdn-dfaedgn",
+      "data_collection_permissions": {
+        "required": ["none"]
+      }
     }
   }
 }

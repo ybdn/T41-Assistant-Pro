@@ -22,7 +22,18 @@ document.addEventListener("DOMContentLoaded", async () => {
   function addResult(test, status, message) {
     const li = document.createElement("li");
     li.className = `debug-result ${status}`;
-    li.innerHTML = `<span class="test-name">${test}</span>: <span class="test-status">${message}</span>`;
+
+    const nameSpan = document.createElement("span");
+    nameSpan.className = "test-name";
+    nameSpan.textContent = test;
+
+    const separator = document.createTextNode(": ");
+
+    const statusSpan = document.createElement("span");
+    statusSpan.className = "test-status";
+    statusSpan.textContent = message;
+
+    li.append(nameSpan, separator, statusSpan);
     resultsList.appendChild(li);
     return li;
   }
@@ -274,7 +285,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Fonction principale de diagnostic
   async function runDiagnostic() {
     updateStatus("Diagnostic en cours...");
-    resultsList.innerHTML = "";
+    resultsList.replaceChildren();
 
     try {
       // 1. Vérifier si nous sommes sur une page FAED
