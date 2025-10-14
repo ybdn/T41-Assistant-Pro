@@ -113,6 +113,22 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
     sendResponse({ success: true });
     return true;
   }
+  else if (message.command === "getNatinfSurvey") {
+    const url = browser.runtime.getURL("data/natinf-survey.json");
+    fetch(url)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`Chargement NATINF echoue (statut ${response.status})`);
+        }
+        return response.json();
+      })
+      .then(data => sendResponse({ success: true, data }))
+      .catch(error => {
+        console.error("Erreur lors du chargement NATINF en arriere-plan:", error);
+        sendResponse({ success: false, error: error.message });
+      });
+    return true;
+  }
   else if (message.type === "FAED_ACTION") {
     console.log("Action FAED détectée :", message.payload);
     sendResponse({ status: "Action reçue en arrière-plan." });

@@ -1,0 +1,26 @@
+{
+  "version": "2025-09-22",
+  "description": "Liste des NATINFS necessitant une vérification par un opérateur du FAED.",
+  "natinfCodes": [
+    {
+      "code": "29524",
+      "label": "penetration non autorisee sur le territoire national apres interdiction de retour"
+    },
+    {
+      "code": "29525",
+      "label": "entree irreguliere d'un etranger en france"
+    },
+    {
+      "code": "29526",
+      "label": "maintien irregulier sur le territoire francais, apres placement en retention ou assignation a residence, d'un etranger ayant fait l'objet d'une decision d'expulsion"
+    },
+    {
+      "code": "29527",
+      "label": "maintien irregulier sur le territoire francais, apres placement en retention ou assignation a residence, d'un etranger ayant fait l'objet d'une decision d'eloignement"
+    },
+    {
+      "code": "29528",
+      "label": "maintien irregulier sur le territoire francais, apres placement en retention ou assignation a residence, d'un etranger ayant fait l'objet d'une obligation de quitter le territoire"
+    }
+  ]
+}

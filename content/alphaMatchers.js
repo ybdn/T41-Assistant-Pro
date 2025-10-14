@@ -9,6 +9,13 @@
   const MIN_SEQUENCE_DURATION = 4000; // Durée minimale en millisecondes
   let loopProcessingActive = false; // NOUVELLE VARIABLE POUR LE MODE BOUCLE
   let progressUpdateTimer = null; // Timer pour les mises à jour de progression
+  const NATINF_JSON_PATH = "data/natinf-survey.json";
+  const NATINF_CODE_REGEX = /^\s*([A-Z0-9]{1,6})\s*(?:-|$)/i;
+  const NATINF_COMMENT_SELECTOR =
+    "textarea#formValidationCorrection\\:commentairesEtapes";
+  let natinfSensitiveSet = null;
+  let natinfSensitiveSetPromise = null;
+  let natinfSensitiveVersion = null;
 
   // Fonction pour vérifier si nous sommes sur la bonne page "CONTROLE DE LA FICHE"
   function isControleDeFichePage() {
@@ -168,6 +175,246 @@
         logInfo("Format DOM détecté: aucun formulaire trouvé");
         return "notFound";
       }
+    }
+  }
+
+  async function loadNatinfSensitiveSet() {
+    if (natinfSensitiveSet) {
+      return natinfSensitiveSet;
+    }
+
+    if (!natinfSensitiveSetPromise) {
+      natinfSensitiveSetPromise = (async () => {
+        const url = browser.runtime.getURL(NATINF_JSON_PATH);
+        let payload = null;
+
+        try {
+          const response = await fetch(url, { cache: "no-cache" });
+          if (!response.ok) {
+            throw new Error(
+              `Chargement direct NATINF echoue (statut ${response.status})`
+            );
+          }
+          payload = await response.json();
+        } catch (directError) {
+          logInfo(
+            `Echec du chargement direct de ${NATINF_JSON_PATH}: ${directError.message}`
+          );
+          try {
+            const fallbackResponse = await browser.runtime.sendMessage({
+              command: "getNatinfSurvey",
+            });
+            if (
+              fallbackResponse &&
+              fallbackResponse.success &&
+              fallbackResponse.data
+            ) {
+              payload =
+                typeof fallbackResponse.data === "string"
+                  ? JSON.parse(fallbackResponse.data)
+                  : fallbackResponse.data;
+            } else {
+              throw new Error(
+                fallbackResponse?.error ||
+                  "Reponse getNatinfSurvey invalide depuis le background."
+              );
+            }
+          } catch (fallbackError) {
+            logInfo(
+              `Echec du fallback getNatinfSurvey: ${fallbackError.message}`,
+              fallbackError
+            );
+            throw fallbackError;
+          }
+        }
+
+        const natinfEntries = Array.isArray(payload?.natinfCodes)
+          ? payload.natinfCodes
+          : [];
+        const normalizedCodes = new Set();
+
+        natinfEntries.forEach((entry) => {
+          if (entry === null || entry === undefined) {
+            return;
+          }
+
+          let rawCode = "";
+          if (typeof entry === "string" || typeof entry === "number") {
+            rawCode = String(entry);
+          } else if (entry && typeof entry.code !== "undefined") {
+            rawCode = String(entry.code);
+          }
+
+          const normalized = rawCode.trim().toUpperCase();
+          if (normalized) {
+            normalizedCodes.add(normalized);
+          }
+        });
+
+        natinfSensitiveSet = normalizedCodes;
+        natinfSensitiveVersion = payload?.version || null;
+        logInfo("Liste NATINF sensible chargee.", {
+          total: normalizedCodes.size,
+          version: natinfSensitiveVersion,
+        });
+        return natinfSensitiveSet;
+      })().catch((error) => {
+        natinfSensitiveSetPromise = null;
+        throw error;
+      });
+    }
+
+    return natinfSensitiveSetPromise;
+  }
+
+  function getNatinfSelectors() {
+    const suffixes = [
+      "CodeNATINF1ListeComplete_input",
+      "CodeNATINF2ListeComplete_input",
+      "CodeNATINF3ListeComplete_input",
+    ];
+    const selectors = new Set();
+    const directPrefix = "#formValidationCorrection\\:";
+    const tabPrefix = "#formValidationCorrection\\:tabViewValidationFiche\\:";
+
+    if (domFormat === "tabView") {
+      suffixes.forEach((suffix) => selectors.add(`${tabPrefix}${suffix}`));
+    } else if (domFormat === "direct") {
+      suffixes.forEach((suffix) => selectors.add(`${directPrefix}${suffix}`));
+    } else {
+      suffixes.forEach((suffix) => {
+        selectors.add(`${tabPrefix}${suffix}`);
+        selectors.add(`${directPrefix}${suffix}`);
+      });
+    }
+
+    return Array.from(selectors);
+  }
+
+  function extractNatinfFieldValues() {
+    const selectors = getNatinfSelectors();
+    const seenElements = new Set();
+    const results = [];
+
+    selectors.forEach((selector) => {
+      const element = document.querySelector(selector);
+      if (element && !seenElements.has(element)) {
+        seenElements.add(element);
+        const value = element.value || "";
+        results.push({ selector, value });
+      }
+    });
+
+    return results;
+  }
+
+  function buildNatinfCommentMessage(codes) {
+    const baseMessage =
+      "NATINF supposant une enquete administrative, veuillez contacter l'unite pour s'assurer que la signalisation est relative a une procedure judiciaire.";
+    if (!codes || codes.length === 0) {
+      return baseMessage;
+    }
+    return `${baseMessage} Code(s) detecte(s) : ${codes.join(", ")}`;
+  }
+
+  function ensureAdministrativeComment(message, { append = false } = {}) {
+    if (!message) {
+      return false;
+    }
+
+    const textarea = document.querySelector(NATINF_COMMENT_SELECTOR);
+    if (!textarea) {
+      logInfo(
+        "Zone de commentaires introuvable pour l'insertion du message NATINF."
+      );
+      return false;
+    }
+
+    const trimmedMessage = message.trim();
+    const currentValue = textarea.value || "";
+    let updatedValue = currentValue;
+
+    if (append) {
+      if (currentValue.includes(trimmedMessage)) {
+        logInfo("Message NATINF deja present, ajout ignore.");
+        return false;
+      }
+      const separator = currentValue.trim().length > 0 ? "\n\n" : "";
+      updatedValue = `${currentValue}${separator}${trimmedMessage}`;
+    } else {
+      if (currentValue.trim() === trimmedMessage) {
+        logInfo("Message NATINF deja present, aucune mise a jour requise.");
+        return false;
+      }
+      updatedValue = trimmedMessage;
+    }
+
+    textarea.value = updatedValue;
+    textarea.dispatchEvent(new Event("input", { bubbles: true }));
+    textarea.dispatchEvent(new Event("change", { bubbles: true }));
+    textarea.dispatchEvent(new Event("blur", { bubbles: true }));
+    logInfo(
+      `Message NATINF ${
+        append ? "ajoute" : "applique"
+      } dans la zone de commentaires.`
+    );
+    return true;
+  }
+
+  async function evaluateSensitiveNatinfComment() {
+    try {
+      const sensitiveSet = await loadNatinfSensitiveSet();
+      if (!sensitiveSet || sensitiveSet.size === 0) {
+        logInfo("Liste NATINF sensible vide ou non chargee.");
+        return { shouldWrite: false, detectedCodes: [], message: "" };
+      }
+
+      const fieldValues = extractNatinfFieldValues();
+      if (fieldValues.length === 0) {
+        logInfo("Aucun champ NATINF disponible dans le DOM.");
+        return { shouldWrite: false, detectedCodes: [], message: "" };
+      }
+
+      const extractedCodes = [];
+      fieldValues.forEach(({ selector, value }) => {
+        if (!value) {
+          return;
+        }
+        const match = NATINF_CODE_REGEX.exec(value);
+        if (match) {
+          const normalized = match[1].toUpperCase();
+          extractedCodes.push(normalized);
+          logInfo(`NATINF extrait depuis ${selector}: ${normalized}`);
+        } else {
+          logInfo(
+            `Valeur NATINF ignoree (format non reconnu) pour ${selector}: "${value}"`
+          );
+        }
+      });
+
+      if (extractedCodes.length === 0) {
+        logInfo("Aucun code NATINF detecte dans les champs disponibles.");
+        return { shouldWrite: false, detectedCodes: [], message: "" };
+      }
+
+      const uniqueCodes = Array.from(new Set(extractedCodes));
+      const sensitiveMatches = uniqueCodes.filter((code) =>
+        sensitiveSet.has(code)
+      );
+
+      if (sensitiveMatches.length === 0) {
+        logInfo("Aucun NATINF sensible detecte parmi les codes trouves.");
+        return { shouldWrite: false, detectedCodes: [], message: "" };
+      }
+
+      const message = buildNatinfCommentMessage(sensitiveMatches);
+      return { shouldWrite: true, detectedCodes: sensitiveMatches, message };
+    } catch (error) {
+      logInfo(
+        `Erreur lors de l'evaluation des NATINF sensibles: ${error.message}`,
+        error
+      );
+      return { shouldWrite: false, detectedCodes: [], message: "" };
     }
   }
 
@@ -728,6 +975,14 @@
         serviceRattachementValue,
       });
 
+      const natinfCommentInfo = await evaluateSensitiveNatinfComment();
+      if (natinfCommentInfo.shouldWrite) {
+        logInfo("Codes NATINF sensibles detectes:", {
+          codes: natinfCommentInfo.detectedCodes,
+          version: natinfSensitiveVersion,
+        });
+      }
+
       const validationResults = {
         // idppGaspard: true,
         typeSaisie: true,
@@ -1032,6 +1287,18 @@
         logInfo(
           "✅ VALIDATION RÉUSSIE: Toutes les données sont conformes. Poursuite du traitement."
         );
+      }
+
+      if (natinfCommentInfo.shouldWrite) {
+        const commentApplied = ensureAdministrativeComment(
+          natinfCommentInfo.message,
+          { append: correctionsApplied }
+        );
+        if (!commentApplied) {
+          logInfo(
+            "Insertion du message NATINF non necessaire ou impossible (deja present ou zone indisponible)."
+          );
+        }
       }
 
       // Toujours lancer les étapes automatiques après la phase de validation/correction.

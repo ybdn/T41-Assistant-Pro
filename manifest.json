@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "T41 Assistant (auto)",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Extension Firefox qui assiste les opérateurs FAED lors du contrôle des fiches de signalisation. Elle participe à la fiabilisation des données avant intégration en base grâce au contrôle des données alphanumériques et augmente la productivité grâce à la sélection des éléments du DOM pour valider les onglets.",
   "author": "ybdn - Yoann Baudrin",
 
@@ -50,7 +50,7 @@
 
   "browser_specific_settings": {
     "gecko": {
-      "id": "auto-t41-assistant@gn-ybdn"
+      "id": "t41-assistant-auto@ybdn-dfaedgn"
     }
   }
 }
