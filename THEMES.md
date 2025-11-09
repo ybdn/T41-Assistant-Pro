@@ -47,7 +47,7 @@ Le système peut fonctionner en **mode automatique** (détection automatique des
 
 #### 🌸 Thème Pâques
 - **ID**: `easter`
-- **Période**: ±3 jours autour de Pâques (calculé dynamiquement)
+- **Période**: 7 jours avant jusqu'à 48h après Pâques (calculé dynamiquement)
 - **Couleurs**: Rose, violet, jaune, vert et bleu pastel
 - **Ambiance**: Printanière et colorée
 - **Emojis**: 🌸 🐰 🥚 🌷
@@ -55,7 +55,7 @@ Le système peut fonctionner en **mode automatique** (détection automatique des
 
 #### 🎃 Thème Halloween
 - **ID**: `halloween`
-- **Période**: Tout le mois d'octobre
+- **Période**: 28 octobre au 3 novembre
 - **Couleurs**: Orange, violet et noir
 - **Ambiance**: Mystérieuse et sombre
 - **Emojis**: 🎃 👻 🦇 🕷️
@@ -63,7 +63,7 @@ Le système peut fonctionner en **mode automatique** (détection automatique des
 
 #### 🎆 Thème Nouvel An
 - **ID**: `newyear`
-- **Période**: 31 décembre et 1er janvier
+- **Période**: 28 décembre au 4 janvier
 - **Couleurs**: Bleu, or, argent et violet
 - **Ambiance**: Festive avec des effets de feux d'artifice
 - **Emojis**: 🎆 ✨ 🎉 🥂 🎊
@@ -114,11 +114,12 @@ Pour choisir manuellement un thème :
 - La clé de stockage : `t41-theme-settings`
 - Les données sauvegardées :
   - `theme`: ID du thème actuel
+  - `baseTheme`: Thème de base préféré de l'utilisateur (light ou dark)
   - `autoMode`: État du mode automatique (true/false)
 
 ### Calcul Automatique de Pâques
 
-Le thème Pâques utilise un algorithme (Meeus/Jones/Butcher) pour calculer la date de Pâques chaque année. Le thème s'active ±3 jours autour de cette date.
+Le thème Pâques utilise un algorithme (Meeus/Jones/Butcher) pour calculer la date de Pâques chaque année. Le thème s'active 7 jours avant jusqu'à 48 heures après cette date.
 
 ### Transitions Fluides
 

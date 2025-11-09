@@ -49,7 +49,7 @@ const THEMES = {
     name: 'Halloween',
     icon: '🎃',
     festive: true,
-    period: { start: { month: 10, day: 1 }, end: { month: 10, day: 31 } },
+    period: { start: { month: 10, day: 28 }, end: { month: 11, day: 3 } },
     description: 'Ambiance mystérieuse pour Halloween'
   },
   newyear: {
@@ -57,7 +57,7 @@ const THEMES = {
     name: 'Nouvel An',
     icon: '🎆',
     festive: true,
-    period: { start: { month: 12, day: 31 }, end: { month: 1, day: 1 } },
+    period: { start: { month: 12, day: 28 }, end: { month: 1, day: 4 } },
     description: 'Feux d\'artifice pour la nouvelle année'
   },
   bastille: {
@@ -97,7 +97,7 @@ function calculateEaster(year) {
 }
 
 /**
- * Vérifie si une date est dans la période de Pâques (±3 jours)
+ * Vérifie si une date est dans la période de Pâques (7 jours avant jusqu'à 2 jours après)
  * @param {Date} date - La date à vérifier
  * @returns {boolean}
  */
@@ -105,11 +105,12 @@ function isEasterPeriod(date) {
   const year = date.getFullYear();
   const easterDate = calculateEaster(year);
 
-  // Calculer la différence en jours
-  const diffTime = Math.abs(date - easterDate);
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  // Calculer la différence en jours (positif = après Pâques, négatif = avant Pâques)
+  const diffTime = date - easterDate;
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
-  return diffDays <= 3;
+  // 7 jours avant (-7) jusqu'à 2 jours après (+2)
+  return diffDays >= -7 && diffDays <= 2;
 }
 
 // ===== DÉTECTION AUTOMATIQUE DES FÊTES =====
@@ -124,11 +125,11 @@ function isInPeriod(date, period) {
   const month = date.getMonth() + 1; // getMonth() retourne 0-11
   const day = date.getDate();
 
-  // Cas spécial pour le Nouvel An (31 déc - 1er jan)
+  // Cas spécial pour le Nouvel An (28 déc - 4 jan)
   if (period.start.month === 12 && period.end.month === 1) {
     return (
-      (month === 12 && day === 31) ||
-      (month === 1 && day === 1)
+      (month === 12 && day >= period.start.day) ||
+      (month === 1 && day <= period.end.day)
     );
   }
 
@@ -189,6 +190,7 @@ function detectFestiveTheme() {
 class ThemeManager {
   constructor() {
     this.currentTheme = 'light';
+    this.baseTheme = 'light'; // Thème de base (clair ou sombre) utilisé quand pas de thème festif
     this.autoMode = true;
     this.storageKey = 't41-theme-settings';
     this.body = document.body;
@@ -209,7 +211,8 @@ class ThemeManager {
       if (festiveTheme) {
         this.applyTheme(festiveTheme);
       } else {
-        this.applyTheme(this.currentTheme);
+        // Pas de thème festif : utiliser le thème de base préféré de l'utilisateur
+        this.applyTheme(this.baseTheme);
       }
     } else {
       this.applyTheme(this.currentTheme);
@@ -231,6 +234,7 @@ class ThemeManager {
 
       if (settings) {
         this.currentTheme = settings.theme || 'light';
+        this.baseTheme = settings.baseTheme || 'light';
         this.autoMode = settings.autoMode !== undefined ? settings.autoMode : true;
         console.log('📖 Préférences chargées:', settings);
       } else {
@@ -238,6 +242,7 @@ class ThemeManager {
         const oldDarkTheme = localStorage.getItem('t41-dark-theme');
         if (oldDarkTheme === 'true') {
           this.currentTheme = 'dark';
+          this.baseTheme = 'dark';
         }
       }
     } catch (error) {
@@ -252,6 +257,7 @@ class ThemeManager {
     try {
       const settings = {
         theme: this.currentTheme,
+        baseTheme: this.baseTheme,
         autoMode: this.autoMode
       };
 
@@ -306,6 +312,11 @@ class ThemeManager {
   async changeTheme(themeId, manual = false) {
     if (manual) {
       this.autoMode = false;
+
+      // Si l'utilisateur choisit 'light' ou 'dark', mémoriser comme thème de base
+      if (themeId === 'light' || themeId === 'dark') {
+        this.baseTheme = themeId;
+      }
     }
 
     this.applyTheme(themeId);
@@ -326,6 +337,9 @@ class ThemeManager {
       const festiveTheme = detectFestiveTheme();
       if (festiveTheme) {
         this.applyTheme(festiveTheme);
+      } else {
+        // Pas de thème festif : utiliser le thème de base préféré de l'utilisateur
+        this.applyTheme(this.baseTheme);
       }
     }
 
