@@ -1,0 +1,11 @@
+# Exclude sensitive files
+PUBLISH.md
+.git/
+.gitignore
+.DS_Store
+node_modules/
+
+# Exclude development files
+*.md
+!README.md
+.vscode/
