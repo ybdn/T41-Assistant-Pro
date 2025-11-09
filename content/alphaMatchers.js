@@ -170,6 +170,57 @@
       },
     },
     {
+      name: "Vérifier la disponibilité des fiches",
+      selector: "body", // Sélecteur générique car on vérifie plusieurs éléments
+      action: async (element) => {
+        logInfo("Vérification de la disponibilité des fiches...");
+
+        // Attendre que le chargement soit terminé
+        await waitForLoadingToComplete();
+
+        // Attendre un peu plus pour que le DOM soit stabilisé
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        // Vérifier si la liste est vide
+        const emptyListElement = document.querySelector("tr.ui-datatable-empty-message td");
+        const isListEmpty = emptyListElement && emptyListElement.textContent.includes("Liste vide");
+
+        // Vérifier si des dossiers sont occupés
+        const errorMessageElement = document.querySelector("#tabs\\:tabsP\\:FormulaireFiltreStationAlphaPersonneP\\:messageErreurPersonneP");
+        const hasBusyFiles = errorMessageElement && errorMessageElement.textContent.includes("Dossier(s) occupé(s)");
+
+        if (isListEmpty) {
+          logInfo("⚠️ Liste vide détectée, nouvelle tentative de rafraîchissement dans 3 secondes...");
+          await new Promise(resolve => setTimeout(resolve, 3000));
+
+          // Re-cliquer sur Rafraîchir
+          const refreshButton = document.querySelector("#tabs\\:tabsP\\:FormulaireFiltreStationAlphaPersonneP\\:raffraichirPersonneP");
+          if (refreshButton) {
+            refreshButton.click();
+            logInfo("Bouton Rafraîchir cliqué à nouveau.");
+
+            // Décrementer currentStepIndex pour refaire cette étape de vérification
+            currentStepIndex--;
+          }
+        } else if (hasBusyFiles) {
+          logInfo("⚠️ Dossiers occupés détectés, nouvelle tentative de rafraîchissement dans 3 secondes...");
+          await new Promise(resolve => setTimeout(resolve, 3000));
+
+          // Re-cliquer sur Rafraîchir
+          const refreshButton = document.querySelector("#tabs\\:tabsP\\:FormulaireFiltreStationAlphaPersonneP\\:raffraichirPersonneP");
+          if (refreshButton) {
+            refreshButton.click();
+            logInfo("Bouton Rafraîchir cliqué à nouveau.");
+
+            // Décrementer currentStepIndex pour refaire cette étape de vérification
+            currentStepIndex--;
+          }
+        } else {
+          logInfo("✅ Des fiches sont disponibles, poursuite du traitement.");
+        }
+      },
+    },
+    {
       name: "Sélectionner Controle (si nécessaire)",
       selector: "label#tabs\\:tabsP\\:FormulaireFiltreStationAlphaPersonneP\\:etapeTraitementPersonneP_label",
       action: (element) => {
