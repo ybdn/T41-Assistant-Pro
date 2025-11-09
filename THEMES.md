@@ -33,8 +33,8 @@ Le système peut fonctionner en **mode automatique** (détection automatique des
 - **Période**: 1er au 25 décembre
 - **Couleurs**: Rouge, vert et or
 - **Ambiance**: Festive avec des décorations de Noël
-- **Emojis**: 🎄 ❄️ 🎅 ⛄ 🎁
-- **Animation**: Chute de flocons de neige ❄️
+- **Emojis animés**: ❄️ ⛄ 🎄 🎁 ⭐ (12 particules)
+- **Animation**: Icônes rebondissantes en mouvement
 
 #### ⭐ Thème Sainte Geneviève
 - **ID**: `genevieve`
@@ -42,40 +42,40 @@ Le système peut fonctionner en **mode automatique** (détection automatique des
 - **Couleurs**: Or, bleu et argent
 - **Ambiance**: Élégante et solennelle
 - **Description**: En l'honneur de Sainte Geneviève, patronne des gendarmes
-- **Emojis**: ⭐ 🛡️ ⚔️ 👮
-- **Animation**: Étoiles scintillantes ✨
+- **Emojis animés**: ⭐ ✨ 🌟 💫 🛡️ (10 particules)
+- **Animation**: Icônes rebondissantes en mouvement
 
 #### 🌸 Thème Pâques
 - **ID**: `easter`
 - **Période**: 7 jours avant jusqu'à 48h après Pâques (calculé dynamiquement)
 - **Couleurs**: Rose, violet, jaune, vert et bleu pastel
 - **Ambiance**: Printanière et colorée
-- **Emojis**: 🌸 🐰 🥚 🌷
-- **Animation**: Éléments printaniers flottants 🌸
+- **Emojis animés**: 🌸 🌷 🥚 🐰 🦋 🌺 (10 particules)
+- **Animation**: Icônes rebondissantes en mouvement
 
 #### 🎃 Thème Halloween
 - **ID**: `halloween`
 - **Période**: 28 octobre au 3 novembre
 - **Couleurs**: Orange, violet et noir
 - **Ambiance**: Mystérieuse et sombre
-- **Emojis**: 🎃 👻 🦇 🕷️
-- **Animation**: Éléments effrayants volants 👻
+- **Emojis animés**: 🦇 👻 🕷️ 🎃 🕸️ (12 particules)
+- **Animation**: Icônes rebondissantes en mouvement
 
 #### 🎆 Thème Nouvel An
 - **ID**: `newyear`
 - **Période**: 28 décembre au 4 janvier
 - **Couleurs**: Bleu, or, argent et violet
 - **Ambiance**: Festive avec des effets de feux d'artifice
-- **Emojis**: 🎆 ✨ 🎉 🥂 🎊
-- **Animation**: Explosions de feux d'artifice 🎆
+- **Emojis animés**: 🎆 ✨ 🎉 🎊 💫 ⭐ (14 particules)
+- **Animation**: Icônes rebondissantes en mouvement
 
 #### 🇫🇷 Thème 14 Juillet
 - **ID**: `bastille`
 - **Période**: 14 juillet
 - **Couleurs**: Bleu, blanc et rouge (couleurs du drapeau français)
 - **Ambiance**: Patriotique et élégante
-- **Emojis**: 🇫🇷 🎆 🗼 🥖
-- **Animation**: Feux d'artifice montants 🎇
+- **Emojis animés**: 🎆 🎇 ✨ 💫 🇫🇷 (12 particules)
+- **Animation**: Icônes rebondissantes en mouvement
 
 ---
 
@@ -129,20 +129,21 @@ Le thème Pâques utilise un algorithme (Meeus/Jones/Butcher) pour calculer la d
 
 ### Animations d'Emojis
 
-Chaque thème festif dispose d'**animations d'emojis** uniques qui apparaissent en arrière-plan :
+Tous les thèmes festifs utilisent un **système d'animation unifié** avec des icônes qui rebondissent sur les bords de la fenêtre :
 
-- **🎄 Noël** : Flocons de neige qui tombent doucement avec rotation
-- **⭐ Sainte Geneviève** : Étoiles scintillantes avec effet de pulsation
-- **🌸 Pâques** : Éléments printaniers qui flottent vers le haut avec oscillation
-- **🎃 Halloween** : Éléments effrayants qui volent horizontalement de façon irrégulière
-- **🎆 Nouvel An** : Explosions de feux d'artifice avec effets de lumière
-- **🇫🇷 14 Juillet** : Feux d'artifice qui montent avec effet de dispersion
+- **Système de particules** : Chaque thème a ses propres emojis (entre 10 et 14 particules)
+- **Rebonds dynamiques** : Les icônes se déplacent et rebondissent sur les bords de la fenêtre
+- **Vitesses variables** : Chaque particule a une vitesse et direction aléatoires
+- **Tailles aléatoires** : Les emojis varient de 16 à 28px pour un effet de profondeur
+- **Opacité variable** : Chaque icône a une opacité entre 50% et 90%
 
 **Caractéristiques techniques** :
-- Animations générées dynamiquement en JavaScript
-- Optimisées pour les performances (GPU acceleration)
+- Animation fluide avec `requestAnimationFrame` (60 FPS)
+- Physique de rebond réaliste calculée en temps réel
+- Optimisée pour les performances (GPU acceleration avec `transform`)
 - Respect du paramètre `prefers-reduced-motion` pour l'accessibilité
 - Pas d'animations sur les thèmes Clair et Sombre pour préserver la sobriété
+- Détection automatique des dimensions de la fenêtre pour les rebonds
 
 ### Compatibilité
 
@@ -255,11 +256,12 @@ Tous les thèmes respectent les ratios de contraste WCAG 2.1 :
 
 - **8 thèmes au total**
 - **6 périodes festives françaises**
-- **6 types d'animations uniques**
-- **~1400 lignes de CSS** pour les thèmes et animations
-- **~900 lignes de JavaScript** pour la logique et animations
+- **Système d'animation unifié** avec rebonds dynamiques
+- **10 à 14 particules** animées par thème
+- **~1000 lignes de CSS** pour les thèmes et animations
+- **~200 lignes de JavaScript** pour la physique des animations
 - **Mode automatique intelligent** avec calcul de Pâques
-- **Optimisé pour les performances** avec GPU acceleration
+- **Optimisé pour les performances** avec GPU acceleration et requestAnimationFrame
 
 ---
 
@@ -281,14 +283,16 @@ Tous les thèmes respectent les ratios de contraste WCAG 2.1 :
 ### Version 2.2.0 (Actuelle)
 - ✨ Ajout du système de thèmes festifs français
 - ✨ 6 nouveaux thèmes festifs avec identités visuelles uniques
-- ✨ Animations d'emojis dynamiques pour chaque thème festif
+- ✨ Système d'animations unifié avec icônes rebondissantes
+- 🎮 Physique de rebond réaliste avec détection des bords
+- 🎬 Entre 10 et 14 particules animées par thème
 - ✨ Mode automatique avec détection intelligente des fêtes
 - ✨ Menu déroulant premium pour sélection manuelle
-- ✨ Sauvegarde des préférences utilisateur
+- ✨ Sauvegarde des préférences utilisateur (thème de base mémorisé)
 - ✨ Transitions fluides entre les thèmes
-- 🎬 6 types d'animations uniques (neige, étoiles, fleurs, fantômes, feux d'artifice)
-- ⚡ Optimisations de performance (GPU acceleration, respect de prefers-reduced-motion)
-- 🔧 Amélioration de l'accessibilité
+- ⚡ Optimisations de performance (GPU acceleration, requestAnimationFrame)
+- ⚡ Respect de prefers-reduced-motion pour l'accessibilité
+- 🔧 Périodes festives ajustées (Nouvel An 28 déc-4 jan, Halloween 28 oct-3 nov, Pâques -7j/+2j)
 
 ### Version 2.1.0
 - Thèmes Clair et Sombre uniquement
