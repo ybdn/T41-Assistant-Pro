@@ -121,14 +121,34 @@
   z-index: 1 !important;
 }
 
-.header,
+/* Le header doit avoir un z-index élevé pour que ses enfants (dropdown) soient au-dessus */
+.header {
+  position: relative !important;
+  z-index: 100 !important;
+}
+
+/* Les cards ont un z-index inférieur au header */
 .card {
   position: relative !important;
   z-index: 2 !important;
 }
 
+/* Le theme-toggle doit aussi avoir un z-index élevé */
+.theme-toggle {
+  position: relative !important;
+  z-index: 100 !important;
+}
+
+/* Le theme-selector hérite du contexte */
+.theme-selector {
+  position: relative !important;
+  z-index: 100 !important;
+}
+
+/* Le dropdown a un z-index très élevé */
 .theme-dropdown {
-  z-index: 1000 !important;
+  position: absolute !important;
+  z-index: 999 !important;
 }
 
 .notification-container {
