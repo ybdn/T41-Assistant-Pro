@@ -49,6 +49,114 @@
     return false;
   }
 
+  // Fonction pour valider l'onglet Empreintes (doigts)
+  function validateFingerprintsTab() {
+    logInfo("🔍 Vérification de la présence d'images dans l'onglet Empreintes (doigts)");
+
+    const errors = [];
+
+    // Liste des doigts à vérifier (déroulés)
+    const fingerLabels = ['PD', 'ID', 'MD', 'AD', 'OD', 'PG', 'IG', 'MG', 'AG', 'OG'];
+
+    // Liste des simultanés à vérifier
+    const simultaneLabels = ['SMG', 'SPG', 'SPD', 'SMD'];
+
+    // Récupérer toutes les cellules contenant des labels
+    const allCells = document.querySelectorAll(
+      'table[id*="formValidationCorrection:tabViewValidationFiche"] td.ui-panelgrid-cell'
+    );
+
+    // Objet pour stocker l'état de chaque doigt et simultané
+    const fingerStates = {};
+    const simultaneStates = {};
+
+    // Parcourir toutes les cellules pour identifier les doigts et simultanés
+    allCells.forEach((cell) => {
+      const label = cell.querySelector('label.ui-outputlabel[style*="font-size: 20px"]');
+      if (!label) return;
+
+      const labelText = label.textContent.trim();
+
+      // Chercher l'input de taille 2 qui contient "P" ou "N/A" (à droite du label)
+      const inputs = cell.querySelectorAll('input[type="text"][readonly][size="2"]');
+
+      // L'input qui nous intéresse est celui avec style contenant "float:right" ou "float: right"
+      let statusInput = null;
+      inputs.forEach((input) => {
+        const style = input.getAttribute('style') || '';
+        if (style.includes('float:right') || style.includes('float: right')) {
+          statusInput = input;
+        }
+      });
+
+      if (statusInput) {
+        const value = statusInput.value?.trim();
+
+        // Si c'est un doigt déroulé
+        if (fingerLabels.includes(labelText)) {
+          fingerStates[labelText] = value === 'P';
+          logInfo(`Doigt ${labelText}: ${value === 'P' ? 'Présent' : 'Absent'}`);
+        }
+
+        // Si c'est un simultané
+        if (simultaneLabels.includes(labelText)) {
+          simultaneStates[labelText] = value === 'P';
+          logInfo(`Simultané ${labelText}: ${value === 'P' ? 'Présent' : 'Absent'}`);
+        }
+      }
+    });
+
+    // 1. Vérifier la présence d'au moins deux doigts déroulés avec value="P"
+    const presentFingers = fingerLabels.filter(label => fingerStates[label] === true);
+    const fingersCount = presentFingers.length;
+
+    logInfo(`Nombre de doigts déroulés avec 'P' détectés: ${fingersCount}`, presentFingers);
+
+    if (fingersCount < 2) {
+      logInfo(`❌ Validation échouée : Au moins 2 doigts requis (${fingersCount} détecté(s))`);
+      errors.push("Erreur RDK détectée. Reprise par opérateur obligatoire.");
+    }
+
+    // 2. Vérifier la présence d'au moins un simultané (SMG ou SMD) avec value="P"
+    const smgPresent = simultaneStates['SMG'] === true;
+    const smdPresent = simultaneStates['SMD'] === true;
+
+    logInfo(`Simultanés détectés - SMG: ${smgPresent}, SMD: ${smdPresent}`);
+
+    if (!smgPresent && !smdPresent) {
+      logInfo("❌ Validation échouée : Au moins un simultané (SMG ou SMD) requis");
+      errors.push("Erreur RDK détectée. Reprise par opérateur obligatoire.");
+    }
+
+    // 3. Vérifier que si PD ou PG est présent en déroulé, il doit être présent en simultané
+    const pdPresent = fingerStates['PD'] === true;
+    const pgPresent = fingerStates['PG'] === true;
+    const spdPresent = simultaneStates['SPD'] === true;
+    const spgPresent = simultaneStates['SPG'] === true;
+
+    logInfo(`Pouces détectés - PD: ${pdPresent}, PG: ${pgPresent}, SPD: ${spdPresent}, SPG: ${spgPresent}`);
+
+    if (pdPresent && !spdPresent) {
+      logInfo("❌ Validation échouée : Pouce droit (PD) présent en déroulé mais absent en simultané (SPD)");
+      errors.push("Erreur RDK détectée. Reprise par opérateur obligatoire.");
+    }
+
+    if (pgPresent && !spgPresent) {
+      logInfo("❌ Validation échouée : Pouce gauche (PG) présent en déroulé mais absent en simultané (SPG)");
+      errors.push("Erreur RDK détectée. Reprise par opérateur obligatoire.");
+    }
+
+    // Si des erreurs sont détectées, les renvoyer
+    if (errors.length > 0) {
+      logInfo("❌ Erreurs de validation détectées dans l'onglet Empreintes (doigts)");
+      // Utiliser un Set pour dédupliquer les messages identiques
+      const uniqueErrors = [...new Set(errors)];
+      throw new Error(uniqueErrors.join("\n"));
+    }
+
+    logInfo("✅ Validation de l'onglet Empreintes (doigts) réussie");
+  }
+
   // Définition des étapes de l'automatisation (intégrées depuis contentScript.js)
   const steps = [
     {
@@ -68,6 +176,15 @@
       selector:
         "a[href='#formValidationCorrection:tabViewValidationFiche:tab2']",
       action: (element) => element.click(),
+    },
+    {
+      name: "Validation de l'onglet Empreintes (doigts)",
+      selector: "table[id*='formValidationCorrection:tabViewValidationFiche']",
+      action: (element) => {
+        // Valider l'onglet Empreintes (doigts)
+        // Si une erreur est détectée, une exception sera levée et capturée par runAutomatedSteps()
+        validateFingerprintsTab();
+      },
     },
     {
       name: "Cliquer sur l'onglet Empreintes (paumes)",
