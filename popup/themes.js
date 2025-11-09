@@ -9,37 +9,29 @@ const THEMES = {
   light: {
     id: 'light',
     name: 'Clair',
-    icon: '\u2600\uFE0F', // ☀️ avec variante emoji
+    icon: '☀️', // Emoji soleil
     isDefault: true,
     festive: false
   },
   dark: {
     id: 'dark',
     name: 'Sombre',
-    icon: '\uD83C\uDF19', // 🌙
+    icon: '🌙', // Emoji lune
     isDefault: true,
     festive: false
   },
   christmas: {
     id: 'christmas',
     name: 'Noël',
-    icon: '\uD83C\uDF84', // 🎄
+    icon: '🎄', // Emoji sapin de Noël
     festive: true,
     period: { start: { month: 12, day: 1 }, end: { month: 12, day: 25 } },
     description: 'Célébrez Noël avec des décorations festives'
   },
-  genevieve: {
-    id: 'genevieve',
-    name: 'Sainte Geneviève',
-    icon: '\u2B50', // ⭐
-    festive: true,
-    period: { start: { month: 1, day: 3 }, end: { month: 1, day: 3 } },
-    description: 'Patronne des gendarmes'
-  },
   easter: {
     id: 'easter',
     name: 'Pâques',
-    icon: '\uD83C\uDF38', // 🌸
+    icon: '🐰', // Emoji lapin de Pâques
     festive: true,
     period: 'easter', // Calculé dynamiquement
     description: 'Célébrez Pâques avec des couleurs printanières'
@@ -47,7 +39,7 @@ const THEMES = {
   halloween: {
     id: 'halloween',
     name: 'Halloween',
-    icon: '\uD83C\uDF83', // 🎃
+    icon: '👻', // Emoji fantôme
     festive: true,
     period: { start: { month: 10, day: 28 }, end: { month: 11, day: 3 } },
     description: 'Ambiance mystérieuse pour Halloween'
@@ -55,7 +47,7 @@ const THEMES = {
   newyear: {
     id: 'newyear',
     name: 'Nouvel An',
-    icon: '\uD83C\uDF86', // 🎆
+    icon: '🥂', // Emoji champagne
     festive: true,
     period: { start: { month: 12, day: 28 }, end: { month: 1, day: 4 } },
     description: 'Feux d\'artifice pour la nouvelle année'
@@ -63,7 +55,7 @@ const THEMES = {
   bastille: {
     id: 'bastille',
     name: '14 Juillet',
-    icon: '\uD83C\uDDEB\uD83C\uDDF7', // 🇫🇷
+    icon: '🇫🇷', // Emoji drapeau français
     festive: true,
     period: { start: { month: 7, day: 14 }, end: { month: 7, day: 14 } },
     description: 'Fête nationale française'
@@ -387,6 +379,15 @@ class ThemeManager {
 
     themeToggle.appendChild(selector);
 
+    // Convertir les emojis en images Twemoji
+    if (typeof twemoji !== 'undefined') {
+      const dropdown = document.getElementById('theme-dropdown');
+      twemoji.parse(dropdown, {
+        folder: 'svg',
+        ext: '.svg'
+      });
+    }
+
     // Ajouter les événements
     this.attachThemeSelectorEvents();
   }
@@ -405,7 +406,7 @@ class ThemeManager {
         <button class="theme-option ${isActive ? 'active' : ''}" data-theme="${theme.id}">
           <span class="theme-icon">${theme.icon}</span>
           <span class="theme-name">${theme.name}</span>
-          ${isActive ? '<i class="fas fa-check theme-check"></i>' : ''}
+          ${isActive ? '<span class="theme-check">✓</span>' : ''}
         </button>
       `);
     });
@@ -418,7 +419,7 @@ class ThemeManager {
         <button class="theme-option ${isActive ? 'active' : ''}" data-theme="${theme.id}">
           <span class="theme-icon">${theme.icon}</span>
           <span class="theme-name">${theme.name}</span>
-          ${isActive ? '<i class="fas fa-check theme-check"></i>' : ''}
+          ${isActive ? '<span class="theme-check">✓</span>' : ''}
         </button>
       `);
     });
@@ -484,6 +485,14 @@ class ThemeManager {
     const listContainer = dropdown.querySelector('.theme-dropdown-list');
     if (listContainer) {
       listContainer.innerHTML = this.renderThemeOptions();
+
+      // Convertir les emojis en images Twemoji
+      if (typeof twemoji !== 'undefined') {
+        twemoji.parse(listContainer, {
+          folder: 'svg',
+          ext: '.svg'
+        });
+      }
 
       // Réattacher les événements aux nouvelles options
       const themeOptions = listContainer.querySelectorAll('.theme-option');

@@ -151,10 +151,6 @@
   z-index: 999 !important;
 }
 
-.notification-container {
-  z-index: 9999 !important;
-}
-
 /* ===== CORRECTION DU CONTENEUR POPUP ===== */
 
 .popup {
@@ -188,37 +184,83 @@
   z-index: 10000 !important;
 }
 
-/* ===== CORRECTION DES EMOJIS SUR WINDOWS ===== */
+/* ===== STYLES POUR LES EMOJIS TWEMOJI ===== */
 
-/* Force l'utilisation de polices compatibles avec les emojis sur Windows */
-.theme-icon,
-.theme-animation-element,
-.bouncing-icon {
-  font-family: "Segoe UI Emoji", "Noto Color Emoji", "Apple Color Emoji", "Twemoji Mozilla", sans-serif !important;
-  /* Force le rendu en couleur des emojis */
-  font-variant-emoji: emoji !important;
-  /* Améliore le rendu des emojis */
-  text-rendering: optimizeLegibility !important;
-  /* Empêche les problèmes de ligne de base */
-  vertical-align: middle !important;
-  /* Force l'affichage en emoji plutôt qu'en texte */
-  font-feature-settings: normal !important;
+/* Styles pour les emojis dans les thèmes et sélecteur */
+.theme-icon img.emoji,
+.theme-animation-element img.emoji,
+.bouncing-emoji img.emoji {
+  /* S'assurer que les images Twemoji s'affichent correctement */
+  width: 1em !important;
+  height: 1em !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  vertical-align: -0.1em !important;
+  display: inline-block !important;
 }
 
-/* Correction spécifique pour Windows - force le rendu emoji */
-@supports (-ms-ime-align: auto) {
-  .theme-icon,
-  .theme-animation-element,
-  .bouncing-icon {
-    font-family: "Segoe UI Emoji", sans-serif !important;
+/* Animation d'emojis pour les thèmes festifs */
+.theme-animation-element {
+  pointer-events: none !important;
+  user-select: none !important;
+  will-change: transform !important;
+  /* La position absolute est définie par JavaScript */
+}
+
+.bouncing-emoji {
+  pointer-events: none !important;
+  user-select: none !important;
+}
+
+/* Conteneur d'animations */
+.theme-animations-container {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  pointer-events: auto !important; /* Permettre les clics */
+  z-index: -10 !important;
+  overflow: hidden !important;
+  cursor: pointer !important;
+}
+
+/* Effet visuel de l'onde de répulsion */
+.ripple-wave {
+  position: absolute !important;
+  width: 0 !important;
+  height: 0 !important;
+  border-radius: 50% !important;
+  border: 2px solid rgba(255, 255, 255, 0.4) !important;
+  pointer-events: none !important;
+  transform: translate(-50%, -50%) !important;
+  animation: ripple-expand 0.6s ease-out forwards !important;
+}
+
+@keyframes ripple-expand {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: 1;
+  }
+  100% {
+    width: 300px;
+    height: 300px;
+    opacity: 0;
   }
 }
 
-/* Correction pour Edge et anciens navigateurs Windows */
-@supports (-ms-accelerator: true) {
-  .theme-icon,
-  .theme-animation-element,
-  .bouncing-icon {
-    font-family: "Segoe UI Emoji", sans-serif !important;
-  }
+/* Styles spécifiques pour les thèmes sombres */
+body.theme-christmas .ripple-wave,
+body.theme-halloween .ripple-wave,
+body.theme-newyear .ripple-wave,
+body.dark-theme .ripple-wave {
+  border-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+/* Styles spécifiques pour les thèmes clairs */
+body.theme-easter .ripple-wave,
+body.theme-bastille .ripple-wave,
+body.theme-light .ripple-wave {
+  border-color: rgba(0, 0, 0, 0.15) !important;
 }

@@ -188,8 +188,6 @@ body.theme-christmas .popup {
   position: relative;
 }
 
-/* Emojis animés gérés par themes-animations.js */
-
 body.theme-christmas .btn-primary {
   background: linear-gradient(135deg, var(--christmas-red), #b91c1c);
   box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
@@ -211,73 +209,6 @@ body.theme-christmas .app-title {
 
 body.theme-christmas .card-title::before {
   background: linear-gradient(180deg, var(--christmas-red), var(--christmas-green));
-}
-
-/* ===== THÈME SAINTE GENEVIÈVE ⭐ ===== */
-
-body.theme-genevieve {
-  --theme-bg: #0f172a;
-  --theme-card-bg: #1e293b;
-  --theme-text: #cbd5e1;
-  --theme-text-dark: #f1f5f9;
-  --theme-text-light: #94a3b8;
-  --theme-border: #334155;
-  --theme-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
-  --theme-shadow-hover: 0 8px 16px rgba(0, 0, 0, 0.6);
-  --theme-primary-bg: rgba(251, 191, 36, 0.12);
-  --theme-header-border: #334155;
-  --theme-input-bg: #293548;
-  --theme-badge-bg: #293548;
-  --theme-badge-text: #94a3b8;
-  --theme-button-hover: rgba(251, 191, 36, 0.2);
-  --theme-link: #fbbf24;
-  --theme-gradient: linear-gradient(135deg, rgba(30, 41, 59, 0.9), #0f172a);
-  --theme-glass: rgba(30, 41, 59, 0.7);
-
-  /* Couleurs spécifiques Sainte Geneviève */
-  --genevieve-gold: #fbbf24;
-  --genevieve-blue: #3b82f6;
-  --genevieve-silver: #cbd5e1;
-}
-
-body.theme-genevieve::before {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image:
-    radial-gradient(circle at 50% 20%, rgba(251, 191, 36, 0.08) 0%, transparent 50%),
-    radial-gradient(circle at 30% 60%, rgba(59, 130, 246, 0.06) 0%, transparent 50%);
-  pointer-events: none;
-  z-index: -1;
-}
-
-/* Emojis animés gérés par themes-animations.js */
-
-body.theme-genevieve .btn-primary {
-  background: linear-gradient(135deg, var(--genevieve-gold), #d97706);
-  box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
-}
-
-body.theme-genevieve .btn-primary:hover {
-  box-shadow: 0 6px 16px rgba(251, 191, 36, 0.4);
-}
-
-body.theme-genevieve .card::before {
-  background: linear-gradient(90deg, var(--genevieve-gold), var(--genevieve-blue));
-}
-
-body.theme-genevieve .app-title {
-  background: linear-gradient(135deg, var(--genevieve-gold), var(--genevieve-silver));
-  background-clip: text;
-  -webkit-background-clip: text;
-}
-
-body.theme-genevieve .status-dot.active {
-  background-color: var(--genevieve-gold);
-  box-shadow: 0 0 15px var(--genevieve-gold);
 }
 
 /* ===== THÈME PÂQUES 🌸 ===== */
@@ -322,8 +253,6 @@ body.theme-easter::before {
   pointer-events: none;
   z-index: -1;
 }
-
-/* Emojis animés gérés par themes-animations.js */
 
 body.theme-easter .btn-primary {
   background: linear-gradient(135deg, var(--easter-pink), var(--easter-purple));
@@ -395,8 +324,6 @@ body.theme-halloween::before {
   pointer-events: none;
   z-index: -1;
 }
-
-/* Emojis animés gérés par themes-animations.js */
 
 body.theme-halloween .btn-primary {
   background: linear-gradient(135deg, var(--halloween-orange), var(--halloween-purple));
@@ -476,8 +403,6 @@ body.theme-newyear::before {
   50% { opacity: 1; }
 }
 
-/* Emojis animés gérés par themes-animations.js */
-
 body.theme-newyear .btn-primary {
   background: linear-gradient(135deg, var(--newyear-blue), var(--newyear-purple));
   box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
@@ -552,8 +477,6 @@ body.theme-bastille::before {
   z-index: -1;
 }
 
-/* Emojis animés gérés par themes-animations.js */
-
 body.theme-bastille .btn-primary {
   background: linear-gradient(135deg, var(--bastille-blue), #1e3a8a);
   box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
@@ -627,9 +550,106 @@ body.theme-transition {
   }
 }
 
+/* ===== NOTIFICATIONS POUR LES THÈMES FESTIFS ===== */
+
+/* Notifications pour tous les thèmes festifs */
+body.theme-christmas .notification,
+body.theme-easter .notification,
+body.theme-halloween .notification,
+body.theme-newyear .notification,
+body.theme-bastille .notification {
+  background-color: var(--theme-card-bg);
+  color: var(--theme-text);
+  border-color: var(--theme-border);
+  box-shadow: var(--theme-shadow-hover);
+}
+
+body.theme-christmas .notification-message,
+body.theme-easter .notification-message,
+body.theme-halloween .notification-message,
+body.theme-newyear .notification-message,
+body.theme-bastille .notification-message {
+  color: var(--theme-text);
+}
+
+body.theme-christmas .notification-close,
+body.theme-easter .notification-close,
+body.theme-halloween .notification-close,
+body.theme-newyear .notification-close,
+body.theme-bastille .notification-close {
+  color: var(--theme-text-light);
+}
+
+body.theme-christmas .notification-close:hover,
+body.theme-easter .notification-close:hover,
+body.theme-halloween .notification-close:hover,
+body.theme-newyear .notification-close:hover,
+body.theme-bastille .notification-close:hover {
+  background-color: var(--theme-button-hover);
+  color: var(--theme-text);
+}
+
+/* Couleurs de fond spécifiques par type et thème */
+body.theme-christmas .notification.success,
+body.theme-halloween .notification.success,
+body.theme-newyear .notification.success {
+  background-color: rgba(16, 185, 129, 0.15);
+}
+
+body.theme-christmas .notification.error,
+body.theme-halloween .notification.error,
+body.theme-newyear .notification.error {
+  background-color: rgba(239, 68, 68, 0.15);
+}
+
+body.theme-christmas .notification.info,
+body.theme-halloween .notification.info,
+body.theme-newyear .notification.info {
+  background-color: rgba(59, 130, 246, 0.15);
+}
+
+body.theme-christmas .notification.warning,
+body.theme-halloween .notification.warning,
+body.theme-newyear .notification.warning {
+  background-color: rgba(245, 158, 11, 0.15);
+}
+
+/* Thème de Pâques (fond clair) */
+body.theme-easter .notification.success {
+  background-color: rgba(16, 185, 129, 0.08);
+}
+
+body.theme-easter .notification.error {
+  background-color: rgba(239, 68, 68, 0.08);
+}
+
+body.theme-easter .notification.info {
+  background-color: rgba(59, 130, 246, 0.08);
+}
+
+body.theme-easter .notification.warning {
+  background-color: rgba(245, 158, 11, 0.08);
+}
+
+/* Thème 14 Juillet (fond clair) */
+body.theme-bastille .notification.success {
+  background-color: rgba(16, 185, 129, 0.08);
+}
+
+body.theme-bastille .notification.error {
+  background-color: rgba(239, 68, 68, 0.08);
+}
+
+body.theme-bastille .notification.info {
+  background-color: rgba(59, 130, 246, 0.08);
+}
+
+body.theme-bastille .notification.warning {
+  background-color: rgba(245, 158, 11, 0.08);
+}
+
 /* Accessibilité : Mode sombre pour le menu déroulant */
 body.theme-christmas .theme-dropdown,
-body.theme-genevieve .theme-dropdown,
 body.theme-halloween .theme-dropdown,
 body.theme-newyear .theme-dropdown,
 body.dark-theme .theme-dropdown {
@@ -639,7 +659,6 @@ body.dark-theme .theme-dropdown {
 }
 
 body.theme-christmas .theme-dropdown-header,
-body.theme-genevieve .theme-dropdown-header,
 body.theme-halloween .theme-dropdown-header,
 body.theme-newyear .theme-dropdown-header,
 body.dark-theme .theme-dropdown-header {
@@ -648,7 +667,6 @@ body.dark-theme .theme-dropdown-header {
 }
 
 body.theme-christmas .theme-option:hover,
-body.theme-genevieve .theme-option:hover,
 body.theme-halloween .theme-option:hover,
 body.theme-newyear .theme-option:hover,
 body.dark-theme .theme-option:hover {
@@ -656,7 +674,6 @@ body.dark-theme .theme-option:hover {
 }
 
 body.theme-christmas .theme-dropdown-list::-webkit-scrollbar-thumb,
-body.theme-genevieve .theme-dropdown-list::-webkit-scrollbar-thumb,
 body.theme-halloween .theme-dropdown-list::-webkit-scrollbar-thumb,
 body.theme-newyear .theme-dropdown-list::-webkit-scrollbar-thumb,
 body.dark-theme .theme-dropdown-list::-webkit-scrollbar-thumb {
