@@ -649,7 +649,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   console.log("✅ Initialisation T41 Assistant Pro terminée avec succès");
 });
 
-// Système de thème
+// Système de thème - DÉSACTIVÉ (remplacé par themes.js)
+// L'ancien système de thème simple a été remplacé par un système complet
+// de thèmes festifs français géré dans themes.js
+/*
 document.addEventListener("DOMContentLoaded", function () {
   const themeSwitch = document.getElementById("theme-switch");
   const themeIcon = themeSwitch ? themeSwitch.querySelector("i") : null;
@@ -689,6 +692,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 });
+*/
 
 // Exposer les fonctions pour le débogage
 window.showNotification = function (message, type) {
