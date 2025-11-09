@@ -9,21 +9,21 @@ const THEMES = {
   light: {
     id: 'light',
     name: 'Clair',
-    icon: '☀️',
+    icon: '\u2600\uFE0F', // ☀️ avec variante emoji
     isDefault: true,
     festive: false
   },
   dark: {
     id: 'dark',
     name: 'Sombre',
-    icon: '🌙',
+    icon: '\uD83C\uDF19', // 🌙
     isDefault: true,
     festive: false
   },
   christmas: {
     id: 'christmas',
     name: 'Noël',
-    icon: '🎄',
+    icon: '\uD83C\uDF84', // 🎄
     festive: true,
     period: { start: { month: 12, day: 1 }, end: { month: 12, day: 25 } },
     description: 'Célébrez Noël avec des décorations festives'
@@ -31,7 +31,7 @@ const THEMES = {
   genevieve: {
     id: 'genevieve',
     name: 'Sainte Geneviève',
-    icon: '⭐',
+    icon: '\u2B50', // ⭐
     festive: true,
     period: { start: { month: 1, day: 3 }, end: { month: 1, day: 3 } },
     description: 'Patronne des gendarmes'
@@ -39,7 +39,7 @@ const THEMES = {
   easter: {
     id: 'easter',
     name: 'Pâques',
-    icon: '🌸',
+    icon: '\uD83C\uDF38', // 🌸
     festive: true,
     period: 'easter', // Calculé dynamiquement
     description: 'Célébrez Pâques avec des couleurs printanières'
@@ -47,7 +47,7 @@ const THEMES = {
   halloween: {
     id: 'halloween',
     name: 'Halloween',
-    icon: '🎃',
+    icon: '\uD83C\uDF83', // 🎃
     festive: true,
     period: { start: { month: 10, day: 28 }, end: { month: 11, day: 3 } },
     description: 'Ambiance mystérieuse pour Halloween'
@@ -55,7 +55,7 @@ const THEMES = {
   newyear: {
     id: 'newyear',
     name: 'Nouvel An',
-    icon: '🎆',
+    icon: '\uD83C\uDF86', // 🎆
     festive: true,
     period: { start: { month: 12, day: 28 }, end: { month: 1, day: 4 } },
     description: 'Feux d\'artifice pour la nouvelle année'
@@ -63,7 +63,7 @@ const THEMES = {
   bastille: {
     id: 'bastille',
     name: '14 Juillet',
-    icon: '🇫🇷',
+    icon: '\uD83C\uDDEB\uD83C\uDDF7', // 🇫🇷
     festive: true,
     period: { start: { month: 7, day: 14 }, end: { month: 7, day: 14 } },
     description: 'Fête nationale française'

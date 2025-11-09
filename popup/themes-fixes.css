@@ -187,3 +187,38 @@
   position: absolute !important;
   z-index: 10000 !important;
 }
+
+/* ===== CORRECTION DES EMOJIS SUR WINDOWS ===== */
+
+/* Force l'utilisation de polices compatibles avec les emojis sur Windows */
+.theme-icon,
+.theme-animation-element,
+.bouncing-icon {
+  font-family: "Segoe UI Emoji", "Noto Color Emoji", "Apple Color Emoji", "Twemoji Mozilla", sans-serif !important;
+  /* Force le rendu en couleur des emojis */
+  font-variant-emoji: emoji !important;
+  /* Améliore le rendu des emojis */
+  text-rendering: optimizeLegibility !important;
+  /* Empêche les problèmes de ligne de base */
+  vertical-align: middle !important;
+  /* Force l'affichage en emoji plutôt qu'en texte */
+  font-feature-settings: normal !important;
+}
+
+/* Correction spécifique pour Windows - force le rendu emoji */
+@supports (-ms-ime-align: auto) {
+  .theme-icon,
+  .theme-animation-element,
+  .bouncing-icon {
+    font-family: "Segoe UI Emoji", sans-serif !important;
+  }
+}
+
+/* Correction pour Edge et anciens navigateurs Windows */
+@supports (-ms-accelerator: true) {
+  .theme-icon,
+  .theme-animation-element,
+  .bouncing-icon {
+    font-family: "Segoe UI Emoji", sans-serif !important;
+  }
+}
