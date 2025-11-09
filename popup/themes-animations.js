@@ -105,13 +105,16 @@ class ThemeAnimations {
       const y = Math.random() * (window.innerHeight - size);
 
       // Vitesse aléatoire (en pixels par seconde)
-      const baseSpeed = 50 * speedMultiplier;
+      const baseSpeed = 80 * speedMultiplier;
       const vx = (Math.random() - 0.5) * baseSpeed * 2;
       const vy = (Math.random() - 0.5) * baseSpeed * 2;
 
       // Opacité aléatoire
       const opacity = 0.5 + Math.random() * 0.4; // 0.5-0.9
       element.style.opacity = opacity;
+
+      // Appliquer la position initiale
+      element.style.transform = `translate(${x}px, ${y}px)`;
 
       this.container.appendChild(element);
 
