@@ -23,35 +23,25 @@
   font-size: 20px;
   pointer-events: none;
   user-select: none;
-  will-change: transform;
   top: 0;
   left: 0;
+  /* Optimisations GPU */
+  will-change: transform;
+  backface-visibility: hidden;
 }
 
 /* Animation des icônes rebondissantes */
 .bouncing-icon {
-  opacity: 0;
   animation: fadeIn 0.5s ease-in forwards;
 }
 
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: scale(0.5);
   }
   to {
     opacity: inherit;
-    transform: scale(1);
   }
-}
-
-/* ===== OPTIMISATIONS GPU ===== */
-
-.theme-animation-element {
-  /* Forcer l'accélération GPU */
-  transform: translateZ(0);
-  backface-visibility: hidden;
-  perspective: 1000px;
 }
 
 /* ===== SUPPORT DU MODE RÉDUIT DE MOUVEMENT ===== */

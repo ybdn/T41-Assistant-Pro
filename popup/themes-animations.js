@@ -90,6 +90,12 @@ class ThemeAnimations {
   createParticles(emojis, count, speedMultiplier) {
     this.particles = [];
 
+    // Obtenir les dimensions du conteneur
+    const containerWidth = this.container.clientWidth || window.innerWidth || 340;
+    const containerHeight = this.container.clientHeight || window.innerHeight || 600;
+
+    console.log(`📐 Dimensions du conteneur: ${containerWidth}x${containerHeight}`);
+
     for (let i = 0; i < count; i++) {
       const emoji = emojis[Math.floor(Math.random() * emojis.length)];
       const element = document.createElement('div');
@@ -101,8 +107,8 @@ class ThemeAnimations {
       element.style.fontSize = `${size}px`;
 
       // Position initiale aléatoire
-      const x = Math.random() * (window.innerWidth - size);
-      const y = Math.random() * (window.innerHeight - size);
+      const x = Math.random() * (containerWidth - size);
+      const y = Math.random() * (containerHeight - size);
 
       // Vitesse aléatoire (en pixels par seconde)
       const baseSpeed = 80 * speedMultiplier;
@@ -127,7 +133,11 @@ class ThemeAnimations {
         size,
         emoji
       });
+
+      console.log(`🎨 Particule ${i}: emoji=${emoji}, pos=(${x.toFixed(1)}, ${y.toFixed(1)}), vitesse=(${vx.toFixed(1)}, ${vy.toFixed(1)})`);
     }
+
+    console.log(`✅ ${this.particles.length} particules créées`);
   }
 
   /**
@@ -135,18 +145,18 @@ class ThemeAnimations {
    */
   animate() {
     const currentTime = performance.now();
-    const deltaTime = this.lastTime ? (currentTime - this.lastTime) / 1000 : 0;
+    const deltaTime = this.lastTime ? (currentTime - this.lastTime) / 1000 : 0.016; // 16ms par défaut
     this.lastTime = currentTime;
+
+    // Obtenir les dimensions du conteneur (une seule fois par frame)
+    const containerWidth = this.container.clientWidth || window.innerWidth || 340;
+    const containerHeight = this.container.clientHeight || window.innerHeight || 600;
 
     // Mettre à jour chaque particule
     this.particles.forEach(particle => {
       // Calculer la nouvelle position
       particle.x += particle.vx * deltaTime;
       particle.y += particle.vy * deltaTime;
-
-      // Obtenir les dimensions du conteneur
-      const containerWidth = this.container.clientWidth;
-      const containerHeight = this.container.clientHeight;
 
       // Rebond sur les bords horizontaux
       if (particle.x <= 0) {
