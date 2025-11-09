@@ -75,6 +75,40 @@
         </div>
       </div>
 
+      <!-- Widget To Do List -->
+      <div class="card todo-card slide-in">
+        <div class="card-header">
+          <h2 class="card-title">Ma liste de tâches</h2>
+          <div class="todo-count">
+            <span id="todo-count">(0)</span>
+          </div>
+        </div>
+
+        <!-- Input pour ajouter une tâche -->
+        <div class="todo-input-container">
+          <input
+            type="text"
+            id="todo-input"
+            class="todo-input"
+            placeholder="Ajouter une tâche..."
+            maxlength="100"
+          />
+          <button id="add-todo-btn" class="btn-add-todo">
+            <i class="fas fa-plus"></i>
+          </button>
+        </div>
+
+        <!-- Liste des tâches -->
+        <div class="todo-list-container" id="todo-list-container">
+          <div class="todo-empty-state" id="todo-empty-state">
+            <i class="fas fa-clipboard-list"></i>
+            <p>Aucune tâche pour le moment</p>
+            <span>Ajoutez votre première tâche ci-dessus</span>
+          </div>
+          <ul class="todo-list" id="todo-list"></ul>
+        </div>
+      </div>
+
       <!-- Section des crédits et informations -->
       <div class="card info-card">
         <p class="info-text">

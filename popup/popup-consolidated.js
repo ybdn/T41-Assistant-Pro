@@ -736,6 +736,356 @@ window.showNotification = function (message, type) {
   }, 4000);
 };
 
+// ===== GESTION DE LA TO DO LIST =====
 document.addEventListener("DOMContentLoaded", async () => {
-  // ...existing code...
+  console.log("🔄 Initialisation du widget To Do List");
+
+  // Récupérer les éléments du DOM
+  const todoInput = document.getElementById("todo-input");
+  const addTodoBtn = document.getElementById("add-todo-btn");
+  const todoList = document.getElementById("todo-list");
+  const todoCount = document.getElementById("todo-count");
+  const todoEmptyState = document.getElementById("todo-empty-state");
+  const todoListContainer = document.getElementById("todo-list-container");
+
+  // Vérifier que tous les éléments sont présents
+  if (!todoInput || !addTodoBtn || !todoList || !todoCount || !todoEmptyState) {
+    console.error("Certains éléments du widget To Do List sont manquants");
+    return;
+  }
+
+  // Tableau pour stocker les todos en mémoire
+  let todos = [];
+  let editingId = null;
+
+  // Clé de stockage
+  const STORAGE_KEY = "t41-todos";
+
+  // ===== FONCTIONS DE PERSISTANCE =====
+
+  /**
+   * Charger les todos depuis le stockage
+   */
+  async function loadTodos() {
+    try {
+      const data = await browser.storage.local.get(STORAGE_KEY);
+      todos = data[STORAGE_KEY] || [];
+      console.log("✅ Todos chargés:", todos.length);
+      renderTodos();
+    } catch (error) {
+      console.error("❌ Erreur lors du chargement des todos:", error);
+      todos = [];
+    }
+  }
+
+  /**
+   * Sauvegarder les todos dans le stockage
+   */
+  async function saveTodos() {
+    try {
+      await browser.storage.local.set({ [STORAGE_KEY]: todos });
+      console.log("💾 Todos sauvegardés:", todos.length);
+    } catch (error) {
+      console.error("❌ Erreur lors de la sauvegarde des todos:", error);
+    }
+  }
+
+  // ===== FONCTIONS UTILITAIRES =====
+
+  /**
+   * Générer un ID unique pour un todo
+   */
+  function generateId() {
+    return Date.now() + Math.random().toString(36).substring(2, 9);
+  }
+
+  /**
+   * Mettre à jour le compteur de todos
+   */
+  function updateCount() {
+    const count = todos.filter(t => !t.completed).length;
+    todoCount.textContent = `(${count})`;
+
+    // Animation du compteur
+    todoCount.parentElement.style.transform = "scale(1.1)";
+    setTimeout(() => {
+      todoCount.parentElement.style.transform = "scale(1)";
+    }, 200);
+  }
+
+  /**
+   * Afficher/masquer l'état vide
+   */
+  function toggleEmptyState() {
+    if (todos.length === 0) {
+      todoEmptyState.classList.remove("hidden");
+      todoList.classList.add("hidden");
+    } else {
+      todoEmptyState.classList.add("hidden");
+      todoList.classList.remove("hidden");
+    }
+  }
+
+  // ===== FONCTIONS DE RENDU =====
+
+  /**
+   * Créer l'élément HTML pour un todo
+   */
+  function createTodoElement(todo) {
+    const li = document.createElement("li");
+    li.className = `todo-item ${todo.completed ? "completed" : ""}`;
+    li.dataset.id = todo.id;
+
+    // Checkbox
+    const checkboxLabel = document.createElement("label");
+    checkboxLabel.className = "todo-checkbox";
+
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.checked = todo.completed;
+    checkbox.addEventListener("change", () => toggleTodo(todo.id));
+
+    const checkboxCustom = document.createElement("span");
+    checkboxCustom.className = "todo-checkbox-custom";
+
+    checkboxLabel.appendChild(checkbox);
+    checkboxLabel.appendChild(checkboxCustom);
+
+    // Conteneur du texte
+    const textContainer = document.createElement("div");
+    textContainer.className = "todo-text-container";
+
+    const textSpan = document.createElement("span");
+    textSpan.className = "todo-text";
+    textSpan.textContent = todo.text;
+    textSpan.addEventListener("dblclick", () => startEdit(todo.id));
+
+    textContainer.appendChild(textSpan);
+
+    // Boutons d'action
+    const actions = document.createElement("div");
+    actions.className = "todo-actions";
+
+    const editBtn = document.createElement("button");
+    editBtn.className = "todo-btn todo-btn-edit";
+    editBtn.innerHTML = '<i class="fas fa-pen"></i>';
+    editBtn.title = "Modifier";
+    editBtn.addEventListener("click", () => startEdit(todo.id));
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.className = "todo-btn todo-btn-delete";
+    deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
+    deleteBtn.title = "Supprimer";
+    deleteBtn.addEventListener("click", () => deleteTodo(todo.id));
+
+    actions.appendChild(editBtn);
+    actions.appendChild(deleteBtn);
+
+    // Assemblage
+    li.appendChild(checkboxLabel);
+    li.appendChild(textContainer);
+    li.appendChild(actions);
+
+    return li;
+  }
+
+  /**
+   * Afficher tous les todos
+   */
+  function renderTodos() {
+    // Vider la liste
+    todoList.innerHTML = "";
+
+    // Ajouter chaque todo
+    todos.forEach((todo) => {
+      const todoElement = createTodoElement(todo);
+      todoList.appendChild(todoElement);
+    });
+
+    // Mettre à jour l'interface
+    updateCount();
+    toggleEmptyState();
+  }
+
+  // ===== FONCTIONS CRUD =====
+
+  /**
+   * Ajouter un nouveau todo
+   */
+  function addTodo() {
+    const text = todoInput.value.trim();
+
+    if (!text) {
+      // Animation de secouement si vide
+      todoInput.style.animation = "none";
+      setTimeout(() => {
+        todoInput.style.animation = "shake 0.3s";
+      }, 10);
+      return;
+    }
+
+    const newTodo = {
+      id: generateId(),
+      text: text,
+      completed: false,
+      createdAt: new Date().toISOString(),
+    };
+
+    todos.unshift(newTodo); // Ajouter au début
+    saveTodos();
+    renderTodos();
+
+    // Réinitialiser l'input
+    todoInput.value = "";
+    todoInput.focus();
+
+    // Notification (si la fonction existe)
+    if (typeof showNotification === "function") {
+      showNotification("Tâche ajoutée", "success");
+    }
+  }
+
+  /**
+   * Basculer l'état complété d'un todo
+   */
+  function toggleTodo(id) {
+    const todo = todos.find((t) => t.id === id);
+    if (todo) {
+      todo.completed = !todo.completed;
+      saveTodos();
+      renderTodos();
+    }
+  }
+
+  /**
+   * Commencer l'édition d'un todo
+   */
+  function startEdit(id) {
+    // Si on était déjà en train d'éditer, annuler
+    if (editingId) {
+      cancelEdit();
+    }
+
+    editingId = id;
+    const todo = todos.find((t) => t.id === id);
+    if (!todo) return;
+
+    const todoElement = todoList.querySelector(`[data-id="${id}"]`);
+    if (!todoElement) return;
+
+    // Marquer comme en édition
+    todoElement.classList.add("editing");
+
+    const textContainer = todoElement.querySelector(".todo-text-container");
+    const actions = todoElement.querySelector(".todo-actions");
+
+    // Créer l'input d'édition
+    const input = document.createElement("input");
+    input.type = "text";
+    input.className = "todo-edit-input";
+    input.value = todo.text;
+    input.maxLength = 100;
+
+    // Créer les boutons de validation/annulation
+    const saveBtn = document.createElement("button");
+    saveBtn.className = "todo-btn todo-btn-save";
+    saveBtn.innerHTML = '<i class="fas fa-check"></i>';
+    saveBtn.title = "Valider";
+
+    const cancelBtn = document.createElement("button");
+    cancelBtn.className = "todo-btn todo-btn-cancel";
+    cancelBtn.innerHTML = '<i class="fas fa-times"></i>';
+    cancelBtn.title = "Annuler";
+
+    // Gérer la sauvegarde
+    const saveEdit = () => {
+      const newText = input.value.trim();
+      if (newText && newText !== todo.text) {
+        todo.text = newText;
+        saveTodos();
+        if (typeof showNotification === "function") {
+          showNotification("Tâche modifiée", "success");
+        }
+      }
+      editingId = null;
+      renderTodos();
+    };
+
+    // Gérer l'annulation
+    const cancel = () => {
+      editingId = null;
+      renderTodos();
+    };
+
+    // Events
+    saveBtn.addEventListener("click", saveEdit);
+    cancelBtn.addEventListener("click", cancel);
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        saveEdit();
+      } else if (e.key === "Escape") {
+        cancel();
+      }
+    });
+
+    // Remplacer le contenu
+    textContainer.innerHTML = "";
+    textContainer.appendChild(input);
+
+    actions.innerHTML = "";
+    actions.appendChild(saveBtn);
+    actions.appendChild(cancelBtn);
+    actions.style.opacity = "1";
+
+    // Focus sur l'input
+    input.focus();
+    input.select();
+  }
+
+  /**
+   * Annuler l'édition
+   */
+  function cancelEdit() {
+    editingId = null;
+    renderTodos();
+  }
+
+  /**
+   * Supprimer un todo
+   */
+  function deleteTodo(id) {
+    const todoElement = todoList.querySelector(`[data-id="${id}"]`);
+
+    if (todoElement) {
+      // Animation de suppression
+      todoElement.classList.add("removing");
+
+      setTimeout(() => {
+        todos = todos.filter((t) => t.id !== id);
+        saveTodos();
+        renderTodos();
+
+        if (typeof showNotification === "function") {
+          showNotification("Tâche supprimée", "info");
+        }
+      }, 300);
+    }
+  }
+
+  // ===== ÉVÉNEMENTS =====
+
+  // Ajouter un todo au clic sur le bouton
+  addTodoBtn.addEventListener("click", addTodo);
+
+  // Ajouter un todo avec la touche Entrée
+  todoInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      addTodo();
+    }
+  });
+
+  // Charger les todos au démarrage
+  await loadTodos();
+
+  console.log("✅ Widget To Do List initialisé avec succès");
 });

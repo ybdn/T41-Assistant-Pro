@@ -800,3 +800,119 @@ body,
 body.theme-transition {
   animation: themeSwitch 0.4s ease forwards;
 }
+
+/* ===== STYLES DARK THEME TO DO LIST ===== */
+
+/* Input et conteneur */
+body.dark-theme .todo-input {
+  background-color: var(--theme-input-bg);
+  border-color: var(--theme-border);
+  color: var(--theme-text);
+}
+
+body.dark-theme .todo-input:focus {
+  background-color: var(--theme-card-bg);
+  border-color: var(--primary);
+}
+
+body.dark-theme .todo-input::placeholder {
+  color: #666;
+}
+
+/* Items de la liste */
+body.dark-theme .todo-item {
+  background-color: var(--theme-input-bg);
+  border-color: var(--theme-border);
+}
+
+body.dark-theme .todo-item:hover {
+  background-color: var(--theme-card-bg);
+}
+
+body.dark-theme .todo-item.editing {
+  background-color: var(--theme-primary-bg);
+  border-color: var(--primary);
+}
+
+/* Texte des todos */
+body.dark-theme .todo-text {
+  color: var(--theme-text);
+}
+
+body.dark-theme .todo-text:hover {
+  background-color: var(--theme-border);
+}
+
+body.dark-theme .todo-item.completed .todo-text {
+  color: var(--theme-text-light);
+}
+
+/* Input d'édition */
+body.dark-theme .todo-edit-input {
+  background-color: var(--theme-card-bg);
+  color: var(--theme-text);
+}
+
+/* Checkbox */
+body.dark-theme .todo-checkbox-custom {
+  background-color: var(--theme-input-bg);
+  border-color: var(--theme-border);
+}
+
+body.dark-theme .todo-checkbox input:checked ~ .todo-checkbox-custom {
+  background-color: var(--success);
+  border-color: var(--success);
+}
+
+/* Boutons */
+body.dark-theme .todo-btn {
+  color: var(--theme-text-light);
+}
+
+body.dark-theme .todo-btn:hover {
+  background-color: var(--theme-border);
+}
+
+body.dark-theme .todo-btn-edit:hover {
+  color: var(--primary-light);
+  background-color: var(--theme-primary-bg);
+}
+
+body.dark-theme .todo-btn-delete:hover {
+  color: var(--error);
+  background-color: rgba(239, 68, 68, 0.15);
+}
+
+body.dark-theme .todo-btn-save {
+  color: var(--success);
+}
+
+body.dark-theme .todo-btn-save:hover {
+  background-color: rgba(16, 185, 129, 0.15);
+}
+
+body.dark-theme .todo-btn-cancel {
+  color: var(--error);
+}
+
+/* État vide */
+body.dark-theme .todo-empty-state p {
+  color: var(--theme-text);
+}
+
+body.dark-theme .todo-empty-state span {
+  color: var(--theme-text-light);
+}
+
+/* Scrollbar */
+body.dark-theme .todo-list-container::-webkit-scrollbar-track {
+  background: var(--theme-border);
+}
+
+body.dark-theme .todo-list-container::-webkit-scrollbar-thumb {
+  background: #444;
+}
+
+body.dark-theme .todo-list-container::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
