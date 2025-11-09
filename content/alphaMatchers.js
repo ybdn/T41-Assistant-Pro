@@ -49,6 +49,135 @@
     return false;
   }
 
+  // Fonction pour valider l'onglet Empreintes (doigts)
+  function validateFingerprintsTab() {
+    logInfo("🔍 Vérification de la présence d'images dans l'onglet Empreintes (doigts)");
+
+    const errors = [];
+
+    // 1. Vérifier la présence d'au moins deux doigts avec value="P"
+    // On recherche tous les inputs dans les cellules de doigts (PD, PI, PM, PA, PP pour chaque main)
+    const fingerInputs = document.querySelectorAll(
+      'td.ui-panelgrid-cell input[type="text"][readonly][size="2"]'
+    );
+
+    let fingersWithP = 0;
+    const fingerData = [];
+
+    fingerInputs.forEach((input) => {
+      const value = input.value?.trim();
+      const cell = input.closest('td.ui-panelgrid-cell');
+
+      if (cell) {
+        // Trouver le label associé au doigt (PD, PI, PM, PA, PP)
+        const label = cell.querySelector('label.ui-outputlabel');
+        const fingerLabel = label ? label.textContent.trim() : '';
+
+        // Ne compter que les doigts déroulés (pas les simultanés qui commencent par "S")
+        // Les doigts sont : PD, PG, PI, PM, PA, PP (Pouce Droit, Pouce Gauche, Index, Majeur, Annulaire, Petit doigt)
+        if (value === 'P' && fingerLabel && !fingerLabel.startsWith('S')) {
+          fingersWithP++;
+          fingerData.push({ label: fingerLabel, value: value });
+        }
+      }
+    });
+
+    logInfo(`Nombre de doigts avec 'P' détectés: ${fingersWithP}`, fingerData);
+
+    if (fingersWithP < 2) {
+      logInfo(`❌ Validation échouée : Au moins 2 doigts requis (${fingersWithP} détecté(s))`);
+      errors.push("Erreur RDK détectée. Reprise par opérateur obligatoire.");
+    }
+
+    // 2. Vérifier la présence d'au moins un simultané (SMG ou SMD) avec value="P"
+    const smgInput = document.querySelector(
+      'label.ui-outputlabel[style*="font-size: 20px"]:not([for])'
+    );
+
+    let smdPresent = false;
+    let smgPresent = false;
+
+    // Chercher SMG et SMD dans leurs cellules spécifiques
+    const simultaneInputs = document.querySelectorAll(
+      'table[id*="formValidationCorrection:tabViewValidationFiche"] td.ui-panelgrid-cell'
+    );
+
+    simultaneInputs.forEach((cell) => {
+      const label = cell.querySelector('label.ui-outputlabel');
+      const input = cell.querySelector('input[type="text"][readonly][size="2"]');
+
+      if (label && input) {
+        const labelText = label.textContent.trim();
+        const value = input.value?.trim();
+
+        if (labelText === 'SMG' && value === 'P') {
+          smgPresent = true;
+        }
+        if (labelText === 'SMD' && value === 'P') {
+          smdPresent = true;
+        }
+      }
+    });
+
+    logInfo(`Simultanés détectés - SMG: ${smgPresent}, SMD: ${smdPresent}`);
+
+    if (!smgPresent && !smdPresent) {
+      logInfo("❌ Validation échouée : Au moins un simultané (SMG ou SMD) requis");
+      errors.push("Erreur RDK détectée. Reprise par opérateur obligatoire.");
+    }
+
+    // 3. Vérifier que si PD ou PG est présent en déroulé, il doit être présent en simultané
+    let pdPresent = false;
+    let pgPresent = false;
+    let spdPresent = false;
+    let spgPresent = false;
+
+    simultaneInputs.forEach((cell) => {
+      const label = cell.querySelector('label.ui-outputlabel');
+      const input = cell.querySelector('input[type="text"][readonly][size="2"]');
+
+      if (label && input) {
+        const labelText = label.textContent.trim();
+        const value = input.value?.trim();
+
+        if (labelText === 'PD' && value === 'P') {
+          pdPresent = true;
+        }
+        if (labelText === 'PG' && value === 'P') {
+          pgPresent = true;
+        }
+        if (labelText === 'SPD' && value === 'P') {
+          spdPresent = true;
+        }
+        if (labelText === 'SPG' && value === 'P') {
+          spgPresent = true;
+        }
+      }
+    });
+
+    logInfo(`Pouces détectés - PD: ${pdPresent}, PG: ${pgPresent}, SPD: ${spdPresent}, SPG: ${spgPresent}`);
+
+    if (pdPresent && !spdPresent) {
+      logInfo("❌ Validation échouée : Pouce droit (PD) présent en déroulé mais absent en simultané (SPD)");
+      errors.push("Erreur RDK détectée. Reprise par opérateur obligatoire.");
+    }
+
+    if (pgPresent && !spgPresent) {
+      logInfo("❌ Validation échouée : Pouce gauche (PG) présent en déroulé mais absent en simultané (SPG)");
+      errors.push("Erreur RDK détectée. Reprise par opérateur obligatoire.");
+    }
+
+    // Si des erreurs sont détectées, les renvoyer
+    if (errors.length > 0) {
+      logInfo("❌ Erreurs de validation détectées dans l'onglet Empreintes (doigts)");
+      // Utiliser un Set pour dédupliquer les messages identiques
+      const uniqueErrors = [...new Set(errors)];
+      throw new Error(uniqueErrors.join("\n"));
+    }
+
+    logInfo("✅ Validation de l'onglet Empreintes (doigts) réussie");
+  }
+
   // Définition des étapes de l'automatisation (intégrées depuis contentScript.js)
   const steps = [
     {
@@ -68,6 +197,15 @@
       selector:
         "a[href='#formValidationCorrection:tabViewValidationFiche:tab2']",
       action: (element) => element.click(),
+    },
+    {
+      name: "Validation de l'onglet Empreintes (doigts)",
+      selector: "table[id*='formValidationCorrection:tabViewValidationFiche']",
+      action: (element) => {
+        // Valider l'onglet Empreintes (doigts)
+        // Si une erreur est détectée, une exception sera levée et capturée par runAutomatedSteps()
+        validateFingerprintsTab();
+      },
     },
     {
       name: "Cliquer sur l'onglet Empreintes (paumes)",
