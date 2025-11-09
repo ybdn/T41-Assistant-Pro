@@ -162,6 +162,14 @@
       },
     },
     {
+      name: "Cliquer sur Rafraîchir",
+      selector: "#tabs\\:tabsP\\:FormulaireFiltreStationAlphaPersonneP\\:raffraichirPersonneP",
+      action: (element) => {
+        logInfo("Clic sur le bouton Rafraîchir pour actualiser la liste des fiches...");
+        element.click();
+      },
+    },
+    {
       name: "Sélectionner Controle (si nécessaire)",
       selector: "label#tabs\\:tabsP\\:FormulaireFiltreStationAlphaPersonneP\\:etapeTraitementPersonneP_label",
       action: (element) => {
