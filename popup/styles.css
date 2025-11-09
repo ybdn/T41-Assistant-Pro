@@ -6,10 +6,13 @@
 }
 
 html {
-  width: 340px;
-  min-width: 340px;
-  max-width: 340px;
+  width: 340px !important;
+  min-width: 340px !important;
+  max-width: 340px !important;
+  height: auto;
+  min-height: fit-content;
   overflow-x: hidden;
+  overflow-y: visible;
 }
 
 :root {
@@ -84,26 +87,25 @@ html {
 
 /* Layout de base */
 body {
-  width: var(--width-extension);
-  min-width: var(--width-extension);
-  max-width: var(--width-extension);
+  width: 100%;
+  height: auto;
   min-height: fit-content;
   margin: 0;
+  padding: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, sans-serif;
   background-color: var(--body-bg);
   color: var(--neutral-700);
   font-size: var(--font-size-md);
   line-height: 1.5;
-  overflow-x: hidden;
+  overflow: visible;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 .popup {
   width: 100%;
-  min-width: 100%;
-  max-width: 100%;
+  height: auto;
   min-height: fit-content;
   display: flex;
   flex-direction: column;
@@ -113,7 +115,7 @@ body {
   background: linear-gradient(135deg, var(--primary-bg), var(--neutral-50));
   background-size: 400% 400%;
   animation: gradientBackground 15s ease infinite;
-  overflow-x: hidden;
+  overflow: visible;
   box-sizing: border-box;
 }
 
@@ -776,8 +778,8 @@ body {
 /* Responsive design */
 /* Largeur minimale stricte - empêche le redimensionnement */
 @media (max-width: 340px) {
-  body {
-    min-width: 340px;
+  html {
+    min-width: 340px !important;
   }
 }
 
