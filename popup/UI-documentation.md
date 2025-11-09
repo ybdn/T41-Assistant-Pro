@@ -1,6 +1,6 @@
-## UI/UX T41 Assistant - Documentation
+## UI/UX T41 Assistant Pro - Documentation
 
-Cette documentation détaille la nouvelle interface utilisateur de l'extension T41 Assistant. La conception a été repensée pour offrir une expérience plus moderne, plus intuitive et plus agréable pour les utilisateurs.
+Cette documentation détaille la nouvelle interface utilisateur de l'extension T41 Assistant Pro. La conception a été repensée pour offrir une expérience plus moderne, plus intuitive et plus agréable pour les utilisateurs.
 
 ### Principes de conception
 

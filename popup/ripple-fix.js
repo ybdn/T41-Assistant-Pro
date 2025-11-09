@@ -1,5 +1,5 @@
 /**
- * T41 Assistant - Gestion des effets visuels
+ * T41 Assistant Pro - Gestion des effets visuels
  * Ce script gère les effets visuels des boutons pour garantir une expérience utilisateur fluide
  */
 

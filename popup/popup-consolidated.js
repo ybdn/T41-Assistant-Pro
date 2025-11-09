@@ -1,5 +1,5 @@
 /**
- * T41 Assistant - Script JS consolidé
+ * T41 Assistant Pro - Script JS consolidé
  * Ce fichier combine la logique principale et l'interface utilisateur
  */
 
@@ -20,7 +20,7 @@ async function checkIfDetachedWindow() {
 
 // Attendre que le DOM soit chargé
 document.addEventListener("DOMContentLoaded", async () => {
-  console.log("🔄 T41 Assistant chargé !");
+  console.log("🔄 T41 Assistant Pro chargé !");
 
   // Vérifier si on est dans une fenêtre détachée
   isDetachedWindow = await checkIfDetachedWindow();
@@ -646,7 +646,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   // Signaler que l'initialisation est terminée
-  console.log("✅ Initialisation T41 Assistant terminée avec succès");
+  console.log("✅ Initialisation T41 Assistant Pro terminée avec succès");
 });
 
 // Système de thème

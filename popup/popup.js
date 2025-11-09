@@ -1,5 +1,5 @@
 /**
- * T41 Assistant - Script JS consolidé
+ * T41 Assistant Pro - Script JS consolidé
  * Ce fichier combine la logique principale et l'interface utilisateur
  */
 
@@ -16,7 +16,7 @@ console.error = function () {
 
 // Initialiser après le chargement du DOM
 document.addEventListener("DOMContentLoaded", async () => {
-  console.log("🔄 T41 Assistant chargé !");
+  console.log("🔄 T41 Assistant Pro chargé !");
 
   // Récupérer les éléments de l'interface utilisateur
   const nextActionButton = document.getElementById("next-action");
@@ -514,5 +514,5 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // Signaler que l'initialisation est terminée
-  console.log("✅ Initialisation T41 Assistant terminée avec succès");
+  console.log("✅ Initialisation T41 Assistant Pro terminée avec succès");
 });
