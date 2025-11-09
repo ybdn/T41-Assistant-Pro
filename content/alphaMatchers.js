@@ -34,6 +34,23 @@
     return false;
   }
 
+  // Fonction pour vérifier si nous sommes sur la page "ECRAN D'ACCUEIL"
+  function isEcranAccueilPage() {
+    const titreElements = document.querySelectorAll("div.zoneTitre");
+    for (let i = 0; i < titreElements.length; i++) {
+      // Attention aux espaces multiples ou en fin de chaîne dans le textContent
+      if (
+        titreElements[i].textContent.trim().toUpperCase() ===
+        "ECRAN D'ACCUEIL"
+      ) {
+        logInfo("Page 'ECRAN D'ACCUEIL' détectée.");
+        return true;
+      }
+    }
+    logInfo("Page 'ECRAN D'ACCUEIL' NON détectée.");
+    return false;
+  }
+
   // Définition des étapes de l'automatisation (intégrées depuis contentScript.js)
   const steps = [
     {
@@ -101,6 +118,68 @@
           );
         }
       },
+    },
+  ];
+
+  // Définition des étapes pour l'écran d'accueil
+  const stepsEcranAccueil = [
+    {
+      name: "Cliquer sur l'onglet Station alpha",
+      selector: "a[href='#tabs:tabsP:tabP2']",
+      action: (element) => element.click(),
+    },
+    {
+      name: "Cliquer sur 'Effacer tout'",
+      selector: "#tabs\\:tabsP\\:FormulaireFiltreStationAlphaPersonneP\\:effacerToutPersonneP",
+      action: (element) => element.click(),
+    },
+    {
+      name: "Vider le champ initiateur",
+      selector: "#tabs\\:tabsP\\:FormulaireFiltreStationAlphaPersonneP\\:initiateurPersonneP",
+      action: (element) => {
+        element.value = "";
+        element.dispatchEvent(new Event('change', { bubbles: true }));
+      },
+    },
+    {
+      name: "Cliquer sur la jauge Controle",
+      selector: "a[onclick*='actionTri'] div#tabs\\:tabsP\\:FormulaireJaugeStationAlphaP\\:j_idt545",
+      fallbackSelector: "div#tabs\\:tabsP\\:FormulaireJaugeStationAlphaP\\:j_idt545",
+      action: (element, fallbackElement) => {
+        if (element) {
+          // Cliquer sur le lien parent si disponible
+          const parentLink = element.closest('a');
+          if (parentLink) {
+            parentLink.click();
+          } else {
+            element.click();
+          }
+        } else if (fallbackElement) {
+          const parentLink = fallbackElement.closest('a');
+          if (parentLink) {
+            parentLink.click();
+          } else {
+            fallbackElement.click();
+          }
+        }
+      },
+    },
+    {
+      name: "Sélectionner toutes les fiches",
+      selector: "th#tabs\\:tabsP\\:ListeDossiersP\\:listeDossiersPersonnesP\\:j_idt409 .ui-chkbox-box",
+      fallbackSelector: ".ui-chkbox-all .ui-chkbox-box",
+      action: (element, fallbackElement) => {
+        if (element) {
+          element.click();
+        } else if (fallbackElement) {
+          fallbackElement.click();
+        }
+      },
+    },
+    {
+      name: "Traiter la sélection",
+      selector: "#tabs\\:tabsP\\:ListeDossiersP\\:ListeDossiersPersonnesTraiterSelection",
+      action: (element) => element.click(),
     },
   ];
 
@@ -2135,16 +2214,20 @@
         "DEBUG: Commande startLoopProcessing reçue dans alphaMatchers.js"
       );
 
-      if (!isControleDeFichePage()) {
+      // Vérifier sur quelle page nous sommes
+      const isOnControleFiche = isControleDeFichePage();
+      const isOnEcranAccueil = isEcranAccueilPage();
+
+      if (!isOnControleFiche && !isOnEcranAccueil) {
         logInfo(
-          "Mode boucle non démarré: pas sur la page 'CONTROLE DE LA FICHE'."
+          "Mode boucle non démarré: pas sur une page reconnue (ni CONTROLE DE LA FICHE, ni ECRAN D'ACCUEIL)."
         );
-        console.log("DEBUG: Pas sur la page 'CONTROLE DE LA FICHE'");
+        console.log("DEBUG: Pas sur une page reconnue");
         loopProcessingActive = false; // Assurer la désactivation locale
         browser.storage.local.set({ loopProcessingActive: false }); // Et dans le storage
         sendResponse({
           success: false,
-          error: "Not on 'CONTROLE DE LA FICHE' page",
+          error: "Not on a recognized page (CONTROLE DE LA FICHE or ECRAN D'ACCUEIL)",
           validationResult: false,
         });
         return true; // Indique une réponse asynchrone (bien que gérée rapidement ici)
@@ -2169,10 +2252,18 @@
           }
           progressUpdateTimer = setInterval(sendProgressUpdate, 2000); // Envoyer une mise à jour toutes les 2 secondes
 
-          // Lancer la vérification pour la première fiche de la boucle
-          verifyAlphaNumericData().then((result) =>
-            sendResponse({ success: true, validationResult: result })
-          );
+          // Lancer le traitement approprié selon la page
+          if (isOnEcranAccueil) {
+            logInfo("Démarrage du traitement ECRAN D'ACCUEIL");
+            runEcranAccueilSteps();
+            sendResponse({ success: true, validationResult: true, pageType: "ecranAccueil" });
+          } else if (isOnControleFiche) {
+            logInfo("Démarrage du traitement CONTROLE DE LA FICHE");
+            // Lancer la vérification pour la première fiche de la boucle
+            verifyAlphaNumericData().then((result) =>
+              sendResponse({ success: true, validationResult: result, pageType: "controleFiche" })
+            );
+          }
         })
         .catch((err) => {
           logInfo("Erreur lors de la sauvegarde de loopProcessingActive:", err);
@@ -2224,9 +2315,13 @@
         loopProcessingActive = true;
         logInfo("Mode boucle détecté comme actif à l'initialisation.");
 
-        if (!isControleDeFichePage()) {
+        // Déterminer sur quelle page nous sommes
+        const isOnControleFiche = isControleDeFichePage();
+        const isOnEcranAccueil = isEcranAccueilPage();
+
+        if (!isOnControleFiche && !isOnEcranAccueil) {
           logInfo(
-            "Désactivation du mode boucle car pas sur la page 'CONTROLE DE LA FICHE' à l'initialisation."
+            "Désactivation du mode boucle car pas sur une page reconnue (ni CONTROLE DE LA FICHE, ni ECRAN D'ACCUEIL)."
           );
           loopProcessingActive = false;
           await browser.storage.local.set({ loopProcessingActive: false });
@@ -2234,7 +2329,7 @@
           browser.runtime
             .sendMessage({
               command: "loopProcessingStopped",
-              reason: "initialization_not_on_controle_fiche_page",
+              reason: "initialization_not_on_recognized_page",
             })
             .catch((e) =>
               console.warn(
@@ -2248,14 +2343,21 @@
         // Ne pas relancer si une modale d'erreur est déjà présente (indique un arrêt précédent)
         if (!document.getElementById("t41-error-window")) {
           logInfo(
-            "Aucune erreur précédente détectée, tentative de relance automatique de la vérification pour la nouvelle fiche."
+            "Aucune erreur précédente détectée, tentative de relance automatique."
           );
           // Attendre un peu pour s'assurer que la page est stable
           setTimeout(() => {
-            // Réinitialiser les états pour la nouvelle fiche
+            // Réinitialiser les états pour la nouvelle page
             currentStepIndex = 0;
             sequenceStartTime = Date.now();
-            verifyAlphaNumericData(); // Pas besoin de then/catch ici, la fonction gère ses erreurs
+
+            if (isOnEcranAccueil) {
+              logInfo("Lancement du traitement de l'ECRAN D'ACCUEIL");
+              runEcranAccueilSteps();
+            } else if (isOnControleFiche) {
+              logInfo("Lancement du traitement de CONTROLE DE LA FICHE");
+              verifyAlphaNumericData(); // Pas besoin de then/catch ici, la fonction gère ses erreurs
+            }
           }, 1500); // Délai augmenté à 1.5s pour plus de stabilité
         } else {
           logInfo(
@@ -2438,6 +2540,107 @@
         reject
       );
     });
+  }
+
+  // Nouvelle fonction pour gérer l'exécution séquentielle et automatique des étapes de l'écran d'accueil
+  async function runEcranAccueilSteps() {
+    // Attendre la fin de tout chargement avant de commencer l'étape
+    await waitForLoadingToComplete();
+
+    if (currentStepIndex >= stepsEcranAccueil.length) {
+      logInfo(
+        "Toutes les étapes de l'écran d'accueil sont terminées (runEcranAccueilSteps)."
+      );
+      // Informer la popup
+      browser.runtime
+        .sendMessage({
+          command: "actionsComplete",
+          finalStepIndex: currentStepIndex - 1,
+          allStepsCount: stepsEcranAccueil.length,
+          pageType: "ecranAccueil",
+        })
+        .catch((e) => console.warn("Erreur envoi message actionsComplete:", e));
+      // En mode boucle, la prochaine itération sera déclenchée par le rechargement de la page
+      // et la logique d'initialisation du script.
+      return;
+    }
+
+    const step = stepsEcranAccueil[currentStepIndex];
+    logInfo(
+      `[ÉCRAN ACCUEIL] Exécution automatique de l'étape ${currentStepIndex}: ${step.name}`
+    );
+
+    try {
+      if (step.actions) {
+        // Gérer plusieurs actions dans une étape
+        await executeStepActionsAutomated(step.actions);
+      } else if (step.selector) {
+        // Gérer une action unique dans une étape
+        await executeSingleActionAutomated(step);
+      } else {
+        logInfo(
+          `L'étape ${currentStepIndex} n'a ni action unique ni actions multiples définies.`
+        );
+        // Passer à l'étape suivante si celle-ci est mal définie
+        moveToNextStepEcranAccueil();
+        return;
+      }
+
+      // Si l'action/les actions de l'étape ont réussi (pas d'erreur levée):
+      logInfo(`[ÉCRAN ACCUEIL] Étape ${currentStepIndex} terminée avec succès.`);
+      // Informer la popup du progrès
+      browser.runtime
+        .sendMessage({
+          command: "stepCompleted",
+          stepIndex: currentStepIndex,
+          stepName: step.name,
+          nextStepIndex: currentStepIndex + 1, // Prochaine étape à venir
+          elapsedTime: Date.now() - sequenceStartTime,
+          pageType: "ecranAccueil",
+        })
+        .catch((e) => console.warn("Erreur envoi message stepCompleted:", e));
+
+      moveToNextStepEcranAccueil();
+    } catch (error) {
+      logInfo(
+        `Erreur lors de l'exécution de l'étape ${currentStepIndex} (${step.name}): ${error.message}`,
+        error
+      );
+      // En cas d'erreur à une étape, arrêter la boucle
+      if (loopProcessingActive) {
+        logInfo(
+          "Erreur pendant les étapes automatiques de l'écran d'accueil. Désactivation du mode boucle."
+        );
+        loopProcessingActive = false;
+        await browser.storage.local.set({ loopProcessingActive: false });
+        browser.runtime
+          .sendMessage({
+            command: "loopProcessingStopped",
+            reason: "error_during_step_ecran_accueil",
+            details: error.message,
+          })
+          .catch((e) =>
+            console.warn(
+              "Erreur envoi message loopProcessingStopped (step error):",
+              e
+            )
+          );
+      }
+      // Afficher l'erreur
+      showErrorWindow([`Erreur à l'étape '${step.name}': ${error.message}`]);
+    }
+  }
+
+  async function moveToNextStepEcranAccueil() {
+    currentStepIndex++;
+    if (loopProcessingActive) {
+      // Continuer seulement si le mode boucle est toujours actif
+      // Attendre la fin de tout chargement avant de programmer la prochaine étape
+      await waitForLoadingToComplete();
+      setTimeout(() => {
+        runEcranAccueilSteps();
+      }, 1000); // Conserver le délai de 1s avant la prochaine étape pour un rythme visible
+    }
   }
 
   // Fonction pour récupérer l'information "Dossier en cours"
