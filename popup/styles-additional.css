@@ -160,15 +160,6 @@ body.dark-theme .icon-button::before {
   ); /* Effet de ripple ajusté pour le mode sombre */
 }
 
-/* Ajustements de la barre de progression */
-body.dark-theme .progress-bar {
-  background-color: #2d2d2d;
-}
-
-body.dark-theme .progress-text {
-  color: var(--theme-text-light);
-}
-
 /* Amélioration des liens */
 .dev-link {
   color: var(--theme-link);
@@ -276,54 +267,6 @@ body.dark-theme .notification.info {
     stroke-dashoffset: 50;
     transform: rotate(360deg);
   }
-}
-
-/* Progress Bar */
-.progress-container {
-  width: 100%;
-  margin-top: var(--spacing-sm);
-  display: none;
-}
-
-.progress-bar {
-  height: 8px;
-  background-color: var(--neutral-200);
-  border-radius: var(--border-radius-full);
-  overflow: hidden;
-  position: relative;
-}
-
-.progress-value {
-  height: 100%;
-  background: linear-gradient(90deg, var(--primary-light), var(--primary));
-  border-radius: var(--border-radius-full);
-  width: 0%;
-  transition: width 0.3s ease;
-  position: relative;
-}
-
-.progress-value::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.4) 50%,
-    rgba(255, 255, 255, 0) 100%
-  );
-  animation: shineEnhanced 2s infinite;
-}
-
-.progress-text {
-  text-align: right;
-  font-size: var(--font-size-xs);
-  color: var(--neutral-600);
-  margin-top: var(--spacing-xs);
-  font-weight: 600;
 }
 
 /* Statistics Card - MASQUÉ */
@@ -593,10 +536,6 @@ body.dark-theme .debug-test-button:hover {
   background-color: #4a4a4a;
 }
 
-body.dark-theme .progress-bar {
-  background-color: #2a2a2a;
-}
-
 body.dark-theme .status-badge {
   background-color: #2a2a2a;
 }
@@ -718,20 +657,6 @@ body.dark-theme .card {
     background-color 0.25s ease;
 }
 
-/* Amélioration de la barre de progression */
-body.dark-theme .progress-value {
-  background: linear-gradient(90deg, #2563eb, #3b82f6);
-}
-
-body.dark-theme .progress-value::after {
-  background: linear-gradient(
-    90deg,
-    rgba(20, 20, 20, 0) 0%,
-    rgba(255, 255, 255, 0.15) 50%,
-    rgba(20, 20, 20, 0) 100%
-  );
-}
-
 /* Effet de focus des éléments interactifs */
 body.dark-theme .btn:focus,
 body.dark-theme .icon-button:focus {
@@ -768,15 +693,13 @@ body,
 .status-badge,
 .header,
 .popup,
-.progress-bar,
 .notification,
 .dev-link,
 .app-title,
 .card-title,
 .info-text,
 .version-info,
-.status-message,
-.progress-text {
+.status-message {
   transition: all 0.3s ease;
 }
 
