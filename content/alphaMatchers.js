@@ -9,6 +9,8 @@
   const MIN_SEQUENCE_DURATION = 4000; // Durée minimale en millisecondes
   let loopProcessingActive = false; // NOUVELLE VARIABLE POUR LE MODE BOUCLE
   let progressUpdateTimer = null; // Timer pour les mises à jour de progression
+  let retryCountEcranAccueil = 0; // Compteur de tentatives pour l'écran d'accueil
+  const MAX_RETRY_ATTEMPTS = 3; // Nombre maximum de tentatives
   const NATINF_JSON_PATH = "data/natinf-survey.json";
   const NATINF_CODE_REGEX = /^\s*([A-Z0-9]{1,6})\s*(?:-|$)/i;
   const NATINF_COMMENT_SELECTOR =
@@ -31,6 +33,23 @@
       }
     }
     logInfo("Page 'CONTROLE DE LA FICHE' NON détectée.");
+    return false;
+  }
+
+  // Fonction pour vérifier si nous sommes sur la page "ECRAN D'ACCUEIL"
+  function isEcranAccueilPage() {
+    const titreElements = document.querySelectorAll("div.zoneTitre");
+    for (let i = 0; i < titreElements.length; i++) {
+      // Attention aux espaces multiples ou en fin de chaîne dans le textContent
+      if (
+        titreElements[i].textContent.trim().toUpperCase() ===
+        "ECRAN D'ACCUEIL"
+      ) {
+        logInfo("Page 'ECRAN D'ACCUEIL' détectée.");
+        return true;
+      }
+    }
+    logInfo("Page 'ECRAN D'ACCUEIL' NON détectée.");
     return false;
   }
 
@@ -101,6 +120,156 @@
           );
         }
       },
+    },
+  ];
+
+  // Définition des étapes pour l'écran d'accueil
+  const stepsEcranAccueil = [
+    {
+      name: "Cliquer sur l'onglet Station alpha",
+      selector: "a[href='#tabs:tabsP:tabP2']",
+      action: (element) => element.click(),
+    },
+    {
+      name: "Cliquer sur 'Effacer tout' (si nécessaire)",
+      selector: "#tabs\\:tabsP\\:FormulaireFiltreStationAlphaPersonneP\\:effacerToutPersonneP",
+      action: (element) => {
+        // Vérifier si l'initiateur est vide et si Contrôle est déjà sélectionné
+        const initiateurInput = document.querySelector("#tabs\\:tabsP\\:FormulaireFiltreStationAlphaPersonneP\\:initiateurPersonneP");
+        const etapeLabel = document.querySelector("label#tabs\\:tabsP\\:FormulaireFiltreStationAlphaPersonneP\\:etapeTraitementPersonneP_label");
+
+        const initiateurIsEmpty = !initiateurInput || !initiateurInput.value || initiateurInput.value.trim() === "";
+        const controleIsSelected = etapeLabel && etapeLabel.textContent.trim() === "Contrôle";
+
+        if (initiateurIsEmpty && controleIsSelected) {
+          logInfo("Initiateur vide et Contrôle déjà sélectionné, pas besoin d'effacer tout.");
+        } else {
+          logInfo("Clic sur 'Effacer tout' pour réinitialiser les filtres.");
+          element.click();
+        }
+      },
+    },
+    {
+      name: "Vider le champ initiateur (si nécessaire)",
+      selector: "#tabs\\:tabsP\\:FormulaireFiltreStationAlphaPersonneP\\:initiateurPersonneP",
+      action: (element) => {
+        // Vérifier si le champ est vide avant de le vider
+        if (element.value && element.value.trim() !== "") {
+          logInfo("Champ initiateur non vide, vidage en cours...");
+          element.value = "";
+          element.dispatchEvent(new Event('change', { bubbles: true }));
+        } else {
+          logInfo("Champ initiateur déjà vide, aucune action nécessaire.");
+        }
+      },
+    },
+    {
+      name: "Cliquer sur Rafraîchir",
+      selector: "#tabs\\:tabsP\\:FormulaireFiltreStationAlphaPersonneP\\:raffraichirPersonneP",
+      action: (element) => {
+        logInfo("Clic sur le bouton Rafraîchir pour actualiser la liste des fiches...");
+        element.click();
+      },
+    },
+    {
+      name: "Vérifier la disponibilité des fiches",
+      selector: "body", // Sélecteur générique car on vérifie plusieurs éléments
+      action: (element) => {
+        logInfo(`Vérification de la disponibilité des fiches (tentative ${retryCountEcranAccueil + 1}/${MAX_RETRY_ATTEMPTS})...`);
+
+        // Attendre un peu pour que le DOM soit stabilisé après le clic sur Rafraîchir
+        setTimeout(async () => {
+          // Vérifier si la liste est vide
+          const emptyListElement = document.querySelector("tr.ui-datatable-empty-message td");
+          const isListEmpty = emptyListElement && emptyListElement.textContent.includes("Liste vide");
+
+          // Vérifier si des dossiers sont occupés
+          const errorMessageElement = document.querySelector("#tabs\\:tabsP\\:FormulaireFiltreStationAlphaPersonneP\\:messageErreurPersonneP");
+          const hasBusyFiles = errorMessageElement && errorMessageElement.textContent.includes("Dossier(s) occupé(s)");
+
+          if (isListEmpty || hasBusyFiles) {
+            const reason = isListEmpty ? "Liste vide" : "Dossier(s) occupé(s)";
+            retryCountEcranAccueil++;
+
+            if (retryCountEcranAccueil < MAX_RETRY_ATTEMPTS) {
+              logInfo(`⚠️ ${reason} détecté, nouvelle tentative (${retryCountEcranAccueil}/${MAX_RETRY_ATTEMPTS}) dans 3 secondes...`);
+
+              await new Promise(resolve => setTimeout(resolve, 3000));
+
+              // Re-cliquer sur Rafraîchir
+              const refreshButton = document.querySelector("#tabs\\:tabsP\\:FormulaireFiltreStationAlphaPersonneP\\:raffraichirPersonneP");
+              if (refreshButton) {
+                refreshButton.click();
+                logInfo("Bouton Rafraîchir cliqué à nouveau.");
+
+                // Attendre le chargement après le clic
+                await waitForLoadingToComplete();
+                await new Promise(resolve => setTimeout(resolve, 1000));
+
+                // Revenir à cette étape de vérification
+                currentStepIndex = 4; // Étape de vérification
+                runEcranAccueilSteps();
+              }
+            } else {
+              logInfo(`❌ ${reason} après ${MAX_RETRY_ATTEMPTS} tentatives. Arrêt de la boucle.`);
+              loopProcessingActive = false;
+              await browser.storage.local.set({ loopProcessingActive: false });
+              browser.runtime.sendMessage({
+                command: "loopProcessingStopped",
+                reason: "max_retry_attempts_reached",
+                details: `${reason} après ${MAX_RETRY_ATTEMPTS} tentatives`,
+              }).catch((e) => console.warn("Erreur envoi message loopProcessingStopped:", e));
+            }
+          } else {
+            logInfo("✅ Des fiches sont disponibles, poursuite du traitement.");
+            retryCountEcranAccueil = 0; // Réinitialiser le compteur en cas de succès
+          }
+        }, 1500); // Délai pour laisser le DOM se stabiliser
+      },
+    },
+    {
+      name: "Sélectionner Controle (si nécessaire)",
+      selector: "label#tabs\\:tabsP\\:FormulaireFiltreStationAlphaPersonneP\\:etapeTraitementPersonneP_label",
+      action: (element) => {
+        // Vérifier si "Contrôle" est déjà sélectionné
+        if (element.textContent.trim() === "Contrôle") {
+          logInfo("L'étape 'Contrôle' est déjà sélectionnée, aucune action nécessaire.");
+        } else {
+          logInfo("L'étape 'Contrôle' n'est pas sélectionnée, clic sur la jauge...");
+          // Chercher et cliquer sur la jauge Controle
+          const jaugeSelector = "a[onclick*='actionTri'] div#tabs\\:tabsP\\:FormulaireJaugeStationAlphaP\\:j_idt545";
+          const jaugeFallback = "div#tabs\\:tabsP\\:FormulaireJaugeStationAlphaP\\:j_idt545";
+          const jaugeElement = document.querySelector(jaugeSelector) || document.querySelector(jaugeFallback);
+
+          if (jaugeElement) {
+            const parentLink = jaugeElement.closest('a');
+            if (parentLink) {
+              parentLink.click();
+            } else {
+              jaugeElement.click();
+            }
+          } else {
+            logInfo("ERREUR: Jauge Controle non trouvée.");
+          }
+        }
+      },
+    },
+    {
+      name: "Sélectionner toutes les fiches",
+      selector: "th#tabs\\:tabsP\\:ListeDossiersP\\:listeDossiersPersonnesP\\:j_idt409 .ui-chkbox-box",
+      fallbackSelector: ".ui-chkbox-all .ui-chkbox-box",
+      action: (element, fallbackElement) => {
+        if (element) {
+          element.click();
+        } else if (fallbackElement) {
+          fallbackElement.click();
+        }
+      },
+    },
+    {
+      name: "Traiter la sélection",
+      selector: "#tabs\\:tabsP\\:ListeDossiersP\\:ListeDossiersPersonnesTraiterSelection",
+      action: (element) => element.click(),
     },
   ];
 
@@ -2138,16 +2307,20 @@
         "DEBUG: Commande startLoopProcessing reçue dans alphaMatchers.js"
       );
 
-      if (!isControleDeFichePage()) {
+      // Vérifier sur quelle page nous sommes
+      const isOnControleFiche = isControleDeFichePage();
+      const isOnEcranAccueil = isEcranAccueilPage();
+
+      if (!isOnControleFiche && !isOnEcranAccueil) {
         logInfo(
-          "Mode boucle non démarré: pas sur la page 'CONTROLE DE LA FICHE'."
+          "Mode boucle non démarré: pas sur une page reconnue (ni CONTROLE DE LA FICHE, ni ECRAN D'ACCUEIL)."
         );
-        console.log("DEBUG: Pas sur la page 'CONTROLE DE LA FICHE'");
+        console.log("DEBUG: Pas sur une page reconnue");
         loopProcessingActive = false; // Assurer la désactivation locale
         browser.storage.local.set({ loopProcessingActive: false }); // Et dans le storage
         sendResponse({
           success: false,
-          error: "Not on 'CONTROLE DE LA FICHE' page",
+          error: "Not on a recognized page (CONTROLE DE LA FICHE or ECRAN D'ACCUEIL)",
           validationResult: false,
         });
         return true; // Indique une réponse asynchrone (bien que gérée rapidement ici)
@@ -2172,10 +2345,19 @@
           }
           progressUpdateTimer = setInterval(sendProgressUpdate, 2000); // Envoyer une mise à jour toutes les 2 secondes
 
-          // Lancer la vérification pour la première fiche de la boucle
-          verifyAlphaNumericData().then((result) =>
-            sendResponse({ success: true, validationResult: result })
-          );
+          // Lancer le traitement approprié selon la page
+          if (isOnEcranAccueil) {
+            logInfo("Démarrage du traitement ECRAN D'ACCUEIL");
+            retryCountEcranAccueil = 0; // Réinitialiser le compteur de retry
+            runEcranAccueilSteps();
+            sendResponse({ success: true, validationResult: true, pageType: "ecranAccueil" });
+          } else if (isOnControleFiche) {
+            logInfo("Démarrage du traitement CONTROLE DE LA FICHE");
+            // Lancer la vérification pour la première fiche de la boucle
+            verifyAlphaNumericData().then((result) =>
+              sendResponse({ success: true, validationResult: result, pageType: "controleFiche" })
+            );
+          }
         })
         .catch((err) => {
           logInfo("Erreur lors de la sauvegarde de loopProcessingActive:", err);
@@ -2227,9 +2409,13 @@
         loopProcessingActive = true;
         logInfo("Mode boucle détecté comme actif à l'initialisation.");
 
-        if (!isControleDeFichePage()) {
+        // Déterminer sur quelle page nous sommes
+        const isOnControleFiche = isControleDeFichePage();
+        const isOnEcranAccueil = isEcranAccueilPage();
+
+        if (!isOnControleFiche && !isOnEcranAccueil) {
           logInfo(
-            "Désactivation du mode boucle car pas sur la page 'CONTROLE DE LA FICHE' à l'initialisation."
+            "Désactivation du mode boucle car pas sur une page reconnue (ni CONTROLE DE LA FICHE, ni ECRAN D'ACCUEIL)."
           );
           loopProcessingActive = false;
           await browser.storage.local.set({ loopProcessingActive: false });
@@ -2237,7 +2423,7 @@
           browser.runtime
             .sendMessage({
               command: "loopProcessingStopped",
-              reason: "initialization_not_on_controle_fiche_page",
+              reason: "initialization_not_on_recognized_page",
             })
             .catch((e) =>
               console.warn(
@@ -2251,14 +2437,22 @@
         // Ne pas relancer si une modale d'erreur est déjà présente (indique un arrêt précédent)
         if (!document.getElementById("t41-error-window")) {
           logInfo(
-            "Aucune erreur précédente détectée, tentative de relance automatique de la vérification pour la nouvelle fiche."
+            "Aucune erreur précédente détectée, tentative de relance automatique."
           );
           // Attendre un peu pour s'assurer que la page est stable
           setTimeout(() => {
-            // Réinitialiser les états pour la nouvelle fiche
+            // Réinitialiser les états pour la nouvelle page
             currentStepIndex = 0;
             sequenceStartTime = Date.now();
-            verifyAlphaNumericData(); // Pas besoin de then/catch ici, la fonction gère ses erreurs
+            retryCountEcranAccueil = 0; // Réinitialiser le compteur de retry
+
+            if (isOnEcranAccueil) {
+              logInfo("Lancement du traitement de l'ECRAN D'ACCUEIL");
+              runEcranAccueilSteps();
+            } else if (isOnControleFiche) {
+              logInfo("Lancement du traitement de CONTROLE DE LA FICHE");
+              verifyAlphaNumericData(); // Pas besoin de then/catch ici, la fonction gère ses erreurs
+            }
           }, 1500); // Délai augmenté à 1.5s pour plus de stabilité
         } else {
           logInfo(
@@ -2441,6 +2635,107 @@
         reject
       );
     });
+  }
+
+  // Nouvelle fonction pour gérer l'exécution séquentielle et automatique des étapes de l'écran d'accueil
+  async function runEcranAccueilSteps() {
+    // Attendre la fin de tout chargement avant de commencer l'étape
+    await waitForLoadingToComplete();
+
+    if (currentStepIndex >= stepsEcranAccueil.length) {
+      logInfo(
+        "Toutes les étapes de l'écran d'accueil sont terminées (runEcranAccueilSteps)."
+      );
+      // Informer la popup
+      browser.runtime
+        .sendMessage({
+          command: "actionsComplete",
+          finalStepIndex: currentStepIndex - 1,
+          allStepsCount: stepsEcranAccueil.length,
+          pageType: "ecranAccueil",
+        })
+        .catch((e) => console.warn("Erreur envoi message actionsComplete:", e));
+      // En mode boucle, la prochaine itération sera déclenchée par le rechargement de la page
+      // et la logique d'initialisation du script.
+      return;
+    }
+
+    const step = stepsEcranAccueil[currentStepIndex];
+    logInfo(
+      `[ÉCRAN ACCUEIL] Exécution automatique de l'étape ${currentStepIndex}: ${step.name}`
+    );
+
+    try {
+      if (step.actions) {
+        // Gérer plusieurs actions dans une étape
+        await executeStepActionsAutomated(step.actions);
+      } else if (step.selector) {
+        // Gérer une action unique dans une étape
+        await executeSingleActionAutomated(step);
+      } else {
+        logInfo(
+          `L'étape ${currentStepIndex} n'a ni action unique ni actions multiples définies.`
+        );
+        // Passer à l'étape suivante si celle-ci est mal définie
+        moveToNextStepEcranAccueil();
+        return;
+      }
+
+      // Si l'action/les actions de l'étape ont réussi (pas d'erreur levée):
+      logInfo(`[ÉCRAN ACCUEIL] Étape ${currentStepIndex} terminée avec succès.`);
+      // Informer la popup du progrès
+      browser.runtime
+        .sendMessage({
+          command: "stepCompleted",
+          stepIndex: currentStepIndex,
+          stepName: step.name,
+          nextStepIndex: currentStepIndex + 1, // Prochaine étape à venir
+          elapsedTime: Date.now() - sequenceStartTime,
+          pageType: "ecranAccueil",
+        })
+        .catch((e) => console.warn("Erreur envoi message stepCompleted:", e));
+
+      moveToNextStepEcranAccueil();
+    } catch (error) {
+      logInfo(
+        `Erreur lors de l'exécution de l'étape ${currentStepIndex} (${step.name}): ${error.message}`,
+        error
+      );
+      // En cas d'erreur à une étape, arrêter la boucle
+      if (loopProcessingActive) {
+        logInfo(
+          "Erreur pendant les étapes automatiques de l'écran d'accueil. Désactivation du mode boucle."
+        );
+        loopProcessingActive = false;
+        await browser.storage.local.set({ loopProcessingActive: false });
+        browser.runtime
+          .sendMessage({
+            command: "loopProcessingStopped",
+            reason: "error_during_step_ecran_accueil",
+            details: error.message,
+          })
+          .catch((e) =>
+            console.warn(
+              "Erreur envoi message loopProcessingStopped (step error):",
+              e
+            )
+          );
+      }
+      // Afficher l'erreur
+      showErrorWindow([`Erreur à l'étape '${step.name}': ${error.message}`]);
+    }
+  }
+
+  async function moveToNextStepEcranAccueil() {
+    currentStepIndex++;
+    if (loopProcessingActive) {
+      // Continuer seulement si le mode boucle est toujours actif
+      // Attendre la fin de tout chargement avant de programmer la prochaine étape
+      await waitForLoadingToComplete();
+      setTimeout(() => {
+        runEcranAccueilSteps();
+      }, 1000); // Conserver le délai de 1s avant la prochaine étape pour un rythme visible
+    }
   }
 
   // Fonction pour récupérer l'information "Dossier en cours"
