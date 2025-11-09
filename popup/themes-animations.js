@@ -37,35 +37,35 @@ class ThemeAnimations {
     this.currentTheme = themeId;
     this.init();
 
-    // Configuration des emojis par thème
+    // Configuration des emojis par thème (utilisation de codes Unicode pour compatibilité Windows)
     const themeConfig = {
       christmas: {
-        emojis: ['❄️', '⛄', '🎄', '🎁', '⭐'],
+        emojis: ['\u2744\uFE0F', '\u26C4', '\uD83C\uDF84', '\uD83C\uDF81', '\u2B50'],
         count: 12,
         speed: 1.5
       },
       genevieve: {
-        emojis: ['⭐', '✨', '🌟', '💫', '🛡️'],
+        emojis: ['\u2B50', '\u2728', '\uD83C\uDF1F', '\uD83D\uDCAB', '\uD83D\uDEE1\uFE0F'],
         count: 10,
         speed: 1.2
       },
       easter: {
-        emojis: ['🌸', '🌷', '🥚', '🐰', '🦋', '🌺'],
+        emojis: ['\uD83C\uDF38', '\uD83C\uDF37', '\uD83E\uDD5A', '\uD83D\uDC30', '\uD83E\uDD8B', '\uD83C\uDF3A'],
         count: 10,
         speed: 1.3
       },
       halloween: {
-        emojis: ['🦇', '👻', '🕷️', '🎃', '🕸️'],
+        emojis: ['\uD83E\uDD87', '\uD83D\uDC7B', '\uD83D\uDD77\uFE0F', '\uD83C\uDF83', '\uD83D\uDD78\uFE0F'],
         count: 12,
         speed: 1.5
       },
       newyear: {
-        emojis: ['🎆', '✨', '🎉', '🎊', '💫', '⭐'],
+        emojis: ['\uD83C\uDF86', '\u2728', '\uD83C\uDF89', '\uD83C\uDF8A', '\uD83D\uDCAB', '\u2B50'],
         count: 14,
         speed: 1.4
       },
       bastille: {
-        emojis: ['🎆', '🎇', '✨', '💫', '🇫🇷'],
+        emojis: ['\uD83C\uDF86', '\uD83C\uDF87', '\u2728', '\uD83D\uDCAB', '\uD83C\uDDEB\uD83C\uDDF7'],
         count: 12,
         speed: 1.4
       }
