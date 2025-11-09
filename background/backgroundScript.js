@@ -188,7 +188,7 @@ browser.action.onClicked.addListener(async (tab) => {
       url: browser.runtime.getURL('popup/popup.html?detached=true'),
       type: 'popup',
       width: 340,
-      height: 550,
+      height: 650,
     });
 
     console.log("Fenêtre popup créée avec l'ID:", popupWindow.id);
