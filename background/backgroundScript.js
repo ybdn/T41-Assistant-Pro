@@ -187,8 +187,8 @@ browser.action.onClicked.addListener(async (tab) => {
     const popupWindow = await browser.windows.create({
       url: browser.runtime.getURL('popup/popup.html?detached=true'),
       type: 'popup',
-      width: 400,
-      height: 600,
+      width: 380,
+      height: 480,
     });
 
     console.log("Fenêtre popup créée avec l'ID:", popupWindow.id);
