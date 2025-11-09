@@ -183,12 +183,16 @@ browser.action.onClicked.addListener(async (tab) => {
       }
     }
 
+    // Obtenir la hauteur de l'écran disponible
+    const currentWindow = await browser.windows.getCurrent();
+    const screenHeight = currentWindow.height || 1080; // Hauteur par défaut si non disponible
+
     // Créer une nouvelle fenêtre popup détachée
     const popupWindow = await browser.windows.create({
       url: browser.runtime.getURL('popup/popup.html?detached=true'),
       type: 'popup',
       width: 340,
-      height: 480,
+      height: screenHeight,
     });
 
     console.log("Fenêtre popup créée avec l'ID:", popupWindow.id);
