@@ -57,10 +57,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Vérifier si l'API browser est disponible
   if (typeof browser === "undefined") {
     console.error("ERREUR CRITIQUE: L'API browser n'est pas disponible");
-    showNotification(
-      "L'API browser n'est pas disponible. L'extension ne fonctionnera pas correctement.",
-      "error"
-    );
+    showNotification("API browser indisponible", "error");
     return;
   }
 
@@ -243,10 +240,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           console.error(
             "❌ Aucun onglet actif trouvé ou l'onglet n'a pas d'ID."
           );
-          showNotification(
-            "Aucun onglet actif trouvé ou l'onglet n'a pas d'ID.",
-            "error"
-          );
+          showNotification("Aucun onglet actif", "error");
           return;
         }
 
@@ -270,10 +264,7 @@ document.addEventListener("DOMContentLoaded", async () => {
               "Erreur lors de l'envoi de stopLoopProcessing:",
               error
             );
-            showNotification(
-              "Erreur lors de l'arrêt du traitement: " + error.message,
-              "error"
-            );
+            showNotification("Erreur lors de l'arrêt", "error");
           }
         } else {
           // Lancer le traitement
@@ -319,10 +310,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                   "Échec de l'injection de content/alphaMatchers.js:",
                   injectionError
                 );
-                showNotification(
-                  "Avertissement: Impossible d'injecter le script. Vérification de l'installation existante...",
-                  "warning"
-                );
+                showNotification("Injection du script échouée", "warning");
               }
             } else {
               console.log("Script déjà injecté, pas besoin de réinjection");
@@ -363,10 +351,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 showNotification("Échec de validation des données", "error");
               }
             } else {
-              showNotification(
-                "Impossible de démarrer le traitement. Vérifiez la console.",
-                "error"
-              );
+              showNotification("Impossible de démarrer", "error");
               updatePopupUIForLoopState(false, 0, null, null);
             }
           } catch (error) {
@@ -374,12 +359,7 @@ document.addEventListener("DOMContentLoaded", async () => {
               "Erreur lors de l'envoi de startLoopProcessing:",
               error
             );
-            showNotification(
-              "Erreur de communication: " +
-                error.message +
-                ". Le script est-il bien injecté sur la page FAED ?",
-              "error"
-            );
+            showNotification("Erreur de communication", "error");
             updatePopupUIForLoopState(false, 0, null, null);
           } finally {
             nextActionButton.disabled = false;
@@ -390,10 +370,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           "❌ Erreur globale lors du clic sur le bouton:",
           globalError
         );
-        showNotification(
-          "Une erreur s'est produite: " + globalError.message,
-          "error"
-        );
+        showNotification("Erreur détectée", "error");
       }
     });
   }
@@ -406,7 +383,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       let tab = await getActiveTab();
       if (!tab) {
         console.error("Aucun onglet actif trouvé");
-        showNotification("Aucun onglet actif trouvé", "error");
+        showNotification("Aucun onglet actif", "error");
         return;
       }
 
@@ -418,7 +395,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.log("Réponse reçue:", response);
         if (response && response.success) {
           if (response.result) {
-            showNotification("Vérification réussie !", "success");
+            showNotification("Vérification réussie", "success");
           } else {
             showNotification("Données incorrectes détectées", "warning");
           }
@@ -452,7 +429,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
           if (retryResponse && retryResponse.success) {
             if (retryResponse.result) {
-              showNotification("Vérification réussie !", "success");
+              showNotification("Vérification réussie", "success");
             } else {
               showNotification("Données incorrectes détectées", "warning");
             }
@@ -581,19 +558,16 @@ document.addEventListener("DOMContentLoaded", async () => {
           message.reason === "error" ||
           message.reason === "error_during_step"
         ) {
-          showNotification("Erreur détectée pendant le traitement", "error");
+          showNotification("Erreur détectée", "error");
         } else if (message.reason === "processing_completed") {
           showNotification("Traitement effectué", "success");
         } else if (
           message.reason === "not_on_controle_fiche_page" ||
           message.reason === "initialization_not_on_controle_fiche_page"
         ) {
-          showNotification(
-            "Page incorrecte. Veuillez ouvrir une fiche de contrôle.",
-            "warning"
-          );
+          showNotification("Page incorrecte", "warning");
         } else {
-          showNotification("Traitement arrêté: " + message.reason, "info");
+          showNotification("Traitement arrêté", "info");
         }
       }
     } else {
