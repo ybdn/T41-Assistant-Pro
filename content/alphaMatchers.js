@@ -185,47 +185,33 @@
 
     if (!natinfSensitiveSetPromise) {
       natinfSensitiveSetPromise = (async () => {
-        const url = browser.runtime.getURL(NATINF_JSON_PATH);
         let payload = null;
 
         try {
-          const response = await fetch(url, { cache: "no-cache" });
-          if (!response.ok) {
+          const response = await browser.runtime.sendMessage({
+            command: "getNatinfSurvey",
+          });
+          if (
+            response &&
+            response.success &&
+            response.data
+          ) {
+            payload =
+              typeof response.data === "string"
+                ? JSON.parse(response.data)
+                : response.data;
+          } else {
             throw new Error(
-              `Chargement direct NATINF echoue (statut ${response.status})`
+              response?.error ||
+                "Reponse getNatinfSurvey invalide depuis le background."
             );
           }
-          payload = await response.json();
-        } catch (directError) {
+        } catch (error) {
           logInfo(
-            `Echec du chargement direct de ${NATINF_JSON_PATH}: ${directError.message}`
+            `Echec du chargement NATINF: ${error.message}`,
+            error
           );
-          try {
-            const fallbackResponse = await browser.runtime.sendMessage({
-              command: "getNatinfSurvey",
-            });
-            if (
-              fallbackResponse &&
-              fallbackResponse.success &&
-              fallbackResponse.data
-            ) {
-              payload =
-                typeof fallbackResponse.data === "string"
-                  ? JSON.parse(fallbackResponse.data)
-                  : fallbackResponse.data;
-            } else {
-              throw new Error(
-                fallbackResponse?.error ||
-                  "Reponse getNatinfSurvey invalide depuis le background."
-              );
-            }
-          } catch (fallbackError) {
-            logInfo(
-              `Echec du fallback getNatinfSurvey: ${fallbackError.message}`,
-              fallbackError
-            );
-            throw fallbackError;
-          }
+          throw error;
         }
 
         const natinfEntries = Array.isArray(payload?.natinfCodes)
