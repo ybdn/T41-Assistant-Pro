@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "T41 Assistant Pro",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Extension Firefox qui assiste les opérateurs FAED lors du contrôle des fiches de signalisation. Elle participe à la fiabilisation des données avant intégration en base grâce au contrôle des données alphanumériques et augmente la productivité grâce à la sélection des éléments du DOM pour valider les onglets.",
   "author": "ybdn - Yoann Baudrin",
 

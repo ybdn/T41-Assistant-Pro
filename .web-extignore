@@ -1,3 +1,6 @@
 # Exclude development helper scripts from the packaged extension
+
 pack-extension.js
 analyzer.js
+web-ext-artifacts/
+PUBLISH.MD
