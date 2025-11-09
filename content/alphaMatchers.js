@@ -28,11 +28,9 @@
         titreElements[i].textContent.trim().toUpperCase() ===
         "CONTROLE DE LA FICHE"
       ) {
-        logInfo("Page 'CONTROLE DE LA FICHE' détectée.");
         return true;
       }
     }
-    logInfo("Page 'CONTROLE DE LA FICHE' NON détectée.");
     return false;
   }
 
@@ -45,11 +43,9 @@
         titreElements[i].textContent.trim().toUpperCase() ===
         "ECRAN D'ACCUEIL"
       ) {
-        logInfo("Page 'ECRAN D'ACCUEIL' détectée.");
         return true;
       }
     }
-    logInfo("Page 'ECRAN D'ACCUEIL' NON détectée.");
     return false;
   }
 
@@ -107,17 +103,9 @@
           !element.disabled &&
           element.getAttribute("aria-disabled") !== "true"
         ) {
-          console.log("Bouton 'OK et suivant' activé trouvé, clic en cours...");
           element.click();
         } else if (fallbackElement) {
-          console.log(
-            "Bouton 'OK et suivant' désactivé. Bouton 'OK' trouvé, clic en cours..."
-          );
           fallbackElement.click();
-        } else {
-          console.error(
-            "Aucun des boutons 'OK et suivant' ou 'OK' n'est disponible."
-          );
         }
       },
     },
@@ -141,10 +129,7 @@
         const initiateurIsEmpty = !initiateurInput || !initiateurInput.value || initiateurInput.value.trim() === "";
         const controleIsSelected = etapeLabel && etapeLabel.textContent.trim() === "Contrôle";
 
-        if (initiateurIsEmpty && controleIsSelected) {
-          logInfo("Initiateur vide et Contrôle déjà sélectionné, pas besoin d'effacer tout.");
-        } else {
-          logInfo("Clic sur 'Effacer tout' pour réinitialiser les filtres.");
+        if (!(initiateurIsEmpty && controleIsSelected)) {
           element.click();
         }
       },
@@ -155,28 +140,20 @@
       action: (element) => {
         // Vérifier si le champ est vide avant de le vider
         if (element.value && element.value.trim() !== "") {
-          logInfo("Champ initiateur non vide, vidage en cours...");
           element.value = "";
           element.dispatchEvent(new Event('change', { bubbles: true }));
-        } else {
-          logInfo("Champ initiateur déjà vide, aucune action nécessaire.");
         }
       },
     },
     {
       name: "Cliquer sur Rafraîchir",
       selector: "#tabs\\:tabsP\\:FormulaireFiltreStationAlphaPersonneP\\:raffraichirPersonneP",
-      action: (element) => {
-        logInfo("Clic sur le bouton Rafraîchir pour actualiser la liste des fiches...");
-        element.click();
-      },
+      action: (element) => element.click(),
     },
     {
       name: "Vérifier la disponibilité des fiches",
       selector: "body", // Sélecteur générique car on vérifie plusieurs éléments
       action: (element) => {
-        logInfo(`Vérification de la disponibilité des fiches (tentative ${retryCountEcranAccueil + 1}/${MAX_RETRY_ATTEMPTS})...`);
-
         // Attendre un peu pour que le DOM soit stabilisé après le clic sur Rafraîchir
         setTimeout(async () => {
           // Vérifier si la liste est vide
@@ -192,15 +169,12 @@
             retryCountEcranAccueil++;
 
             if (retryCountEcranAccueil < MAX_RETRY_ATTEMPTS) {
-              logInfo(`⚠️ ${reason} détecté, nouvelle tentative (${retryCountEcranAccueil}/${MAX_RETRY_ATTEMPTS}) dans 3 secondes...`);
-
               await new Promise(resolve => setTimeout(resolve, 3000));
 
               // Re-cliquer sur Rafraîchir
               const refreshButton = document.querySelector("#tabs\\:tabsP\\:FormulaireFiltreStationAlphaPersonneP\\:raffraichirPersonneP");
               if (refreshButton) {
                 refreshButton.click();
-                logInfo("Bouton Rafraîchir cliqué à nouveau.");
 
                 // Attendre le chargement après le clic
                 await waitForLoadingToComplete();
@@ -211,7 +185,7 @@
                 runEcranAccueilSteps();
               }
             } else {
-              logInfo(`❌ ${reason} après ${MAX_RETRY_ATTEMPTS} tentatives. Arrêt de la boucle.`);
+              logInfo(`❌ ${reason} après ${MAX_RETRY_ATTEMPTS} tentatives`);
               loopProcessingActive = false;
               await browser.storage.local.set({ loopProcessingActive: false });
               browser.runtime.sendMessage({
@@ -221,7 +195,6 @@
               }).catch((e) => console.warn("Erreur envoi message loopProcessingStopped:", e));
             }
           } else {
-            logInfo("✅ Des fiches sont disponibles, poursuite du traitement.");
             retryCountEcranAccueil = 0; // Réinitialiser le compteur en cas de succès
           }
         }, 1500); // Délai pour laisser le DOM se stabiliser
@@ -232,10 +205,7 @@
       selector: "label#tabs\\:tabsP\\:FormulaireFiltreStationAlphaPersonneP\\:etapeTraitementPersonneP_label",
       action: (element) => {
         // Vérifier si "Contrôle" est déjà sélectionné
-        if (element.textContent.trim() === "Contrôle") {
-          logInfo("L'étape 'Contrôle' est déjà sélectionnée, aucune action nécessaire.");
-        } else {
-          logInfo("L'étape 'Contrôle' n'est pas sélectionnée, clic sur la jauge...");
+        if (element.textContent.trim() !== "Contrôle") {
           // Chercher et cliquer sur la jauge Controle
           const jaugeSelector = "a[onclick*='actionTri'] div#tabs\\:tabsP\\:FormulaireJaugeStationAlphaP\\:j_idt545";
           const jaugeFallback = "div#tabs\\:tabsP\\:FormulaireJaugeStationAlphaP\\:j_idt545";
@@ -249,7 +219,7 @@
               jaugeElement.click();
             }
           } else {
-            logInfo("ERREUR: Jauge Controle non trouvée.");
+            logInfo("❌ Jauge Contrôle non trouvée");
           }
         }
       },
@@ -278,9 +248,9 @@
     const timestamp = new Date().toISOString().substr(11, 8);
     const prefix = loopProcessingActive ? "[LOOP] " : "";
     if (data) {
-      console.log(`[${timestamp}] 🔷 ${prefix}AlphaMatchers: ${message}`, data);
+      console.log(`[${timestamp}] ${prefix}${message}`, data);
     } else {
-      console.log(`[${timestamp}] 🔷 ${prefix}AlphaMatchers: ${message}`);
+      console.log(`[${timestamp}] ${prefix}${message}`);
     }
   }
 
@@ -289,30 +259,22 @@
     const loadingIndicator = document.querySelector(
       ".blockUI.blockMsg.blockElement.pe-blockui"
     );
-    const result = !!loadingIndicator;
-    if (result) {
-      logInfo("🔄 Indicateur de chargement détecté");
-    }
-    return result;
+    return !!loadingIndicator;
   }
 
   // Fonction pour attendre que l'indicateur de chargement disparaisse
   function waitForLoadingToComplete(timeout = 30000) {
     return new Promise((resolve) => {
       const startTime = Date.now();
-      logInfo("⏳ Attente de la fin du chargement...");
 
       const interval = setInterval(() => {
         if (!isLoadingIndicatorPresent()) {
           clearInterval(interval);
-          logInfo(
-            "✅ Indicateur de chargement disparu, reprise de l'exécution"
-          );
           resolve();
         } else if (Date.now() - startTime > timeout) {
           clearInterval(interval);
-          logInfo("⚠️ Délai d'attente dépassé pour l'indicateur de chargement");
-          resolve(); // On résout pour continuer, comme le comportement précédent du callback
+          logInfo("⚠️ Timeout chargement");
+          resolve();
         }
       }, 200); // Vérifier toutes les 200ms
     });
@@ -329,19 +291,15 @@
     );
 
     if (withTabView) {
-      logInfo("Format DOM détecté: avec tabViewValidationFiche");
       return "tabView";
     } else if (withoutTabView) {
-      logInfo("Format DOM détecté: sans tabViewValidationFiche");
       return "direct";
     } else {
       // Essayer d'autres sélecteurs pour détecter le format
       const anyForm = document.querySelector("#formValidationCorrection");
       if (anyForm) {
-        logInfo("Format DOM détecté: formulaire trouvé mais format inconnu");
         return "unknown";
       } else {
-        logInfo("Format DOM détecté: aucun formulaire trouvé");
         return "notFound";
       }
     }
@@ -376,10 +334,7 @@
             );
           }
         } catch (error) {
-          logInfo(
-            `Echec du chargement NATINF: ${error.message}`,
-            error
-          );
+          logInfo(`❌ Échec chargement NATINF: ${error.message}`);
           throw error;
         }
 
@@ -408,10 +363,6 @@
 
         natinfSensitiveSet = normalizedCodes;
         natinfSensitiveVersion = payload?.version || null;
-        logInfo("Liste NATINF sensible chargee.", {
-          total: normalizedCodes.size,
-          version: natinfSensitiveVersion,
-        });
         return natinfSensitiveSet;
       })().catch((error) => {
         natinfSensitiveSetPromise = null;
@@ -479,9 +430,6 @@
 
     const textarea = document.querySelector(NATINF_COMMENT_SELECTOR);
     if (!textarea) {
-      logInfo(
-        "Zone de commentaires introuvable pour l'insertion du message NATINF."
-      );
       return false;
     }
 
@@ -491,14 +439,12 @@
 
     if (append) {
       if (currentValue.includes(trimmedMessage)) {
-        logInfo("Message NATINF deja present, ajout ignore.");
         return false;
       }
       const separator = currentValue.trim().length > 0 ? "\n\n" : "";
       updatedValue = `${currentValue}${separator}${trimmedMessage}`;
     } else {
       if (currentValue.trim() === trimmedMessage) {
-        logInfo("Message NATINF deja present, aucune mise a jour requise.");
         return false;
       }
       updatedValue = trimmedMessage;
@@ -508,11 +454,6 @@
     textarea.dispatchEvent(new Event("input", { bubbles: true }));
     textarea.dispatchEvent(new Event("change", { bubbles: true }));
     textarea.dispatchEvent(new Event("blur", { bubbles: true }));
-    logInfo(
-      `Message NATINF ${
-        append ? "ajoute" : "applique"
-      } dans la zone de commentaires.`
-    );
     return true;
   }
 
@@ -520,13 +461,11 @@
     try {
       const sensitiveSet = await loadNatinfSensitiveSet();
       if (!sensitiveSet || sensitiveSet.size === 0) {
-        logInfo("Liste NATINF sensible vide ou non chargee.");
         return { shouldWrite: false, detectedCodes: [], message: "" };
       }
 
       const fieldValues = extractNatinfFieldValues();
       if (fieldValues.length === 0) {
-        logInfo("Aucun champ NATINF disponible dans le DOM.");
         return { shouldWrite: false, detectedCodes: [], message: "" };
       }
 
@@ -544,23 +483,15 @@
         if (match) {
           const normalized = match[1].toUpperCase();
           extractedCodes.push(normalized);
-          logInfo(`NATINF extrait depuis ${selector}: ${normalized}`);
           if (!sensitiveSet.has(normalized)) {
-            logInfo(
-              `NATINF ${normalized} non inscrit detecte (selector: ${selector})`
-            );
             hasNonSensitiveCode = true;
           }
         } else {
-          logInfo(
-            `Valeur NATINF ignoree (format non reconnu) pour ${selector}: "${value}"`
-          );
           hasNonSensitiveCode = true;
         }
       });
 
       if (extractedCodes.length === 0) {
-        logInfo("Aucun code NATINF detecte dans les champs disponibles.");
         return { shouldWrite: false, detectedCodes: [], message: "" };
       }
 
@@ -570,108 +501,25 @@
       );
 
       if (hasNonSensitiveCode) {
-        logInfo(
-          "Presence de NATINF non inscrit detectee, aucun commentaire NATINF requis."
-        );
         return { shouldWrite: false, detectedCodes: [], message: "" };
       }
 
       if (sensitiveMatches.length === 0) {
-        logInfo("Aucun NATINF sensible detecte parmi les codes trouves.");
         return { shouldWrite: false, detectedCodes: [], message: "" };
       }
 
       const message = buildNatinfCommentMessage(sensitiveMatches);
       return { shouldWrite: true, detectedCodes: sensitiveMatches, message };
     } catch (error) {
-      logInfo(
-        `Erreur lors de l'evaluation des NATINF sensibles: ${error.message}`,
-        error
-      );
+      logInfo(`❌ Erreur évaluation NATINF: ${error.message}`);
       return { shouldWrite: false, detectedCodes: [], message: "" };
     }
   }
 
   // Fonction pour diagnostiquer le problème de détection des champs
   function diagnoseDOMIssues() {
-    logInfo("🔍 DIAGNOSTIC DES PROBLÈMES DE DOM EN COURS...");
-
-    // Vérifier si on peut trouver le type de saisie avec différentes méthodes
-    const typeSelectors = [
-      "#formValidationCorrection\\:typeDeSignalisationValue",
-      "#formValidationCorrection\\:tabViewValidationFiche\\:typeDeSignalisationValue",
-      "input[id*='typeDeSignalisation']",
-    ];
-
-    logInfo("--- Recherche du type de saisie ---");
-    let typeFound = false;
-    typeSelectors.forEach((selector) => {
-      const element = document.querySelector(selector);
-      if (element) {
-        typeFound = true;
-        logInfo(`Sélecteur ${selector}: ✅ trouvé, valeur: "${element.value}"`);
-      } else {
-        logInfo(`Sélecteur ${selector}: ❌ non trouvé`);
-      }
-    });
-
-    if (!typeFound) {
-      // Recherche plus générique par attribut
-      const allInputs = document.querySelectorAll('input[type="text"]');
-      logInfo(`Nombre total d'inputs texte trouvés: ${allInputs.length}`);
-
-      for (const input of allInputs) {
-        if (input.id.includes("type") || input.name.includes("type")) {
-          logInfo(
-            `Input potentiel trouvé pour le type: id=${input.id}, name=${input.name}, value="${input.value}"`
-          );
-        }
-      }
-
-      // Chercher par label
-      const typeLabels = document.querySelectorAll("label");
-      for (const label of typeLabels) {
-        if (label.textContent.includes("Type")) {
-          logInfo(`Label "Type" trouvé: ${label.outerHTML}`);
-          const labelFor = label.getAttribute("for");
-          if (labelFor) {
-            const associatedInput = document.getElementById(labelFor);
-            if (associatedInput) {
-              logInfo(
-                `Input associé trouvé: id=${associatedInput.id}, value="${associatedInput.value}"`
-              );
-            }
-          }
-
-          // Trouver l'élément suivant le label (navigation DOM)
-          const nextElement = label.nextElementSibling;
-          if (nextElement) {
-            logInfo(
-              `Élément suivant le label: ${nextElement.tagName}, id=${nextElement.id}, value=${nextElement.value}`
-            );
-          }
-        }
-      }
-    }
-
-    // Tester également la détection du service de rattachement
-    logInfo("--- Recherche du service de rattachement ---");
-    const serviceSelectors = [
-      "#formValidationCorrection\\:ServiceRattachement",
-      "#formValidationCorrection\\:tabViewValidationFiche\\:ServiceRattachement",
-      "input[id*='ServiceRattachement']",
-    ];
-
-    serviceSelectors.forEach((selector) => {
-      const element = document.querySelector(selector);
-      if (element) {
-        logInfo(`Sélecteur ${selector}: ✅ trouvé, valeur: "${element.value}"`);
-      } else {
-        logInfo(`Sélecteur ${selector}: ❌ non trouvé`);
-      }
-    });
-
-    logInfo("🔍 FIN DU DIAGNOSTIC");
+    // Fonction de diagnostic simplifiée - logs retirés pour réduire la verbosité
+    // Le diagnostic peut être activé manuellement en ajoutant des console.log si nécessaire
   }
 
   // Fonction pour obtenir le sélecteur approprié en fonction du format DOM
@@ -715,8 +563,6 @@
 
   // Fonction pour afficher une fenêtre d'erreur avec les erreurs détectées
   function showErrorWindow(errors) {
-    logInfo("Affichage de la fenêtre d'erreur");
-
     // Supprimer toute fenêtre d'erreur existante
     const existingErrorWindow = document.getElementById("t41-error-window");
     if (existingErrorWindow) {
@@ -1048,24 +894,17 @@
         const element = document.querySelector(selector);
 
         if (element) {
-          const value = element.value?.trim() || "";
-          logInfo(`Élément ${selector}: ✅ trouvé, valeur: "${value}"`);
-          return value;
+          return element.value?.trim() || "";
         }
 
         // Si le champ est le type de saisie, essayer une recherche directe
         if (field === "typeSaisie" || field === "typeDeSignalisation") {
-          // Essayer le sélecteur direct sans tabViewValidationFiche
           const directSelector =
             "#formValidationCorrection\\:typeDeSignalisationValue";
           const directElement = document.querySelector(directSelector);
 
           if (directElement) {
-            const value = directElement.value?.trim() || "";
-            logInfo(
-              `Élément trouvé via sélecteur direct ${directSelector}: ✅ trouvé, valeur: "${value}"`
-            );
-            return value;
+            return directElement.value?.trim() || "";
           }
         }
 
@@ -1078,9 +917,7 @@
 
           const altElement = document.querySelector(altSelector);
           if (altElement) {
-            const value = altElement.value?.trim() || "";
-            logInfo(`Élément ${altSelector}: ✅ trouvé, valeur: "${value}"`);
-            return value;
+            return altElement.value?.trim() || "";
           }
         }
 
@@ -1091,21 +928,14 @@
             if (label.textContent.includes("Type")) {
               const nextElement = label.nextElementSibling;
               if (nextElement && nextElement.tagName === "INPUT") {
-                const value = nextElement.value?.trim() || "";
-                logInfo(
-                  `Type de saisie trouvé via label: ✅ trouvé, valeur: "${value}"`
-                );
-                return value;
+                return nextElement.value?.trim() || "";
               }
             }
           }
         }
 
-        logInfo(`Élément ${selector}: ❌ non trouvé, valeur: ""`);
         return "";
       };
-
-      logInfo("1️⃣ Extraction des valeurs des champs...");
 
       // Extraction des valeurs en utilisant la fonction robuste
       const idppGaspardValue = getValue(
@@ -1138,24 +968,7 @@
         "serviceRattachement"
       );
 
-      logInfo("Résumé des valeurs extraites:", {
-        idppGaspardValue,
-        typeSaisieValue,
-        nomValue,
-        prenomValue,
-        serviceInitiateurValue,
-        unaValue,
-        ficheEtablieParValue,
-        serviceRattachementValue,
-      });
-
       const natinfCommentInfo = await evaluateSensitiveNatinfComment();
-      if (natinfCommentInfo.shouldWrite) {
-        logInfo("Codes NATINF sensibles detectes:", {
-          codes: natinfCommentInfo.detectedCodes,
-          version: natinfSensitiveVersion,
-        });
-      }
 
       const validationResults = {
         identifiantGaspard: true,
@@ -1168,17 +981,6 @@
         serviceRattachement: true,
       };
       const errors = [];
-
-      logInfo("Début de la vérification des données alphanumériques...", {
-        idppGaspardValue,
-        typeSaisieValue,
-        nomValue,
-        prenomValue,
-        serviceInitiateurValue,
-        unaValue,
-        ficheEtablieParValue,
-        serviceRattachementValue,
-      });
 
       // Règle Critique 1: Détection de "NEO-TEST" / "NEOTEST"
       const neoTestPattern = /NEO-?TEST/i;
@@ -2214,20 +2016,10 @@
 
   // Écouter les messages du background script ou popup
   browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    logInfo("Message reçu dans alphaMatchers.js:", message);
-    console.log(
-      "DEBUG: Message reçu dans alphaMatchers.js:",
-      message,
-      "Sender:",
-      sender
-    );
-
     if (message.command === "ping") {
-      console.log("DEBUG: Ping reçu, réponse avec pong");
       sendResponse({ pong: true, version: "2.1.0" });
       return true;
     } else if (message.command === "testMessaging") {
-      console.log("DEBUG: Test de messagerie reçu", message);
       sendResponse({
         success: true,
         receivedTimestamp: message.timestamp,
@@ -2238,7 +2030,6 @@
       message.command === "startScript" &&
       message.script === "alphaMatchers"
     ) {
-      logInfo("Commande de démarrage reçue");
       const result = activateScript();
       sendResponse({ success: true, result });
       return true;
@@ -2246,16 +2037,11 @@
       message.command === "stopScript" &&
       message.script === "alphaMatchers"
     ) {
-      logInfo("Commande d'arrêt reçue");
       deactivateScript();
       sendResponse({ success: true });
       return true;
     } else if (message.command === "checkAlphaNumeric") {
-      logInfo("Commande de vérification des données alphanumériques reçue");
       if (!isControleDeFichePage()) {
-        logInfo(
-          "Vérification alphanumérique annulée: pas sur la page 'CONTROLE DE LA FICHE'."
-        );
         sendResponse({
           success: false,
           result: false,
@@ -2311,39 +2097,25 @@
         });
       return true; // Indique une réponse asynchrone
     } else if (message.command === "startLoopProcessing") {
-      logInfo("Commande startLoopProcessing reçue.");
-      console.log(
-        "DEBUG: Commande startLoopProcessing reçue dans alphaMatchers.js"
-      );
-
       // Vérifier sur quelle page nous sommes
       const isOnControleFiche = isControleDeFichePage();
       const isOnEcranAccueil = isEcranAccueilPage();
 
       if (!isOnControleFiche && !isOnEcranAccueil) {
-        logInfo(
-          "Mode boucle non démarré: pas sur une page reconnue (ni CONTROLE DE LA FICHE, ni ECRAN D'ACCUEIL)."
-        );
-        console.log("DEBUG: Pas sur une page reconnue");
-        loopProcessingActive = false; // Assurer la désactivation locale
-        browser.storage.local.set({ loopProcessingActive: false }); // Et dans le storage
+        loopProcessingActive = false;
+        browser.storage.local.set({ loopProcessingActive: false });
         sendResponse({
           success: false,
           error: "Not on a recognized page (CONTROLE DE LA FICHE or ECRAN D'ACCUEIL)",
           validationResult: false,
         });
-        return true; // Indique une réponse asynchrone (bien que gérée rapidement ici)
+        return true;
       }
 
       loopProcessingActive = true;
-      console.log(
-        "DEBUG: Activation du mode boucle, loopProcessingActive =",
-        loopProcessingActive
-      );
       browser.storage.local
         .set({ loopProcessingActive: true })
         .then(() => {
-          logInfo("Mode boucle activé et sauvegardé.");
           // Réinitialiser les états pour une nouvelle session de boucle
           currentStepIndex = 0;
           sequenceStartTime = Date.now();
