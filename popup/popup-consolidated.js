@@ -32,9 +32,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   const appIcon = document.querySelector(".app-icon");
   const statusDot = document.getElementById("status-dot");
   const statusMessage = document.getElementById("status-message");
-  const progressContainer = document.getElementById("progress-container");
-  const progressBar = document.getElementById("progress-value");
-  const progressText = document.getElementById("progress-text");
   const statusBadge = document.getElementById("status-badge");
   const scriptCard = document.getElementById("script-card");
 
@@ -171,20 +168,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Mise à jour de la carte principale
     if (scriptCard) {
       scriptCard.classList.toggle("active-card", isActive && !hasError);
-    }
-
-    // Mise à jour de la barre de progression
-    if (progressContainer) {
-      progressContainer.style.display = isActive ? "block" : "none";
-
-      if (isActive && progressBar && progressText) {
-        progressBar.style.width = `${progress}%`;
-        if (currentDossier !== null && totalDossiers !== null) {
-          progressText.textContent = `${currentDossier}/${totalDossiers}`;
-        } else {
-          progressText.textContent = `${Math.round(progress)}%`;
-        }
-      }
     }
 
     // Mise à jour du bouton d'action

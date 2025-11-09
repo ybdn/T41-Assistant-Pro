@@ -13,9 +13,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const statusMessage = document.getElementById("status-message");
   const statusContainer = document.getElementById("status-container");
   const statusBadge = document.getElementById("status-badge");
-  const progressContainer = document.getElementById("progress-container");
-  const progressBar = document.getElementById("progress-value");
-  const progressText = document.getElementById("progress-text");
   const scriptCard = document.getElementById("script-card");
 
   // Fonction pour mettre à jour l'interface utilisateur avec animation
@@ -68,16 +65,6 @@ document.addEventListener("DOMContentLoaded", () => {
     // Mise à jour de la carte principale
     if (scriptCard) {
       scriptCard.classList.toggle("active-card", isActive && !hasError);
-    }
-
-    // Mise à jour de la barre de progression
-    if (progressContainer) {
-      progressContainer.style.display = isActive ? "block" : "none";
-
-      if (isActive && progressBar && progressText) {
-        progressBar.style.width = `${progress}%`;
-        progressText.textContent = `${progress}%`;
-      }
     }
 
     // Mise à jour du bouton d'action
