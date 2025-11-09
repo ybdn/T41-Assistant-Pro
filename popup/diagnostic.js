@@ -1,5 +1,5 @@
 /**
- * T41 Assistant - Outil de diagnostic et débogage
+ * T41 Assistant Pro - Outil de diagnostic et débogage
  * Ce script permet de vérifier le bon fonctionnement des communications entre la popup et le script content
  */
 

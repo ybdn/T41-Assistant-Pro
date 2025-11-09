@@ -1,5 +1,5 @@
 /**
- * T41 Assistant - Polyfill amélioré pour la compatibilité navigateurs
+ * T41 Assistant Pro - Polyfill amélioré pour la compatibilité navigateurs
  */
 
 // Log pour vérifier le chargement du script

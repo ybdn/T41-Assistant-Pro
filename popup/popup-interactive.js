@@ -1,11 +1,11 @@
 /**
- * T41 Assistant - Améliorations interactives
+ * T41 Assistant Pro - Améliorations interactives
  * Ce fichier fournit des fonctionnalités interactives supplémentaires pour la popup
  */
 
 // Attendre que le DOM soit chargé
 document.addEventListener("DOMContentLoaded", () => {
-  console.log("🚀 T41 Assistant amélioré chargé");
+  console.log("🚀 T41 Assistant Pro amélioré chargé");
 
   // Référence aux éléments de l'interface
   const nextActionButton = document.getElementById("next-action");

@@ -1,8 +1,8 @@
-# T41 Assistant - Firefox - DFAED GN
+# T41 Assistant Pro - Firefox - DFAED GN
 
 ## Description
 
-**T41 Assistant** est une extension pour le navigateur Firefox conçue pour assister les opérateurs du DFAED sur l'application web T41 Alphanu de la Gendarmerie Nationale (FR).
+**T41 Assistant Pro** est une extension pour le navigateur Firefox conçue pour assister les opérateurs du DFAED sur l'application web T41 Alphanu de la Gendarmerie Nationale (FR).
 
 L'extension vise à automatiser et à vérifier certaines étapes du processus de contrôle des fiches de signalisation sur T41, réduisant ainsi les erreurs et le temps de traitement.
 

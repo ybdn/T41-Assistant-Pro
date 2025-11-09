@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Script de packaging pour l'extension T41 Assistant.
+ * Script de packaging pour l'extension T41 Assistant Pro.
  * Empaquette les fichiers nécessaires dans un fichier ZIP prêt à être chargé dans Firefox.
  */
 
@@ -22,7 +22,7 @@ function exitWithError(message) {
   process.exit(1);
 }
 
-log("📦 Création du package d'extension T41 Assistant...");
+log("📦 Création du package d'extension T41 Assistant Pro...");
 
 if (!fs.existsSync(MANIFEST_PATH)) {
   exitWithError(
