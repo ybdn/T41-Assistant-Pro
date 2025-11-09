@@ -5,6 +5,13 @@
   padding: 0;
 }
 
+html {
+  width: 340px;
+  min-width: 340px;
+  max-width: 340px;
+  overflow-x: hidden;
+}
+
 :root {
   /* Palette de couleurs modernisée */
   --primary: #3b82f6; /* Bleu principal plus vibrant */
@@ -77,8 +84,10 @@
 
 /* Layout de base */
 body {
-  width: 100%;
+  width: var(--width-extension);
+  min-width: var(--width-extension);
   max-width: var(--width-extension);
+  max-height: 100vh;
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, sans-serif;
@@ -86,15 +95,17 @@ body {
   color: var(--neutral-700);
   font-size: var(--font-size-md);
   line-height: 1.5;
-  overflow-x: hidden; /* Éviter les débordements horizontaux */
-  -webkit-font-smoothing: antialiased; /* Lissage des polices */
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 .popup {
   width: 100%;
-  max-width: var(--width-extension);
-  min-height: var(--popup-default-height);
+  min-width: 100%;
+  max-width: 100%;
+  max-height: 100vh;
   display: flex;
   flex-direction: column;
   padding: var(--spacing-md);
@@ -103,6 +114,9 @@ body {
   background: linear-gradient(135deg, var(--primary-bg), var(--neutral-50));
   background-size: 400% 400%;
   animation: gradientBackground 15s ease infinite;
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 /* Header moderne */
@@ -241,6 +255,9 @@ body {
   overflow: hidden;
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
+  flex-shrink: 0;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .card:hover {
@@ -760,19 +777,61 @@ body {
 }
 
 /* Responsive design */
-@media (max-width: 400px) {
+/* Largeur minimale stricte - empêche le redimensionnement */
+@media (max-width: 340px) {
+  body {
+    min-width: 340px;
+  }
+}
+
+/* Adaptation pour petites hauteurs d'écran */
+@media (max-height: 600px) {
   .popup {
-    width: 100%;
-    padding: var(--spacing-md);
+    padding: var(--spacing-sm);
+    gap: var(--spacing-sm);
   }
 
   .card {
-    padding: var(--spacing-md);
+    padding: var(--spacing-sm);
+    gap: var(--spacing-xs);
   }
 
-  .btn {
-    min-width: 100px;
-    padding: var(--spacing-sm) var(--spacing-lg);
+  .header {
+    padding-bottom: var(--spacing-xs);
+  }
+
+  .todo-list-container {
+    max-height: min(180px, calc(100vh - 320px));
+    min-height: 40px;
+  }
+
+  .todo-card {
+    padding: var(--spacing-sm);
+  }
+}
+
+/* Adaptation pour très petites hauteurs */
+@media (max-height: 480px) {
+  .popup {
+    padding: var(--spacing-xs);
+    gap: var(--spacing-xs);
+  }
+
+  .card {
+    padding: var(--spacing-xs);
+  }
+
+  .todo-list-container {
+    max-height: min(120px, calc(100vh - 280px));
+    min-height: 30px;
+  }
+
+  .header {
+    padding-bottom: 2px;
+  }
+
+  .info-card {
+    padding: var(--spacing-xs);
   }
 }
 
@@ -857,6 +916,11 @@ body {
   position: relative;
   padding: var(--spacing-md);
   gap: var(--spacing-sm);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 1;
+  min-height: 0;
+  overflow: hidden;
 }
 
 /* Compteur de tâches */
@@ -939,9 +1003,12 @@ body {
 
 /* Conteneur de la liste */
 .todo-list-container {
-  max-height: 240px;
+  max-height: min(240px, calc(100vh - 400px));
   overflow-y: auto;
+  overflow-x: hidden;
   padding: var(--spacing-xxs);
+  flex-shrink: 1;
+  min-height: 60px;
 }
 
 .todo-list-container::-webkit-scrollbar {
