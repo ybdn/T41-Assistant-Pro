@@ -3,9 +3,28 @@
  * Ce fichier combine la logique principale et l'interface utilisateur
  */
 
+// Variable globale pour vérifier si on est dans une fenêtre détachée
+let isDetachedWindow = false;
+
+// Vérifier si on est dans une fenêtre détachée
+async function checkIfDetachedWindow() {
+  try {
+    // Vérifier si l'URL contient le paramètre detached
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('detached') === 'true';
+  } catch (error) {
+    console.error("Erreur lors de la vérification du type de fenêtre:", error);
+    return false;
+  }
+}
+
 // Attendre que le DOM soit chargé
 document.addEventListener("DOMContentLoaded", async () => {
   console.log("🔄 T41 Assistant chargé !");
+
+  // Vérifier si on est dans une fenêtre détachée
+  isDetachedWindow = await checkIfDetachedWindow();
+  console.log("Fenêtre détachée:", isDetachedWindow);
 
   // Récupérer les éléments de l'interface utilisateur
   const nextActionButton = document.getElementById("next-action");
@@ -205,17 +224,25 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Fonctions utilitaires
   async function getActiveTab() {
     try {
+      // Chercher l'onglet actif dans toutes les fenêtres normales (pas les popups)
+      // Important: Ne pas utiliser currentWindow: true car on est dans une fenêtre popup
       let tabs = await browser.tabs.query({
         active: true,
-        currentWindow: true,
       });
-      if (tabs.length > 0 && tabs[0].id) {
-        console.log("Onglet actif trouvé:", tabs[0].url);
-        return tabs[0];
-      } else {
-        console.error("Aucun onglet actif trouvé.");
-        return null;
+
+      // Filtrer pour ne garder que les onglets des fenêtres normales (pas popup)
+      for (let tab of tabs) {
+        if (tab.id) {
+          const window = await browser.windows.get(tab.windowId);
+          if (window.type === 'normal') {
+            console.log("Onglet actif trouvé:", tab.url);
+            return tab;
+          }
+        }
       }
+
+      console.error("Aucun onglet actif trouvé dans les fenêtres normales.");
+      return null;
     } catch (error) {
       console.error("Erreur lors de la récupération des onglets :", error);
       return null;
@@ -593,6 +620,29 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     return false;
+  });
+
+  // Écouter l'événement de fermeture de la fenêtre
+  window.addEventListener('beforeunload', async (event) => {
+    console.log("Fermeture de la fenêtre détectée");
+
+    // Si le script est actif, l'arrêter
+    if (popupLoopStateActive) {
+      console.log("Arrêt du script en cours à cause de la fermeture de la fenêtre...");
+      try {
+        const tab = await getActiveTab();
+        if (tab && tab.id) {
+          await browser.tabs.sendMessage(tab.id, {
+            command: "stopLoopProcessing",
+          });
+        }
+      } catch (error) {
+        console.error("Erreur lors de l'arrêt du script:", error);
+      }
+    }
+
+    // Nettoyer le storage local
+    await browser.storage.local.remove('detachedWindowId');
   });
 
   // Signaler que l'initialisation est terminée
