@@ -1672,7 +1672,7 @@
 
   // Fonctions pour l'automatisation (intégrées depuis contentScript.js)
   // Fonction pour attendre un élément ou un fallback
-  function waitForElementOrFallback(
+  async function waitForElementOrFallback(
     selector,
     fallbackSelector,
     callback,
@@ -1683,14 +1683,13 @@
       logInfo(
         `🔄 Indicateur de chargement détecté, mise en attente avant de chercher ${selector} ou ${fallbackSelector}`
       );
-      waitForLoadingToComplete(() => {
-        waitForElementOrFallbackInternal(
-          selector,
-          fallbackSelector,
-          callback,
-          timeout
-        );
-      });
+      await waitForLoadingToComplete();
+      waitForElementOrFallbackInternal(
+        selector,
+        fallbackSelector,
+        callback,
+        timeout
+      );
     } else {
       waitForElementOrFallbackInternal(
         selector,
@@ -1706,10 +1705,11 @@
     selector,
     fallbackSelector,
     callback,
-    timeout = 5000
+    timeout = 5000,
+    onTimeout = null
   ) {
     const startTime = Date.now();
-    const interval = setInterval(() => {
+    const interval = setInterval(async () => {
       try {
         // Vérifier à nouveau l'indicateur de chargement pendant la recherche de l'élément
         if (isLoadingIndicatorPresent()) {
@@ -1717,14 +1717,14 @@
           logInfo(
             `🔄 Indicateur de chargement détecté pendant la recherche de ${selector} ou ${fallbackSelector}, reprise de l'attente`
           );
-          waitForLoadingToComplete(() => {
-            waitForElementOrFallbackInternal(
-              selector,
-              fallbackSelector,
-              callback,
-              timeout - (Date.now() - startTime)
-            );
-          });
+          await waitForLoadingToComplete();
+          waitForElementOrFallbackInternal(
+            selector,
+            fallbackSelector,
+            callback,
+            timeout - (Date.now() - startTime),
+            onTimeout
+          );
           return;
         }
 
@@ -1746,33 +1746,38 @@
           logInfo(
             `Aucun élément trouvé pour les sélecteurs : ${selector}, ${fallbackSelector}`
           );
+          if (onTimeout) {
+            onTimeout(new Error(`Timeout: aucun élément trouvé pour ${selector} ou ${fallbackSelector} après ${timeout}ms`));
+          }
         }
       } catch (error) {
         clearInterval(interval);
         logInfo("Erreur dans waitForElementOrFallback :", error);
+        if (onTimeout) {
+          onTimeout(error);
+        }
       }
     }, 100);
   }
 
   // Fonction pour attendre un élément
-  function waitForElement(selector, callback, timeout = 5000) {
+  async function waitForElement(selector, callback, timeout = 5000) {
     // Vérifier d'abord si l'indicateur de chargement est présent
     if (isLoadingIndicatorPresent()) {
       logInfo(
         `🔄 Indicateur de chargement détecté, mise en attente avant de chercher ${selector}`
       );
-      waitForLoadingToComplete(() => {
-        waitForElementInternal(selector, callback, timeout);
-      });
+      await waitForLoadingToComplete();
+      waitForElementInternal(selector, callback, timeout);
     } else {
       waitForElementInternal(selector, callback, timeout);
     }
   }
 
   // Fonction interne pour attendre un élément
-  function waitForElementInternal(selector, callback, timeout = 5000) {
+  function waitForElementInternal(selector, callback, timeout = 5000, onTimeout = null) {
     const startTime = Date.now();
-    const interval = setInterval(() => {
+    const interval = setInterval(async () => {
       try {
         // Vérifier à nouveau l'indicateur de chargement pendant la recherche de l'élément
         if (isLoadingIndicatorPresent()) {
@@ -1780,13 +1785,13 @@
           logInfo(
             `🔄 Indicateur de chargement détecté pendant la recherche de ${selector}, reprise de l'attente`
           );
-          waitForLoadingToComplete(() => {
-            waitForElementInternal(
-              selector,
-              callback,
-              timeout - (Date.now() - startTime)
-            );
-          });
+          await waitForLoadingToComplete();
+          waitForElementInternal(
+            selector,
+            callback,
+            timeout - (Date.now() - startTime),
+            onTimeout
+          );
           return;
         }
 
@@ -1797,23 +1802,28 @@
         } else if (Date.now() - startTime > timeout) {
           clearInterval(interval);
           logInfo(`Élément introuvable : ${selector}`);
+          if (onTimeout) {
+            onTimeout(new Error(`Timeout: élément ${selector} introuvable après ${timeout}ms`));
+          }
         }
       } catch (error) {
         clearInterval(interval);
         logInfo("Erreur dans waitForElement :", error);
+        if (onTimeout) {
+          onTimeout(error);
+        }
       }
     }, 100);
   }
 
   // Fonction pour exécuter les étapes contenant plusieurs actions
-  function executeMultipleActions(actions, sendResponse, actionIndex = 0) {
+  async function executeMultipleActions(actions, sendResponse, actionIndex = 0) {
     if (isLoadingIndicatorPresent()) {
       logInfo(
         `🔄 Indicateur de chargement détecté avant l'exécution de l'action ${actionIndex}, mise en attente`
       );
-      waitForLoadingToComplete(() => {
-        executeMultipleActionsInternal(actions, sendResponse, actionIndex);
-      });
+      await waitForLoadingToComplete();
+      executeMultipleActionsInternal(actions, sendResponse, actionIndex);
     } else {
       executeMultipleActionsInternal(actions, sendResponse, actionIndex);
     }
@@ -1923,14 +1933,13 @@
   }
 
   // Fonction pour exécuter une étape
-  function executeNextStep(sendResponse) {
+  async function executeNextStep(sendResponse) {
     if (isLoadingIndicatorPresent()) {
       logInfo(
         "🔄 Indicateur de chargement détecté avant l'exécution de l'étape suivante, mise en attente"
       );
-      waitForLoadingToComplete(() => {
-        executeNextStepInternal(sendResponse);
-      });
+      await waitForLoadingToComplete();
+      executeNextStepInternal(sendResponse);
     } else {
       executeNextStepInternal(sendResponse);
     }
