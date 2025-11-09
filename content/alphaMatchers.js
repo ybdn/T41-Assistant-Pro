@@ -134,32 +134,42 @@
       action: (element) => element.click(),
     },
     {
-      name: "Vider le champ initiateur",
+      name: "Vider le champ initiateur (si nécessaire)",
       selector: "#tabs\\:tabsP\\:FormulaireFiltreStationAlphaPersonneP\\:initiateurPersonneP",
       action: (element) => {
-        element.value = "";
-        element.dispatchEvent(new Event('change', { bubbles: true }));
+        // Vérifier si le champ est vide avant de le vider
+        if (element.value && element.value.trim() !== "") {
+          logInfo("Champ initiateur non vide, vidage en cours...");
+          element.value = "";
+          element.dispatchEvent(new Event('change', { bubbles: true }));
+        } else {
+          logInfo("Champ initiateur déjà vide, aucune action nécessaire.");
+        }
       },
     },
     {
-      name: "Cliquer sur la jauge Controle",
-      selector: "a[onclick*='actionTri'] div#tabs\\:tabsP\\:FormulaireJaugeStationAlphaP\\:j_idt545",
-      fallbackSelector: "div#tabs\\:tabsP\\:FormulaireJaugeStationAlphaP\\:j_idt545",
-      action: (element, fallbackElement) => {
-        if (element) {
-          // Cliquer sur le lien parent si disponible
-          const parentLink = element.closest('a');
-          if (parentLink) {
-            parentLink.click();
+      name: "Sélectionner Controle (si nécessaire)",
+      selector: "label#tabs\\:tabsP\\:FormulaireFiltreStationAlphaPersonneP\\:etapeTraitementPersonneP_label",
+      action: (element) => {
+        // Vérifier si "Contrôle" est déjà sélectionné
+        if (element.textContent.trim() === "Contrôle") {
+          logInfo("L'étape 'Contrôle' est déjà sélectionnée, aucune action nécessaire.");
+        } else {
+          logInfo("L'étape 'Contrôle' n'est pas sélectionnée, clic sur la jauge...");
+          // Chercher et cliquer sur la jauge Controle
+          const jaugeSelector = "a[onclick*='actionTri'] div#tabs\\:tabsP\\:FormulaireJaugeStationAlphaP\\:j_idt545";
+          const jaugeFallback = "div#tabs\\:tabsP\\:FormulaireJaugeStationAlphaP\\:j_idt545";
+          const jaugeElement = document.querySelector(jaugeSelector) || document.querySelector(jaugeFallback);
+
+          if (jaugeElement) {
+            const parentLink = jaugeElement.closest('a');
+            if (parentLink) {
+              parentLink.click();
+            } else {
+              jaugeElement.click();
+            }
           } else {
-            element.click();
-          }
-        } else if (fallbackElement) {
-          const parentLink = fallbackElement.closest('a');
-          if (parentLink) {
-            parentLink.click();
-          } else {
-            fallbackElement.click();
+            logInfo("ERREUR: Jauge Controle non trouvée.");
           }
         }
       },
