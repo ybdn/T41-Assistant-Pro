@@ -1,0 +1,79 @@
+/**
+ * T41 Assistant Pro - Animations CSS pour les thèmes festifs
+ * Système d'icônes rebondissantes unifié
+ */
+
+/* ===== CONTENEUR PRINCIPAL ===== */
+
+.theme-animations-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -10;
+  overflow: hidden;
+}
+
+/* ===== ÉLÉMENTS ANIMÉS ===== */
+
+.theme-animation-element {
+  position: absolute;
+  font-size: 20px;
+  pointer-events: none;
+  user-select: none;
+  top: 0;
+  left: 0;
+  /* Optimisations GPU */
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+/* Animation des icônes rebondissantes */
+.bouncing-icon {
+  animation: fadeIn 0.5s ease-in forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: inherit;
+  }
+}
+
+/* ===== SUPPORT DU MODE RÉDUIT DE MOUVEMENT ===== */
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-animations-container {
+    display: none !important;
+  }
+
+  .theme-animation-element {
+    animation: none !important;
+  }
+}
+
+/* ===== Z-INDEX ET LAYERING ===== */
+
+/* Les animations doivent rester en arrière-plan */
+.theme-animations-container {
+  z-index: -10;
+}
+
+/* Le contenu de la popup au premier plan */
+.popup {
+  position: relative;
+  z-index: 1;
+}
+
+/* Les cartes et éléments interactifs doivent être au premier plan */
+.card,
+.header,
+.notification-container,
+.theme-dropdown {
+  position: relative;
+  z-index: 2;
+}

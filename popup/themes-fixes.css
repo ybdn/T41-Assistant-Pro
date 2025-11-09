@@ -1,0 +1,189 @@
+/**
+ * T41 Assistant Pro - Corrections des bugs d'affichage
+ * Fixes pour le header et autres éléments d'interface
+ */
+
+/* ===== CORRECTION DU HEADER ===== */
+
+/* Forcer une hauteur et padding fixes pour le header */
+.header {
+  min-height: auto !important;
+  max-height: none !important;
+  height: auto !important;
+  padding-bottom: var(--spacing-sm) !important;
+  position: relative !important;
+  overflow: visible !important;
+  border-bottom: 1px solid var(--neutral-200) !important;
+}
+
+/* S'assurer que le header-content est bien aligné */
+.header-content {
+  display: flex !important;
+  align-items: center !important;
+  gap: var(--spacing-md) !important;
+  width: 100% !important;
+  min-height: auto !important;
+  height: auto !important;
+}
+
+/* Corriger l'icône de l'app */
+.app-icon {
+  width: 36px !important;
+  height: 36px !important;
+  min-width: 36px !important;
+  min-height: 36px !important;
+}
+
+/* Corriger le titre de l'app */
+.app-title {
+  font-size: var(--font-size-xl) !important;
+  margin: 0 !important;
+  flex-grow: 1 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  line-height: 1.2 !important;
+}
+
+/* ===== CORRECTION DU MENU DÉROULANT ===== */
+
+/* S'assurer que le conteneur theme-toggle ne prend pas trop de place */
+.theme-toggle {
+  display: flex !important;
+  align-items: center !important;
+  min-width: auto !important;
+  max-width: none !important;
+  height: auto !important;
+  position: relative !important;
+}
+
+/* Le sélecteur de thème doit être inline */
+.theme-selector {
+  position: relative !important;
+  display: inline-block !important;
+  height: auto !important;
+  min-height: auto !important;
+}
+
+/* Le bouton du dropdown ne doit pas déformer le header */
+.theme-dropdown-btn {
+  padding: var(--spacing-xs) !important;
+  min-width: auto !important;
+  width: auto !important;
+  height: auto !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Le dropdown doit être positionné en dehors du flux */
+.theme-dropdown {
+  position: absolute !important;
+  top: calc(100% + 8px) !important;
+  right: 0 !important;
+  left: auto !important;
+  min-width: 220px !important;
+  max-width: 280px !important;
+  z-index: 1000 !important;
+  margin: 0 !important;
+}
+
+/* Quand le dropdown est caché, il ne doit pas affecter le layout */
+.theme-dropdown.hidden {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+}
+
+/* ===== CORRECTION DES BOUTONS ICON ===== */
+
+.icon-button {
+  padding: var(--spacing-xs) !important;
+  min-width: auto !important;
+  min-height: auto !important;
+  width: auto !important;
+  height: auto !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* ===== CORRECTION DES Z-INDEX ===== */
+
+/* Hiérarchie des z-index */
+.theme-animations-container {
+  z-index: -10 !important;
+}
+
+.popup {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+/* Le header doit avoir un z-index élevé pour que ses enfants (dropdown) soient au-dessus */
+.header {
+  position: relative !important;
+  z-index: 100 !important;
+}
+
+/* Les cards ont un z-index inférieur au header */
+.card {
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+/* Le theme-toggle doit aussi avoir un z-index élevé */
+.theme-toggle {
+  position: relative !important;
+  z-index: 100 !important;
+}
+
+/* Le theme-selector hérite du contexte */
+.theme-selector {
+  position: relative !important;
+  z-index: 100 !important;
+}
+
+/* Le dropdown a un z-index très élevé */
+.theme-dropdown {
+  position: absolute !important;
+  z-index: 999 !important;
+}
+
+.notification-container {
+  z-index: 9999 !important;
+}
+
+/* ===== CORRECTION DU CONTENEUR POPUP ===== */
+
+.popup {
+  width: 100% !important;
+  min-width: 340px !important;
+  max-width: 340px !important;
+  height: auto !important;
+  min-height: fit-content !important;
+  overflow: visible !important;
+  box-sizing: border-box !important;
+}
+
+/* ===== CORRECTION DES CARDS ===== */
+
+.card {
+  width: 100% !important;
+  box-sizing: border-box !important;
+  overflow: visible !important;
+}
+
+/* ===== ACCESSIBILITÉ ET RESPONSIVE ===== */
+
+/* Empêcher les débordements */
+* {
+  box-sizing: border-box !important;
+}
+
+/* S'assurer que les tooltips ne causent pas de problèmes */
+.tooltip-text {
+  position: absolute !important;
+  z-index: 10000 !important;
+}

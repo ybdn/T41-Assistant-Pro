@@ -1,0 +1,673 @@
+/**
+ * T41 Assistant Pro - Thèmes festifs français
+ * Styles CSS pour les 6 thèmes festifs
+ */
+
+/* ===== STYLES DU MENU DÉROULANT DE THÈMES ===== */
+
+.theme-selector {
+  position: relative;
+}
+
+.theme-dropdown-btn {
+  color: var(--primary);
+  font-size: 16px;
+}
+
+.theme-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: var(--theme-card-bg);
+  border: 1px solid var(--theme-border);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-xl);
+  min-width: 220px;
+  z-index: 1000;
+  overflow: hidden;
+  opacity: 1;
+  transform: translateY(0);
+  transition: all var(--transition-normal);
+}
+
+.theme-dropdown.hidden {
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
+}
+
+.theme-dropdown-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--theme-border);
+  background: var(--theme-primary-bg);
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  color: var(--theme-text-dark);
+}
+
+.theme-auto-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.theme-auto-toggle input[type="checkbox"] {
+  cursor: pointer;
+  width: 14px;
+  height: 14px;
+}
+
+.theme-auto-label {
+  font-size: var(--font-size-xs);
+  color: var(--theme-text);
+}
+
+.theme-dropdown-list {
+  padding: var(--spacing-xs);
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.theme-dropdown-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.theme-dropdown-list::-webkit-scrollbar-track {
+  background: var(--neutral-100);
+  border-radius: var(--border-radius-full);
+}
+
+.theme-dropdown-list::-webkit-scrollbar-thumb {
+  background: var(--neutral-300);
+  border-radius: var(--border-radius-full);
+}
+
+.theme-section-title {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--theme-text-light);
+  padding: var(--spacing-sm) var(--spacing-md);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: var(--spacing-xs);
+}
+
+.theme-section-title:first-child {
+  margin-top: 0;
+}
+
+.theme-option {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  border: none;
+  background: transparent;
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  width: 100%;
+  transition: all var(--transition-normal);
+  position: relative;
+  color: var(--theme-text);
+}
+
+.theme-option:hover {
+  background: var(--theme-primary-bg);
+}
+
+.theme-option.active {
+  background: var(--theme-primary-bg);
+  font-weight: 600;
+}
+
+.theme-icon {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.theme-name {
+  flex: 1;
+  text-align: left;
+  font-size: var(--font-size-sm);
+}
+
+.theme-check {
+  color: var(--primary);
+  font-size: var(--font-size-xs);
+}
+
+/* ===== THÈME NOËL 🎄 ===== */
+
+body.theme-christmas {
+  --theme-bg: #0d1b1e;
+  --theme-card-bg: #1a2f35;
+  --theme-text: #e8f2f0;
+  --theme-text-dark: #ffffff;
+  --theme-text-light: #a8c5c0;
+  --theme-border: #2d4a4e;
+  --theme-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+  --theme-shadow-hover: 0 8px 15px rgba(0, 0, 0, 0.5);
+  --theme-primary-bg: rgba(220, 38, 38, 0.15);
+  --theme-header-border: #2d4a4e;
+  --theme-input-bg: #243a40;
+  --theme-badge-bg: #243a40;
+  --theme-badge-text: #c9ada7;
+  --theme-button-hover: rgba(220, 38, 38, 0.2);
+  --theme-link: #fca5a5;
+  --theme-gradient: linear-gradient(135deg, rgba(220, 38, 38, 0.15), #0d1b1e);
+  --theme-glass: rgba(26, 47, 53, 0.7);
+
+  /* Couleurs spécifiques au thème Noël */
+  --christmas-red: #dc2626;
+  --christmas-green: #16a34a;
+  --christmas-gold: #eab308;
+  --christmas-white: #f8fafc;
+}
+
+body.theme-christmas::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(220, 38, 38, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(22, 163, 74, 0.1) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+body.theme-christmas .popup {
+  background: var(--theme-gradient);
+  position: relative;
+}
+
+/* Emojis animés gérés par themes-animations.js */
+
+body.theme-christmas .btn-primary {
+  background: linear-gradient(135deg, var(--christmas-red), #b91c1c);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
+}
+
+body.theme-christmas .btn-primary:hover {
+  box-shadow: 0 6px 16px rgba(220, 38, 38, 0.5);
+}
+
+body.theme-christmas .card::before {
+  background: linear-gradient(90deg, var(--christmas-red), var(--christmas-green), var(--christmas-gold));
+}
+
+body.theme-christmas .app-title {
+  background: linear-gradient(135deg, var(--christmas-red), var(--christmas-gold), var(--christmas-green));
+  background-clip: text;
+  -webkit-background-clip: text;
+}
+
+body.theme-christmas .card-title::before {
+  background: linear-gradient(180deg, var(--christmas-red), var(--christmas-green));
+}
+
+/* ===== THÈME SAINTE GENEVIÈVE ⭐ ===== */
+
+body.theme-genevieve {
+  --theme-bg: #0f172a;
+  --theme-card-bg: #1e293b;
+  --theme-text: #cbd5e1;
+  --theme-text-dark: #f1f5f9;
+  --theme-text-light: #94a3b8;
+  --theme-border: #334155;
+  --theme-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+  --theme-shadow-hover: 0 8px 16px rgba(0, 0, 0, 0.6);
+  --theme-primary-bg: rgba(251, 191, 36, 0.12);
+  --theme-header-border: #334155;
+  --theme-input-bg: #293548;
+  --theme-badge-bg: #293548;
+  --theme-badge-text: #94a3b8;
+  --theme-button-hover: rgba(251, 191, 36, 0.2);
+  --theme-link: #fbbf24;
+  --theme-gradient: linear-gradient(135deg, rgba(30, 41, 59, 0.9), #0f172a);
+  --theme-glass: rgba(30, 41, 59, 0.7);
+
+  /* Couleurs spécifiques Sainte Geneviève */
+  --genevieve-gold: #fbbf24;
+  --genevieve-blue: #3b82f6;
+  --genevieve-silver: #cbd5e1;
+}
+
+body.theme-genevieve::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image:
+    radial-gradient(circle at 50% 20%, rgba(251, 191, 36, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 30% 60%, rgba(59, 130, 246, 0.06) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Emojis animés gérés par themes-animations.js */
+
+body.theme-genevieve .btn-primary {
+  background: linear-gradient(135deg, var(--genevieve-gold), #d97706);
+  box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
+}
+
+body.theme-genevieve .btn-primary:hover {
+  box-shadow: 0 6px 16px rgba(251, 191, 36, 0.4);
+}
+
+body.theme-genevieve .card::before {
+  background: linear-gradient(90deg, var(--genevieve-gold), var(--genevieve-blue));
+}
+
+body.theme-genevieve .app-title {
+  background: linear-gradient(135deg, var(--genevieve-gold), var(--genevieve-silver));
+  background-clip: text;
+  -webkit-background-clip: text;
+}
+
+body.theme-genevieve .status-dot.active {
+  background-color: var(--genevieve-gold);
+  box-shadow: 0 0 15px var(--genevieve-gold);
+}
+
+/* ===== THÈME PÂQUES 🌸 ===== */
+
+body.theme-easter {
+  --theme-bg: #fef3f6;
+  --theme-card-bg: #ffffff;
+  --theme-text: #4a044e;
+  --theme-text-dark: #4a044e;
+  --theme-text-light: #a21caf;
+  --theme-border: #f9a8d4;
+  --theme-shadow: 0 4px 6px rgba(219, 39, 119, 0.1);
+  --theme-shadow-hover: 0 8px 15px rgba(219, 39, 119, 0.15);
+  --theme-primary-bg: rgba(236, 72, 153, 0.08);
+  --theme-header-border: #f9a8d4;
+  --theme-input-bg: #fef3f6;
+  --theme-badge-bg: #fcf3f7;
+  --theme-badge-text: #a21caf;
+  --theme-button-hover: rgba(236, 72, 153, 0.12);
+  --theme-link: #db2777;
+  --theme-gradient: linear-gradient(135deg, rgba(251, 207, 232, 0.3), rgba(253, 242, 248, 0.5));
+  --theme-glass: rgba(255, 255, 255, 0.8);
+
+  /* Couleurs spécifiques Pâques */
+  --easter-pink: #ec4899;
+  --easter-purple: #a855f7;
+  --easter-yellow: #fde047;
+  --easter-green: #86efac;
+  --easter-blue: #7dd3fc;
+}
+
+body.theme-easter::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image:
+    radial-gradient(circle at 70% 20%, rgba(236, 72, 153, 0.1) 0%, transparent 40%),
+    radial-gradient(circle at 30% 80%, rgba(168, 85, 247, 0.08) 0%, transparent 40%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Emojis animés gérés par themes-animations.js */
+
+body.theme-easter .btn-primary {
+  background: linear-gradient(135deg, var(--easter-pink), var(--easter-purple));
+  box-shadow: 0 4px 12px rgba(236, 72, 153, 0.3);
+}
+
+body.theme-easter .btn-primary:hover {
+  box-shadow: 0 6px 16px rgba(236, 72, 153, 0.4);
+}
+
+body.theme-easter .card::before {
+  background: linear-gradient(90deg, var(--easter-pink), var(--easter-purple), var(--easter-yellow), var(--easter-green), var(--easter-blue));
+  height: 3px;
+}
+
+body.theme-easter .app-title {
+  background: linear-gradient(135deg, var(--easter-pink), var(--easter-purple));
+  background-clip: text;
+  -webkit-background-clip: text;
+}
+
+body.theme-easter .card-title::before {
+  background: linear-gradient(180deg, var(--easter-pink), var(--easter-purple));
+}
+
+body.theme-easter .status-dot.active {
+  background: linear-gradient(135deg, var(--easter-pink), var(--easter-purple));
+  box-shadow: 0 0 12px var(--easter-pink);
+}
+
+/* ===== THÈME HALLOWEEN 🎃 ===== */
+
+body.theme-halloween {
+  --theme-bg: #1a0a0f;
+  --theme-card-bg: #2d1b20;
+  --theme-text: #e4d4d9;
+  --theme-text-dark: #fef3f6;
+  --theme-text-light: #b89ca4;
+  --theme-border: #4a2c35;
+  --theme-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+  --theme-shadow-hover: 0 8px 18px rgba(0, 0, 0, 0.7);
+  --theme-primary-bg: rgba(249, 115, 22, 0.12);
+  --theme-header-border: #4a2c35;
+  --theme-input-bg: #3a252b;
+  --theme-badge-bg: #3a252b;
+  --theme-badge-text: #b89ca4;
+  --theme-button-hover: rgba(249, 115, 22, 0.2);
+  --theme-link: #fb923c;
+  --theme-gradient: linear-gradient(135deg, rgba(45, 27, 32, 0.9), #1a0a0f);
+  --theme-glass: rgba(45, 27, 32, 0.7);
+
+  /* Couleurs spécifiques Halloween */
+  --halloween-orange: #f97316;
+  --halloween-purple: #9333ea;
+  --halloween-green: #22c55e;
+  --halloween-black: #000000;
+}
+
+body.theme-halloween::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(249, 115, 22, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(147, 51, 234, 0.06) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Emojis animés gérés par themes-animations.js */
+
+body.theme-halloween .btn-primary {
+  background: linear-gradient(135deg, var(--halloween-orange), var(--halloween-purple));
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.4);
+}
+
+body.theme-halloween .btn-primary:hover {
+  box-shadow: 0 6px 16px rgba(249, 115, 22, 0.5);
+}
+
+body.theme-halloween .card::before {
+  background: linear-gradient(90deg, var(--halloween-orange), var(--halloween-purple));
+}
+
+body.theme-halloween .app-title {
+  background: linear-gradient(135deg, var(--halloween-orange), var(--halloween-purple));
+  background-clip: text;
+  -webkit-background-clip: text;
+  animation: glow 2s ease-in-out infinite;
+}
+
+@keyframes glow {
+  0%, 100% { filter: drop-shadow(0 0 2px rgba(249, 115, 22, 0.5)); }
+  50% { filter: drop-shadow(0 0 6px rgba(249, 115, 22, 0.8)); }
+}
+
+body.theme-halloween .card-title::before {
+  background: linear-gradient(180deg, var(--halloween-orange), var(--halloween-purple));
+}
+
+/* ===== THÈME NOUVEL AN 🎆 ===== */
+
+body.theme-newyear {
+  --theme-bg: #0a0b1e;
+  --theme-card-bg: #161832;
+  --theme-text: #dfe6ff;
+  --theme-text-dark: #ffffff;
+  --theme-text-light: #9aa5d9;
+  --theme-border: #2a2f52;
+  --theme-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  --theme-shadow-hover: 0 8px 18px rgba(0, 0, 0, 0.6);
+  --theme-primary-bg: rgba(59, 130, 246, 0.12);
+  --theme-header-border: #2a2f52;
+  --theme-input-bg: #1e2340;
+  --theme-badge-bg: #1e2340;
+  --theme-badge-text: #9aa5d9;
+  --theme-button-hover: rgba(59, 130, 246, 0.2);
+  --theme-link: #60a5fa;
+  --theme-gradient: linear-gradient(135deg, rgba(22, 24, 50, 0.9), #0a0b1e);
+  --theme-glass: rgba(22, 24, 50, 0.7);
+
+  /* Couleurs spécifiques Nouvel An */
+  --newyear-blue: #3b82f6;
+  --newyear-gold: #fbbf24;
+  --newyear-silver: #cbd5e1;
+  --newyear-purple: #a78bfa;
+}
+
+body.theme-newyear::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image:
+    radial-gradient(circle at 30% 20%, rgba(59, 130, 246, 0.1) 0%, transparent 30%),
+    radial-gradient(circle at 70% 60%, rgba(251, 191, 36, 0.08) 0%, transparent 30%),
+    radial-gradient(circle at 50% 90%, rgba(167, 139, 250, 0.06) 0%, transparent 30%);
+  pointer-events: none;
+  z-index: -1;
+  animation: fireworks 4s ease-in-out infinite;
+}
+
+@keyframes fireworks {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; }
+}
+
+/* Emojis animés gérés par themes-animations.js */
+
+body.theme-newyear .btn-primary {
+  background: linear-gradient(135deg, var(--newyear-blue), var(--newyear-purple));
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+body.theme-newyear .btn-primary:hover {
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.5);
+}
+
+body.theme-newyear .card::before {
+  background: linear-gradient(90deg, var(--newyear-blue), var(--newyear-gold), var(--newyear-silver), var(--newyear-purple));
+  animation: shimmer 3s linear infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+body.theme-newyear .app-title {
+  background: linear-gradient(135deg, var(--newyear-blue), var(--newyear-gold), var(--newyear-purple));
+  background-clip: text;
+  -webkit-background-clip: text;
+  background-size: 200% 200%;
+  animation: gradientShift 3s ease infinite;
+}
+
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* ===== THÈME 14 JUILLET 🇫🇷 ===== */
+
+body.theme-bastille {
+  --theme-bg: #f8fafc;
+  --theme-card-bg: #ffffff;
+  --theme-text: #1e293b;
+  --theme-text-dark: #0f172a;
+  --theme-text-light: #64748b;
+  --theme-border: #cbd5e1;
+  --theme-shadow: 0 4px 6px rgba(30, 64, 175, 0.08);
+  --theme-shadow-hover: 0 8px 15px rgba(30, 64, 175, 0.12);
+  --theme-primary-bg: rgba(30, 64, 175, 0.08);
+  --theme-header-border: #cbd5e1;
+  --theme-input-bg: #f8fafc;
+  --theme-badge-bg: #f1f5f9;
+  --theme-badge-text: #475569;
+  --theme-button-hover: rgba(30, 64, 175, 0.12);
+  --theme-link: #1e40af;
+  --theme-gradient: linear-gradient(135deg, rgba(219, 234, 254, 0.5), rgba(248, 250, 252, 0.8));
+  --theme-glass: rgba(255, 255, 255, 0.85);
+
+  /* Couleurs spécifiques 14 Juillet */
+  --bastille-blue: #1e40af;
+  --bastille-white: #ffffff;
+  --bastille-red: #dc2626;
+}
+
+body.theme-bastille::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image:
+    linear-gradient(to right, rgba(30, 64, 175, 0.05) 0%, transparent 33%),
+    linear-gradient(to right, transparent 33%, rgba(255, 255, 255, 0.1) 33%, rgba(255, 255, 255, 0.1) 66%, transparent 66%),
+    linear-gradient(to right, transparent 66%, rgba(220, 38, 38, 0.05) 66%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Emojis animés gérés par themes-animations.js */
+
+body.theme-bastille .btn-primary {
+  background: linear-gradient(135deg, var(--bastille-blue), #1e3a8a);
+  box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
+}
+
+body.theme-bastille .btn-primary:hover {
+  box-shadow: 0 6px 16px rgba(30, 64, 175, 0.4);
+}
+
+body.theme-bastille .card::before {
+  background: linear-gradient(90deg, var(--bastille-blue), var(--bastille-white), var(--bastille-red));
+  height: 4px;
+}
+
+body.theme-bastille .app-title {
+  background: linear-gradient(135deg, var(--bastille-blue), var(--bastille-red));
+  background-clip: text;
+  -webkit-background-clip: text;
+}
+
+body.theme-bastille .card-title::before {
+  background: linear-gradient(180deg, var(--bastille-blue), var(--bastille-white), var(--bastille-red));
+}
+
+body.theme-bastille .status-dot.active {
+  background: linear-gradient(135deg, var(--bastille-blue), var(--bastille-red));
+  box-shadow: 0 0 12px var(--bastille-blue);
+}
+
+/* ===== ANIMATIONS ET TRANSITIONS GLOBALES ===== */
+
+/* Transition fluide entre tous les thèmes */
+body,
+.card,
+.btn,
+.icon-button,
+.status-indicator,
+.status-badge,
+.header,
+.popup,
+.progress-bar,
+.notification,
+.dev-link,
+.app-title,
+.card-title,
+.info-text,
+.version-info,
+.status-message,
+.progress-text,
+.todo-item,
+.todo-input {
+  transition: all 0.4s ease;
+}
+
+/* Animation de changement de thème */
+body.theme-transition {
+  animation: themeTransition 0.4s ease forwards;
+}
+
+@keyframes themeTransition {
+  0% {
+    opacity: 0.85;
+    transform: scale(0.99);
+  }
+  50% {
+    opacity: 0.95;
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Accessibilité : Mode sombre pour le menu déroulant */
+body.theme-christmas .theme-dropdown,
+body.theme-genevieve .theme-dropdown,
+body.theme-halloween .theme-dropdown,
+body.theme-newyear .theme-dropdown,
+body.dark-theme .theme-dropdown {
+  background: var(--theme-card-bg);
+  border-color: var(--theme-border);
+  color: var(--theme-text);
+}
+
+body.theme-christmas .theme-dropdown-header,
+body.theme-genevieve .theme-dropdown-header,
+body.theme-halloween .theme-dropdown-header,
+body.theme-newyear .theme-dropdown-header,
+body.dark-theme .theme-dropdown-header {
+  background: var(--theme-primary-bg);
+  border-bottom-color: var(--theme-border);
+}
+
+body.theme-christmas .theme-option:hover,
+body.theme-genevieve .theme-option:hover,
+body.theme-halloween .theme-option:hover,
+body.theme-newyear .theme-option:hover,
+body.dark-theme .theme-option:hover {
+  background: var(--theme-button-hover);
+}
+
+body.theme-christmas .theme-dropdown-list::-webkit-scrollbar-thumb,
+body.theme-genevieve .theme-dropdown-list::-webkit-scrollbar-thumb,
+body.theme-halloween .theme-dropdown-list::-webkit-scrollbar-thumb,
+body.theme-newyear .theme-dropdown-list::-webkit-scrollbar-thumb,
+body.dark-theme .theme-dropdown-list::-webkit-scrollbar-thumb {
+  background: var(--theme-border);
+}
+
+/* Amélioration du contraste pour l'accessibilité */
+body.theme-easter .card {
+  border: 2px solid var(--theme-border);
+}
+
+body.theme-bastille .card {
+  border: 2px solid var(--theme-border);
+}
