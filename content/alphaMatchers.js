@@ -129,9 +129,23 @@
       action: (element) => element.click(),
     },
     {
-      name: "Cliquer sur 'Effacer tout'",
+      name: "Cliquer sur 'Effacer tout' (si nécessaire)",
       selector: "#tabs\\:tabsP\\:FormulaireFiltreStationAlphaPersonneP\\:effacerToutPersonneP",
-      action: (element) => element.click(),
+      action: (element) => {
+        // Vérifier si l'initiateur est vide et si Contrôle est déjà sélectionné
+        const initiateurInput = document.querySelector("#tabs\\:tabsP\\:FormulaireFiltreStationAlphaPersonneP\\:initiateurPersonneP");
+        const etapeLabel = document.querySelector("label#tabs\\:tabsP\\:FormulaireFiltreStationAlphaPersonneP\\:etapeTraitementPersonneP_label");
+
+        const initiateurIsEmpty = !initiateurInput || !initiateurInput.value || initiateurInput.value.trim() === "";
+        const controleIsSelected = etapeLabel && etapeLabel.textContent.trim() === "Contrôle";
+
+        if (initiateurIsEmpty && controleIsSelected) {
+          logInfo("Initiateur vide et Contrôle déjà sélectionné, pas besoin d'effacer tout.");
+        } else {
+          logInfo("Clic sur 'Effacer tout' pour réinitialiser les filtres.");
+          element.click();
+        }
+      },
     },
     {
       name: "Vider le champ initiateur (si nécessaire)",
