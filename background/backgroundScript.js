@@ -162,28 +162,40 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 });
 
-// Gérer le clic sur l'icône - utiliser pour injecter alphaMatchers.js
+// Gérer le clic sur l'icône - ouvrir la fenêtre détachée
 browser.action.onClicked.addListener(async (tab) => {
-  console.log("L'icône de l'extension a été cliquée. Activation de alphaMatchers.js...");
-  
-  if (tab && tab.id) {
-    try {
-      // Injecter le script alphaMatchers.js manuellement
-      await browser.scripting.executeScript({
-        target: { tabId: tab.id },
-        files: ["content/alphaMatchers.js"]
-      });
-      
-      console.log("alphaMatchers.js injecté avec succès");
-      
-      // Maintenant activer le script
-      await browser.tabs.sendMessage(tab.id, { 
-        command: "checkAlphaNumeric" 
-      });
-      
-      console.log("Commande de vérification envoyée à alphaMatchers.js");
-    } catch (error) {
-      console.error("Erreur lors de l'activation de alphaMatchers.js:", error);
+  console.log("L'icône de l'extension a été cliquée. Ouverture de la fenêtre détachée...");
+
+  try {
+    // Vérifier s'il existe déjà une fenêtre détachée
+    const storedWindowId = await browser.storage.local.get('detachedWindowId');
+    if (storedWindowId.detachedWindowId) {
+      try {
+        // Essayer de récupérer la fenêtre existante
+        const existingWindow = await browser.windows.get(storedWindowId.detachedWindowId);
+        if (existingWindow) {
+          console.log("Fenêtre détachée existante trouvée, focus sur celle-ci");
+          await browser.windows.update(existingWindow.id, { focused: true });
+          return;
+        }
+      } catch (e) {
+        console.log("Fenêtre précédente n'existe plus, création d'une nouvelle");
+      }
     }
+
+    // Créer une nouvelle fenêtre popup détachée
+    const popupWindow = await browser.windows.create({
+      url: browser.runtime.getURL('popup/popup.html?detached=true'),
+      type: 'popup',
+      width: 400,
+      height: 600,
+    });
+
+    console.log("Fenêtre popup créée avec l'ID:", popupWindow.id);
+
+    // Sauvegarder l'ID de la fenêtre
+    await browser.storage.local.set({ detachedWindowId: popupWindow.id });
+  } catch (error) {
+    console.error("Erreur lors de la création de la fenêtre détachée:", error);
   }
 });

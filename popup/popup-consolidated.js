@@ -3,8 +3,7 @@
  * Ce fichier combine la logique principale et l'interface utilisateur
  */
 
-// Variables globales pour gérer la fenêtre détachée
-let detachedWindowId = null;
+// Variable globale pour vérifier si on est dans une fenêtre détachée
 let isDetachedWindow = false;
 
 // Vérifier si on est dans une fenêtre détachée
@@ -16,65 +15,6 @@ async function checkIfDetachedWindow() {
   } catch (error) {
     console.error("Erreur lors de la vérification du type de fenêtre:", error);
     return false;
-  }
-}
-
-// Créer une fenêtre popup détachée
-async function createDetachedPopup() {
-  try {
-    console.log("Création d'une fenêtre popup détachée...");
-
-    // Vérifier s'il existe déjà une fenêtre détachée
-    const storedWindowId = await browser.storage.local.get('detachedWindowId');
-    if (storedWindowId.detachedWindowId) {
-      try {
-        // Essayer de récupérer la fenêtre existante
-        const existingWindow = await browser.windows.get(storedWindowId.detachedWindowId);
-        if (existingWindow) {
-          console.log("Fenêtre détachée existante trouvée, focus sur celle-ci");
-          await browser.windows.update(existingWindow.id, { focused: true });
-          return existingWindow.id;
-        }
-      } catch (e) {
-        console.log("Fenêtre précédente n'existe plus, création d'une nouvelle");
-      }
-    }
-
-    // Créer une nouvelle fenêtre popup
-    const popupWindow = await browser.windows.create({
-      url: browser.runtime.getURL('popup/popup.html?detached=true'),
-      type: 'popup',
-      width: 400,
-      height: 600,
-    });
-
-    console.log("Fenêtre popup créée avec l'ID:", popupWindow.id);
-
-    // Sauvegarder l'ID de la fenêtre
-    await browser.storage.local.set({ detachedWindowId: popupWindow.id });
-
-    return popupWindow.id;
-  } catch (error) {
-    console.error("Erreur lors de la création de la fenêtre détachée:", error);
-    return null;
-  }
-}
-
-// Fermer la fenêtre popup détachée
-async function closeDetachedPopup() {
-  try {
-    const storedWindowId = await browser.storage.local.get('detachedWindowId');
-    if (storedWindowId.detachedWindowId) {
-      console.log("Fermeture de la fenêtre détachée:", storedWindowId.detachedWindowId);
-      try {
-        await browser.windows.remove(storedWindowId.detachedWindowId);
-      } catch (e) {
-        console.log("Fenêtre déjà fermée ou introuvable");
-      }
-      await browser.storage.local.remove('detachedWindowId');
-    }
-  } catch (error) {
-    console.error("Erreur lors de la fermeture de la fenêtre détachée:", error);
   }
 }
 
@@ -276,18 +216,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   try {
     const data = await browser.storage.local.get("loopProcessingActive");
     updatePopupUIForLoopState(!!data.loopProcessingActive, 0, null, null);
-
-    // Si on est dans une fenêtre détachée et que le script n'est pas actif,
-    // lancer automatiquement le script
-    if (isDetachedWindow && !data.loopProcessingActive) {
-      console.log("Fenêtre détachée détectée, lancement automatique du script...");
-      // Attendre un court instant pour que l'interface soit prête
-      setTimeout(() => {
-        if (nextActionButton) {
-          nextActionButton.click();
-        }
-      }, 500);
-    }
   } catch (e) {
     console.error("Erreur lecture loopProcessingActive depuis storage:", e);
     updatePopupUIForLoopState(false, 0, null, null);
@@ -346,20 +274,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             });
             updatePopupUIForLoopState(false, 0, null, null);
             showNotification("Traitement arrêté", "info");
-
-            // Si on est dans une fenêtre détachée, la fermer après un court délai
-            if (isDetachedWindow) {
-              console.log("Fermeture de la fenêtre détachée dans 2 secondes...");
-              setTimeout(async () => {
-                try {
-                  await browser.storage.local.remove('detachedWindowId');
-                  const currentWindow = await browser.windows.getCurrent();
-                  await browser.windows.remove(currentWindow.id);
-                } catch (e) {
-                  console.error("Erreur lors de la fermeture de la fenêtre:", e);
-                }
-              }, 2000);
-            }
           } catch (error) {
             console.error(
               "Erreur lors de l'envoi de stopLoopProcessing:",
@@ -373,21 +287,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         } else {
           // Lancer le traitement
           console.log("Bouton 'Lancer la Boucle' cliqué.");
-
-          // Si on est dans la popup normale (pas détachée), créer une fenêtre détachée
-          if (!isDetachedWindow) {
-            console.log("Création d'une fenêtre détachée pour le traitement...");
-            const windowId = await createDetachedPopup();
-            if (windowId) {
-              console.log("Fenêtre détachée créée, fermeture de la popup normale");
-              // La popup normale se fermera automatiquement quand on clique ailleurs
-              // On laisse la fenêtre détachée gérer le lancement du script
-              return;
-            } else {
-              showNotification("Erreur lors de la création de la fenêtre détachée. Le traitement continuera dans cette fenêtre.", "warning");
-            }
-          }
-
           updatePopupUIForLoopState(true, 0, null, null);
           nextActionButton.disabled = true;
           showNotification("Traitement démarré", "success");
@@ -629,20 +528,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             updatePopupUIForLoopState(false, 0, null, null);
             demoProgress = 0;
             showNotification("Traitement effectué", "success");
-
-            // Si on est dans une fenêtre détachée, la fermer après un court délai
-            if (isDetachedWindow) {
-              console.log("Fermeture de la fenêtre détachée dans 2 secondes...");
-              setTimeout(async () => {
-                try {
-                  await browser.storage.local.remove('detachedWindowId');
-                  const currentWindow = await browser.windows.getCurrent();
-                  await browser.windows.remove(currentWindow.id);
-                } catch (e) {
-                  console.error("Erreur lors de la fermeture de la fenêtre:", e);
-                }
-              }, 2000);
-            }
           }, 1000);
         }
       } else if (message.status === "done") {
@@ -678,20 +563,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             demoProgress = 0;
             lastRealProgressTime = null; // Réinitialiser le timestamp
             showNotification("Traitement effectué", "success");
-
-            // Si on est dans une fenêtre détachée, la fermer après un court délai
-            if (isDetachedWindow) {
-              console.log("Fermeture de la fenêtre détachée dans 2 secondes...");
-              setTimeout(async () => {
-                try {
-                  await browser.storage.local.remove('detachedWindowId');
-                  const currentWindow = await browser.windows.getCurrent();
-                  await browser.windows.remove(currentWindow.id);
-                } catch (e) {
-                  console.error("Erreur lors de la fermeture de la fenêtre:", e);
-                }
-              }, 2000);
-            }
           }, 1000);
       } else if (message.command === "validationResult") {
         console.log(
@@ -733,20 +604,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         } else {
           showNotification("Traitement arrêté: " + message.reason, "info");
         }
-
-        // Si on est dans une fenêtre détachée, la fermer après un court délai
-        if (isDetachedWindow) {
-          console.log("Fermeture de la fenêtre détachée dans 2 secondes...");
-          setTimeout(async () => {
-            try {
-              await browser.storage.local.remove('detachedWindowId');
-              const currentWindow = await browser.windows.getCurrent();
-              await browser.windows.remove(currentWindow.id);
-            } catch (e) {
-              console.error("Erreur lors de la fermeture de la fenêtre:", e);
-            }
-          }, 2000);
-        }
       }
     } else {
       if (message.command === "updateLoopStateFromBackground") {
@@ -757,30 +614,28 @@ document.addEventListener("DOMContentLoaded", async () => {
     return false;
   });
 
-  // Si on est dans une fenêtre détachée, écouter l'événement de fermeture
-  if (isDetachedWindow) {
-    window.addEventListener('beforeunload', async (event) => {
-      console.log("Fermeture de la fenêtre détachée détectée");
+  // Écouter l'événement de fermeture de la fenêtre
+  window.addEventListener('beforeunload', async (event) => {
+    console.log("Fermeture de la fenêtre détectée");
 
-      // Si le script est actif, l'arrêter
-      if (popupLoopStateActive) {
-        console.log("Arrêt du script en cours à cause de la fermeture de la fenêtre...");
-        try {
-          const tab = await getActiveTab();
-          if (tab && tab.id) {
-            await browser.tabs.sendMessage(tab.id, {
-              command: "stopLoopProcessing",
-            });
-          }
-        } catch (error) {
-          console.error("Erreur lors de l'arrêt du script:", error);
+    // Si le script est actif, l'arrêter
+    if (popupLoopStateActive) {
+      console.log("Arrêt du script en cours à cause de la fermeture de la fenêtre...");
+      try {
+        const tab = await getActiveTab();
+        if (tab && tab.id) {
+          await browser.tabs.sendMessage(tab.id, {
+            command: "stopLoopProcessing",
+          });
         }
+      } catch (error) {
+        console.error("Erreur lors de l'arrêt du script:", error);
       }
+    }
 
-      // Nettoyer le storage local
-      await browser.storage.local.remove('detachedWindowId');
-    });
-  }
+    // Nettoyer le storage local
+    await browser.storage.local.remove('detachedWindowId');
+  });
 
   // Signaler que l'initialisation est terminée
   console.log("✅ Initialisation T41 Assistant terminée avec succès");
