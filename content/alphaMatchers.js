@@ -9,6 +9,8 @@
   const MIN_SEQUENCE_DURATION = 4000; // Durée minimale en millisecondes
   let loopProcessingActive = false; // NOUVELLE VARIABLE POUR LE MODE BOUCLE
   let progressUpdateTimer = null; // Timer pour les mises à jour de progression
+  let retryCountEcranAccueil = 0; // Compteur de tentatives pour l'écran d'accueil
+  const MAX_RETRY_ATTEMPTS = 3; // Nombre maximum de tentatives
   const NATINF_JSON_PATH = "data/natinf-survey.json";
   const NATINF_CODE_REGEX = /^\s*([A-Z0-9]{1,6})\s*(?:-|$)/i;
   const NATINF_COMMENT_SELECTOR =
@@ -172,52 +174,57 @@
     {
       name: "Vérifier la disponibilité des fiches",
       selector: "body", // Sélecteur générique car on vérifie plusieurs éléments
-      action: async (element) => {
-        logInfo("Vérification de la disponibilité des fiches...");
+      action: (element) => {
+        logInfo(`Vérification de la disponibilité des fiches (tentative ${retryCountEcranAccueil + 1}/${MAX_RETRY_ATTEMPTS})...`);
 
-        // Attendre que le chargement soit terminé
-        await waitForLoadingToComplete();
+        // Attendre un peu pour que le DOM soit stabilisé après le clic sur Rafraîchir
+        setTimeout(async () => {
+          // Vérifier si la liste est vide
+          const emptyListElement = document.querySelector("tr.ui-datatable-empty-message td");
+          const isListEmpty = emptyListElement && emptyListElement.textContent.includes("Liste vide");
 
-        // Attendre un peu plus pour que le DOM soit stabilisé
-        await new Promise(resolve => setTimeout(resolve, 1000));
+          // Vérifier si des dossiers sont occupés
+          const errorMessageElement = document.querySelector("#tabs\\:tabsP\\:FormulaireFiltreStationAlphaPersonneP\\:messageErreurPersonneP");
+          const hasBusyFiles = errorMessageElement && errorMessageElement.textContent.includes("Dossier(s) occupé(s)");
 
-        // Vérifier si la liste est vide
-        const emptyListElement = document.querySelector("tr.ui-datatable-empty-message td");
-        const isListEmpty = emptyListElement && emptyListElement.textContent.includes("Liste vide");
+          if (isListEmpty || hasBusyFiles) {
+            const reason = isListEmpty ? "Liste vide" : "Dossier(s) occupé(s)";
+            retryCountEcranAccueil++;
 
-        // Vérifier si des dossiers sont occupés
-        const errorMessageElement = document.querySelector("#tabs\\:tabsP\\:FormulaireFiltreStationAlphaPersonneP\\:messageErreurPersonneP");
-        const hasBusyFiles = errorMessageElement && errorMessageElement.textContent.includes("Dossier(s) occupé(s)");
+            if (retryCountEcranAccueil < MAX_RETRY_ATTEMPTS) {
+              logInfo(`⚠️ ${reason} détecté, nouvelle tentative (${retryCountEcranAccueil}/${MAX_RETRY_ATTEMPTS}) dans 3 secondes...`);
 
-        if (isListEmpty) {
-          logInfo("⚠️ Liste vide détectée, nouvelle tentative de rafraîchissement dans 3 secondes...");
-          await new Promise(resolve => setTimeout(resolve, 3000));
+              await new Promise(resolve => setTimeout(resolve, 3000));
 
-          // Re-cliquer sur Rafraîchir
-          const refreshButton = document.querySelector("#tabs\\:tabsP\\:FormulaireFiltreStationAlphaPersonneP\\:raffraichirPersonneP");
-          if (refreshButton) {
-            refreshButton.click();
-            logInfo("Bouton Rafraîchir cliqué à nouveau.");
+              // Re-cliquer sur Rafraîchir
+              const refreshButton = document.querySelector("#tabs\\:tabsP\\:FormulaireFiltreStationAlphaPersonneP\\:raffraichirPersonneP");
+              if (refreshButton) {
+                refreshButton.click();
+                logInfo("Bouton Rafraîchir cliqué à nouveau.");
 
-            // Décrementer currentStepIndex pour refaire cette étape de vérification
-            currentStepIndex--;
+                // Attendre le chargement après le clic
+                await waitForLoadingToComplete();
+                await new Promise(resolve => setTimeout(resolve, 1000));
+
+                // Revenir à cette étape de vérification
+                currentStepIndex = 4; // Étape de vérification
+                runEcranAccueilSteps();
+              }
+            } else {
+              logInfo(`❌ ${reason} après ${MAX_RETRY_ATTEMPTS} tentatives. Arrêt de la boucle.`);
+              loopProcessingActive = false;
+              await browser.storage.local.set({ loopProcessingActive: false });
+              browser.runtime.sendMessage({
+                command: "loopProcessingStopped",
+                reason: "max_retry_attempts_reached",
+                details: `${reason} après ${MAX_RETRY_ATTEMPTS} tentatives`,
+              }).catch((e) => console.warn("Erreur envoi message loopProcessingStopped:", e));
+            }
+          } else {
+            logInfo("✅ Des fiches sont disponibles, poursuite du traitement.");
+            retryCountEcranAccueil = 0; // Réinitialiser le compteur en cas de succès
           }
-        } else if (hasBusyFiles) {
-          logInfo("⚠️ Dossiers occupés détectés, nouvelle tentative de rafraîchissement dans 3 secondes...");
-          await new Promise(resolve => setTimeout(resolve, 3000));
-
-          // Re-cliquer sur Rafraîchir
-          const refreshButton = document.querySelector("#tabs\\:tabsP\\:FormulaireFiltreStationAlphaPersonneP\\:raffraichirPersonneP");
-          if (refreshButton) {
-            refreshButton.click();
-            logInfo("Bouton Rafraîchir cliqué à nouveau.");
-
-            // Décrementer currentStepIndex pour refaire cette étape de vérification
-            currentStepIndex--;
-          }
-        } else {
-          logInfo("✅ Des fiches sont disponibles, poursuite du traitement.");
-        }
+        }, 1500); // Délai pour laisser le DOM se stabiliser
       },
     },
     {
@@ -2338,6 +2345,7 @@
           // Lancer le traitement approprié selon la page
           if (isOnEcranAccueil) {
             logInfo("Démarrage du traitement ECRAN D'ACCUEIL");
+            retryCountEcranAccueil = 0; // Réinitialiser le compteur de retry
             runEcranAccueilSteps();
             sendResponse({ success: true, validationResult: true, pageType: "ecranAccueil" });
           } else if (isOnControleFiche) {
@@ -2433,6 +2441,7 @@
             // Réinitialiser les états pour la nouvelle page
             currentStepIndex = 0;
             sequenceStartTime = Date.now();
+            retryCountEcranAccueil = 0; // Réinitialiser le compteur de retry
 
             if (isOnEcranAccueil) {
               logInfo("Lancement du traitement de l'ECRAN D'ACCUEIL");
