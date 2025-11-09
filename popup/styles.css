@@ -948,7 +948,7 @@ body {
 
 /* Conteneur de la liste */
 .todo-list-container {
-  max-height: 320px;
+  max-height: 95px;
   overflow-y: auto;
   overflow-x: hidden;
   padding: var(--spacing-xxs);

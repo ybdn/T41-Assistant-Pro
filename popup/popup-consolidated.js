@@ -803,8 +803,8 @@ document.addEventListener("DOMContentLoaded", async () => {
    * Mettre à jour le compteur de todos
    */
   function updateCount() {
-    const count = todos.length;
-    todoCount.textContent = count;
+    const count = todos.filter(t => !t.completed).length;
+    todoCount.textContent = `(${count})`;
 
     // Animation du compteur
     todoCount.parentElement.style.transform = "scale(1.1)";
