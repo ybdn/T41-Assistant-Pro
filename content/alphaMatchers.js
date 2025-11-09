@@ -55,69 +55,71 @@
 
     const errors = [];
 
-    // 1. Vérifier la présence d'au moins deux doigts avec value="P"
-    // On recherche tous les inputs dans les cellules de doigts (PD, PI, PM, PA, PP pour chaque main)
-    const fingerInputs = document.querySelectorAll(
-      'td.ui-panelgrid-cell input[type="text"][readonly][size="2"]'
+    // Liste des doigts à vérifier (déroulés)
+    const fingerLabels = ['PD', 'ID', 'MD', 'AD', 'OD', 'PG', 'IG', 'MG', 'AG', 'OG'];
+
+    // Liste des simultanés à vérifier
+    const simultaneLabels = ['SMG', 'SPG', 'SPD', 'SMD'];
+
+    // Récupérer toutes les cellules contenant des labels
+    const allCells = document.querySelectorAll(
+      'table[id*="formValidationCorrection:tabViewValidationFiche"] td.ui-panelgrid-cell'
     );
 
-    let fingersWithP = 0;
-    const fingerData = [];
+    // Objet pour stocker l'état de chaque doigt et simultané
+    const fingerStates = {};
+    const simultaneStates = {};
 
-    fingerInputs.forEach((input) => {
-      const value = input.value?.trim();
-      const cell = input.closest('td.ui-panelgrid-cell');
+    // Parcourir toutes les cellules pour identifier les doigts et simultanés
+    allCells.forEach((cell) => {
+      const label = cell.querySelector('label.ui-outputlabel[style*="font-size: 20px"]');
+      if (!label) return;
 
-      if (cell) {
-        // Trouver le label associé au doigt (PD, PI, PM, PA, PP)
-        const label = cell.querySelector('label.ui-outputlabel');
-        const fingerLabel = label ? label.textContent.trim() : '';
+      const labelText = label.textContent.trim();
 
-        // Ne compter que les doigts déroulés (pas les simultanés qui commencent par "S")
-        // Les doigts sont : PD, PG, PI, PM, PA, PP (Pouce Droit, Pouce Gauche, Index, Majeur, Annulaire, Petit doigt)
-        if (value === 'P' && fingerLabel && !fingerLabel.startsWith('S')) {
-          fingersWithP++;
-          fingerData.push({ label: fingerLabel, value: value });
+      // Chercher l'input de taille 2 qui contient "P" ou "N/A" (à droite du label)
+      const inputs = cell.querySelectorAll('input[type="text"][readonly][size="2"]');
+
+      // L'input qui nous intéresse est celui avec style contenant "float:right" ou "float: right"
+      let statusInput = null;
+      inputs.forEach((input) => {
+        const style = input.getAttribute('style') || '';
+        if (style.includes('float:right') || style.includes('float: right')) {
+          statusInput = input;
+        }
+      });
+
+      if (statusInput) {
+        const value = statusInput.value?.trim();
+
+        // Si c'est un doigt déroulé
+        if (fingerLabels.includes(labelText)) {
+          fingerStates[labelText] = value === 'P';
+          logInfo(`Doigt ${labelText}: ${value === 'P' ? 'Présent' : 'Absent'}`);
+        }
+
+        // Si c'est un simultané
+        if (simultaneLabels.includes(labelText)) {
+          simultaneStates[labelText] = value === 'P';
+          logInfo(`Simultané ${labelText}: ${value === 'P' ? 'Présent' : 'Absent'}`);
         }
       }
     });
 
-    logInfo(`Nombre de doigts avec 'P' détectés: ${fingersWithP}`, fingerData);
+    // 1. Vérifier la présence d'au moins deux doigts déroulés avec value="P"
+    const presentFingers = fingerLabels.filter(label => fingerStates[label] === true);
+    const fingersCount = presentFingers.length;
 
-    if (fingersWithP < 2) {
-      logInfo(`❌ Validation échouée : Au moins 2 doigts requis (${fingersWithP} détecté(s))`);
+    logInfo(`Nombre de doigts déroulés avec 'P' détectés: ${fingersCount}`, presentFingers);
+
+    if (fingersCount < 2) {
+      logInfo(`❌ Validation échouée : Au moins 2 doigts requis (${fingersCount} détecté(s))`);
       errors.push("Erreur RDK détectée. Reprise par opérateur obligatoire.");
     }
 
     // 2. Vérifier la présence d'au moins un simultané (SMG ou SMD) avec value="P"
-    const smgInput = document.querySelector(
-      'label.ui-outputlabel[style*="font-size: 20px"]:not([for])'
-    );
-
-    let smdPresent = false;
-    let smgPresent = false;
-
-    // Chercher SMG et SMD dans leurs cellules spécifiques
-    const simultaneInputs = document.querySelectorAll(
-      'table[id*="formValidationCorrection:tabViewValidationFiche"] td.ui-panelgrid-cell'
-    );
-
-    simultaneInputs.forEach((cell) => {
-      const label = cell.querySelector('label.ui-outputlabel');
-      const input = cell.querySelector('input[type="text"][readonly][size="2"]');
-
-      if (label && input) {
-        const labelText = label.textContent.trim();
-        const value = input.value?.trim();
-
-        if (labelText === 'SMG' && value === 'P') {
-          smgPresent = true;
-        }
-        if (labelText === 'SMD' && value === 'P') {
-          smdPresent = true;
-        }
-      }
-    });
+    const smgPresent = simultaneStates['SMG'] === true;
+    const smdPresent = simultaneStates['SMD'] === true;
 
     logInfo(`Simultanés détectés - SMG: ${smgPresent}, SMD: ${smdPresent}`);
 
@@ -127,33 +129,10 @@
     }
 
     // 3. Vérifier que si PD ou PG est présent en déroulé, il doit être présent en simultané
-    let pdPresent = false;
-    let pgPresent = false;
-    let spdPresent = false;
-    let spgPresent = false;
-
-    simultaneInputs.forEach((cell) => {
-      const label = cell.querySelector('label.ui-outputlabel');
-      const input = cell.querySelector('input[type="text"][readonly][size="2"]');
-
-      if (label && input) {
-        const labelText = label.textContent.trim();
-        const value = input.value?.trim();
-
-        if (labelText === 'PD' && value === 'P') {
-          pdPresent = true;
-        }
-        if (labelText === 'PG' && value === 'P') {
-          pgPresent = true;
-        }
-        if (labelText === 'SPD' && value === 'P') {
-          spdPresent = true;
-        }
-        if (labelText === 'SPG' && value === 'P') {
-          spgPresent = true;
-        }
-      }
-    });
+    const pdPresent = fingerStates['PD'] === true;
+    const pgPresent = fingerStates['PG'] === true;
+    const spdPresent = simultaneStates['SPD'] === true;
+    const spgPresent = simultaneStates['SPG'] === true;
 
     logInfo(`Pouces détectés - PD: ${pdPresent}, PG: ${pgPresent}, SPD: ${spdPresent}, SPG: ${spgPresent}`);
 
