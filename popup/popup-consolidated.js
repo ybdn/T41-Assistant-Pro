@@ -224,17 +224,25 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Fonctions utilitaires
   async function getActiveTab() {
     try {
+      // Chercher l'onglet actif dans toutes les fenêtres normales (pas les popups)
+      // Important: Ne pas utiliser currentWindow: true car on est dans une fenêtre popup
       let tabs = await browser.tabs.query({
         active: true,
-        currentWindow: true,
       });
-      if (tabs.length > 0 && tabs[0].id) {
-        console.log("Onglet actif trouvé:", tabs[0].url);
-        return tabs[0];
-      } else {
-        console.error("Aucun onglet actif trouvé.");
-        return null;
+
+      // Filtrer pour ne garder que les onglets des fenêtres normales (pas popup)
+      for (let tab of tabs) {
+        if (tab.id) {
+          const window = await browser.windows.get(tab.windowId);
+          if (window.type === 'normal') {
+            console.log("Onglet actif trouvé:", tab.url);
+            return tab;
+          }
+        }
       }
+
+      console.error("Aucun onglet actif trouvé dans les fenêtres normales.");
+      return null;
     } catch (error) {
       console.error("Erreur lors de la récupération des onglets :", error);
       return null;
