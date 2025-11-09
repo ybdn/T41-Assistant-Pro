@@ -137,7 +137,7 @@ class ThemeAnimations {
       console.log(`🎨 Particule ${i}: emoji=${emoji}, pos=(${x.toFixed(1)}, ${y.toFixed(1)}), vitesse=(${vx.toFixed(1)}, ${vy.toFixed(1)})`);
     }
 
-    console.log(`✅ ${this.particles.length} particules créées`);
+    console.log(`√ ${this.particles.length} particules créées`);
   }
 
   /**

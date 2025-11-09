@@ -51,7 +51,7 @@
 
   // Fonction pour valider l'onglet Empreintes (doigts)
   function validateFingerprintsTab() {
-    logInfo("🔍 Vérification de la présence d'images dans l'onglet Empreintes (doigts)");
+    logInfo("? Vérification de la présence d'images dans l'onglet Empreintes (doigts)");
 
     const errors = [];
 
@@ -113,7 +113,7 @@
     logInfo(`Nombre de doigts déroulés avec 'P' détectés: ${fingersCount}`, presentFingers);
 
     if (fingersCount < 2) {
-      logInfo(`❌ Validation échouée : Au moins 2 doigts requis (${fingersCount} détecté(s))`);
+      logInfo(`X Validation échouée : Au moins 2 doigts requis (${fingersCount} détecté(s))`);
       errors.push("Erreur RDK détectée. Reprise par opérateur obligatoire.");
     }
 
@@ -124,7 +124,7 @@
     logInfo(`Simultanés détectés - SMG: ${smgPresent}, SMD: ${smdPresent}`);
 
     if (!smgPresent && !smdPresent) {
-      logInfo("❌ Validation échouée : Au moins un simultané (SMG ou SMD) requis");
+      logInfo("X Validation échouée : Au moins un simultané (SMG ou SMD) requis");
       errors.push("Erreur RDK détectée. Reprise par opérateur obligatoire.");
     }
 
@@ -137,24 +137,24 @@
     logInfo(`Pouces détectés - PD: ${pdPresent}, PG: ${pgPresent}, SPD: ${spdPresent}, SPG: ${spgPresent}`);
 
     if (pdPresent && !spdPresent) {
-      logInfo("❌ Validation échouée : Pouce droit (PD) présent en déroulé mais absent en simultané (SPD)");
+      logInfo("X Validation échouée : Pouce droit (PD) présent en déroulé mais absent en simultané (SPD)");
       errors.push("Erreur RDK détectée. Reprise par opérateur obligatoire.");
     }
 
     if (pgPresent && !spgPresent) {
-      logInfo("❌ Validation échouée : Pouce gauche (PG) présent en déroulé mais absent en simultané (SPG)");
+      logInfo("X Validation échouée : Pouce gauche (PG) présent en déroulé mais absent en simultané (SPG)");
       errors.push("Erreur RDK détectée. Reprise par opérateur obligatoire.");
     }
 
     // Si des erreurs sont détectées, les renvoyer
     if (errors.length > 0) {
-      logInfo("❌ Erreurs de validation détectées dans l'onglet Empreintes (doigts)");
+      logInfo("X Erreurs de validation détectées dans l'onglet Empreintes (doigts)");
       // Utiliser un Set pour dédupliquer les messages identiques
       const uniqueErrors = [...new Set(errors)];
       throw new Error(uniqueErrors.join("\n"));
     }
 
-    logInfo("✅ Validation de l'onglet Empreintes (doigts) réussie");
+    logInfo("√ Validation de l'onglet Empreintes (doigts) réussie");
   }
 
   // Définition des étapes de l'automatisation (intégrées depuis contentScript.js)
@@ -302,7 +302,7 @@
                 runEcranAccueilSteps();
               }
             } else {
-              logInfo(`❌ ${reason} après ${MAX_RETRY_ATTEMPTS} tentatives`);
+              logInfo(`X ${reason} après ${MAX_RETRY_ATTEMPTS} tentatives`);
               loopProcessingActive = false;
               await browser.storage.local.set({ loopProcessingActive: false });
               browser.runtime.sendMessage({
@@ -336,7 +336,7 @@
               jaugeElement.click();
             }
           } else {
-            logInfo("❌ Jauge Contrôle non trouvée");
+            logInfo("X Jauge Contrôle non trouvée");
           }
         }
       },
@@ -390,7 +390,7 @@
           resolve();
         } else if (Date.now() - startTime > timeout) {
           clearInterval(interval);
-          logInfo("⚠️ Timeout chargement");
+          logInfo("/!\ Timeout chargement");
           resolve();
         }
       }, 200); // Vérifier toutes les 200ms
@@ -451,7 +451,7 @@
             );
           }
         } catch (error) {
-          logInfo(`❌ Échec chargement NATINF: ${error.message}`);
+          logInfo(`X Échec chargement NATINF: ${error.message}`);
           throw error;
         }
 
@@ -628,7 +628,7 @@
       const message = buildNatinfCommentMessage(sensitiveMatches);
       return { shouldWrite: true, detectedCodes: sensitiveMatches, message };
     } catch (error) {
-      logInfo(`❌ Erreur évaluation NATINF: ${error.message}`);
+      logInfo(`X Erreur évaluation NATINF: ${error.message}`);
       return { shouldWrite: false, detectedCodes: [], message: "" };
     }
   }
@@ -910,7 +910,7 @@
 
   // Nouvelle fonction pour appliquer les corrections automatiques
   async function applyAutomaticCorrections(errors) {
-    logInfo("⚙️ Application des corrections automatiques...");
+    logInfo("[CONFIG] Application des corrections automatiques...");
 
     try {
       // 1. Cliquer sur le bouton radio "Oui" pour Alphas/Portraits
@@ -971,13 +971,13 @@
       );
     }
 
-    logInfo("🛠️ Tentative de corrections automatiques terminée.");
+    logInfo("[OUTIL] Tentative de corrections automatiques terminée.");
   }
 
   // Centraliser la logique d'arrêt de la boucle en cas d'erreur de validation
   async function handleValidationError(errors) {
     logInfo(
-      `⚙️ Application des corrections automatiques pour ${errors.length} erreur(s) détectée(s)...`,
+      `[CONFIG] Application des corrections automatiques pour ${errors.length} erreur(s) détectée(s)...`,
       errors
     );
 
@@ -1395,7 +1395,7 @@
         );
       } else {
         logInfo(
-          "✅ VALIDATION RÉUSSIE: Toutes les données sont conformes. Poursuite du traitement."
+          "√ VALIDATION RÉUSSIE: Toutes les données sont conformes. Poursuite du traitement."
         );
       }
 
@@ -1412,7 +1412,7 @@
       }
 
       // Toujours lancer les étapes automatiques après la phase de validation/correction.
-      logInfo("🚀 Lancement des étapes automatiques pour la fiche actuelle...");
+      logInfo(">> Lancement des étapes automatiques pour la fiche actuelle...");
 
       // currentStepIndex = 0; // Ancienne initialisation unique
       alphaStepIndex = 0; // Si utilisé pour les étapes alpha, réinitialiser
@@ -1483,25 +1483,25 @@
 
       // Appliquer les styles d'erreur
       if (
-        validationResults.neotest === "❌ ÉCHEC" ||
-        validationResults.frankDesmis === "❌ ÉCHEC"
+        validationResults.neotest === "X ÉCHEC" ||
+        validationResults.frankDesmis === "X ÉCHEC"
       ) {
         highlightField("ficheEtabliePar");
       }
 
-      if (validationResults.typeSaisie === "❌ ÉCHEC") {
+      if (validationResults.typeSaisie === "X ÉCHEC") {
         highlightField("typeDeSignalisationValue");
       }
 
-      if (validationResults.serviceRattachementFormat === "❌ ÉCHEC") {
+      if (validationResults.serviceRattachementFormat === "X ÉCHEC") {
         highlightField("serviceRattachement");
       }
 
-      if (validationResults.serviceSignalisationFormat === "❌ ÉCHEC") {
+      if (validationResults.serviceSignalisationFormat === "X ÉCHEC") {
         highlightField("serviceInitiateur"); // Utilise le sélecteur pour Service initiateur/signalisation
       }
 
-      if (validationResults.unaFormat === "❌ ÉCHEC") {
+      if (validationResults.unaFormat === "X ÉCHEC") {
         highlightField("una");
       }
 
@@ -1532,7 +1532,7 @@
       const parent = element.parentNode;
       const errorIndicator = document.createElement("div");
       errorIndicator.id = `${selector.replace(/[\\:]/g, "")}-error-indicator`;
-      errorIndicator.innerHTML = "⚠️";
+      errorIndicator.innerHTML = "/!\";
       errorIndicator.style.cssText = `
                 display: inline-block;
                 margin-left: 8px;
@@ -1866,7 +1866,7 @@
 
   // Nouvelle fonction contenant la logique d'activation de base
   function activateScriptInternalLogic() {
-    logInfo("🚀 Logique interne d'activation...");
+    logInfo(">> Logique interne d'activation...");
     isActive = true;
     currentStepIndex = 0; // Assurer la réinitialisation
     sequenceStartTime = null; // Assurer la réinitialisation
@@ -2108,7 +2108,7 @@
     const validationSuccess = await verifyAlphaNumericData(); // Doit être await ici
 
     if (validationSuccess) {
-      logInfo("✅✅✅ DONNÉES VALIDÉES AVEC SUCCÈS (activateScript) ✅✅✅");
+      logInfo("√√√ DONNÉES VALIDÉES AVEC SUCCÈS (activateScript) √√√");
       // Si on n'est pas en mode boucle, et que activateScript est appelé (ex: clic icône pour vérif unique),
       // on ne lance pas runAutomatedSteps ici. On se contente de la validation.
       // La popup recevra le résultat de la validation via le sendResponse de la commande startScript.
@@ -2116,7 +2116,7 @@
       // Le sendResponse de startScript est géré dans le listener de message.
     } else {
       logInfo(
-        "❌❌❌ ÉCHEC DE LA VALIDATION DES DONNÉES (activateScript) ❌❌❌"
+        "XXX ÉCHEC DE LA VALIDATION DES DONNÉES (activateScript) XXX"
       );
       // Si la validation échoue ici (hors boucle), loopProcessingActive aura déjà été mis à false si besoin.
     }

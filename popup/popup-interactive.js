@@ -5,7 +5,7 @@
 
 // Attendre que le DOM soit chargé
 document.addEventListener("DOMContentLoaded", () => {
-  console.log("🚀 T41 Assistant Pro amélioré chargé");
+  console.log(">> T41 Assistant Pro amélioré chargé");
 
   // Référence aux éléments de l'interface
   const nextActionButton = document.getElementById("next-action");

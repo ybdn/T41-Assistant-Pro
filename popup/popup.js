@@ -16,7 +16,7 @@ console.error = function () {
 
 // Initialiser après le chargement du DOM
 document.addEventListener("DOMContentLoaded", async () => {
-  console.log("🔄 T41 Assistant Pro chargé !");
+  console.log("[REFRESH] T41 Assistant Pro chargé !");
 
   // Récupérer les éléments de l'interface utilisateur
   const nextActionButton = document.getElementById("next-action");
@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     : null;
   if (nextActionButton && !nextActionIcon) {
     console.warn(
-      "⚠️ Icône dans le bouton next-action non trouvée, création d'un élément de remplacement"
+      "/!\ Icône dans le bouton next-action non trouvée, création d'un élément de remplacement"
     );
     nextActionIcon = document.createElement("i");
     nextActionButton.prepend(nextActionIcon);
@@ -70,7 +70,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     : null;
   if (nextActionButton && !nextActionText) {
     console.warn(
-      "⚠️ Texte dans le bouton next-action non trouvé, création d'un élément de remplacement"
+      "/!\ Texte dans le bouton next-action non trouvé, création d'un élément de remplacement"
     );
     nextActionText = document.createElement("span");
     nextActionButton.appendChild(nextActionText);
@@ -215,7 +215,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Effet de clic
     nextActionButton.addEventListener("click", async (event) => {
-      console.log("🖱️ CLIC détecté sur le bouton d'action");
+      console.log("[CLIC] CLIC détecté sur le bouton d'action");
 
       // Effet visuel au clic
       nextActionButton.style.transform = "scale(0.98)";
@@ -227,7 +227,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         let tab = await getActiveTab();
         if (!tab || !tab.id) {
           console.error(
-            "❌ Aucun onglet actif trouvé ou l'onglet n'a pas d'ID."
+            "X Aucun onglet actif trouvé ou l'onglet n'a pas d'ID."
           );
           alert("Aucun onglet actif trouvé ou l'onglet n'a pas d'ID.");
           return;
@@ -303,7 +303,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
       } catch (globalError) {
         console.error(
-          "❌ Erreur globale lors du clic sur le bouton:",
+          "X Erreur globale lors du clic sur le bouton:",
           globalError
         );
         alert("Une erreur s'est produite: " + globalError.message);
@@ -339,7 +339,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
       } catch (error) {
         console.error(
-          "❌ Erreur lors de l'exécution d'alphaMatchers.js :",
+          "X Erreur lors de l'exécution d'alphaMatchers.js :",
           error
         );
 
@@ -514,5 +514,5 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // Signaler que l'initialisation est terminée
-  console.log("✅ Initialisation T41 Assistant Pro terminée avec succès");
+  console.log("√ Initialisation T41 Assistant Pro terminée avec succès");
 });

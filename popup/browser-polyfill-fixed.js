@@ -3,14 +3,14 @@
  */
 
 // Log pour vérifier le chargement du script
-console.log("🔄 browser-polyfill-fixed.js chargé");
+console.log("[REFRESH] browser-polyfill-fixed.js chargé");
 
 // Compatibilité Chrome/Firefox pour les extensions WebExtensions
 if (typeof browser === "undefined") {
-  console.log("⚠️ API browser non détectée, utilisation du polyfill");
+  console.log("/!\ API browser non détectée, utilisation du polyfill");
   var browser = chrome;
 } else {
-  console.log("✅ API browser déjà disponible");
+  console.log("√ API browser déjà disponible");
 }
 
 // Vérifier que l'API browser est maintenant disponible et complète
@@ -26,13 +26,13 @@ if (typeof browser !== "undefined") {
   });
 
   if (missingApis.length > 0) {
-    console.error(`❌ APIs manquantes: ${missingApis.join(", ")}`);
+    console.error(`X APIs manquantes: ${missingApis.join(", ")}`);
   } else {
-    console.log("✅ Toutes les APIs requises sont disponibles");
+    console.log("√ Toutes les APIs requises sont disponibles");
   }
 } else {
   console.error(
-    "❌ L'API browser n'est toujours pas disponible après le polyfill"
+    "X L'API browser n'est toujours pas disponible après le polyfill"
   );
 }
 

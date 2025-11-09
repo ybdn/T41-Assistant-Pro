@@ -22,17 +22,17 @@ function exitWithError(message) {
   process.exit(1);
 }
 
-log("📦 Création du package d'extension T41 Assistant Pro...");
+log("[] Création du package d'extension T41 Assistant Pro...");
 
 if (!fs.existsSync(MANIFEST_PATH)) {
   exitWithError(
-    "❌ Erreur : ce script doit être exécuté depuis la racine du projet extension-t41-auto."
+    "X Erreur : ce script doit être exécuté depuis la racine du projet extension-t41-auto."
   );
 }
 
 const outputPath = path.join(PROJECT_ROOT, OUTPUT_NAME);
 if (fs.existsSync(outputPath)) {
-  log("🗑️ Suppression de l'ancien package...");
+  log("[SUPPRESSION] Suppression de l'ancien package...");
   fs.rmSync(outputPath);
 }
 
@@ -54,21 +54,21 @@ const zipResult = spawnSync("zip", zipArgs, {
 });
 
 if (zipResult.status !== 0) {
-  exitWithError("❌ Erreur lors de la création du package.");
+  exitWithError("X Erreur lors de la création du package.");
 }
 
 if (!fs.existsSync(outputPath)) {
-  exitWithError("❌ Le fichier ZIP n'a pas été généré.");
+  exitWithError("X Le fichier ZIP n'a pas été généré.");
 }
 
-log(`✅ Package créé avec succès : ${OUTPUT_NAME}`);
+log(`√ Package créé avec succès : ${OUTPUT_NAME}`);
 log("");
-log("📋 Instructions pour tester l'extension :");
+log(":: Instructions pour tester l'extension :");
 log("1. Ouvrez Firefox");
 log("2. Naviguez vers about:debugging#/runtime/this-firefox");
 log("3. Cliquez sur 'Charger un module complémentaire temporaire...'");
 log(`4. Sélectionnez le fichier ${OUTPUT_NAME}`);
 log("");
 log(
-  "Alternativement : about:addons > ⚙️ > Installer un module depuis un fichier... > Sélectionnez le fichier ZIP."
+  "Alternativement : about:addons > [CONFIG] > Installer un module depuis un fichier... > Sélectionnez le fichier ZIP."
 );

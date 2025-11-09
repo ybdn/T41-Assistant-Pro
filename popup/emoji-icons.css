@@ -1,0 +1,274 @@
+/* ===== SYSTÈME DE REMPLACEMENT DES ÉMOJIS ===== */
+/* Ces icônes CSS remplacent les émojis Unicode pour un affichage cohérent sur Windows */
+
+/* Classe de base pour toutes les icônes */
+.emoji-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  margin: 0 2px;
+  vertical-align: middle;
+  position: relative;
+  flex-shrink: 0;
+}
+
+/* ===== ICÔNE SUCCÈS (✅) ===== */
+.emoji-success {
+  background: #10b981;
+  border-radius: 50%;
+  position: relative;
+}
+
+.emoji-success::after {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 6px;
+  width: 4px;
+  height: 7px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* ===== ICÔNE ERREUR (❌) ===== */
+.emoji-error {
+  background: #ef4444;
+  border-radius: 50%;
+  position: relative;
+}
+
+.emoji-error::before,
+.emoji-error::after {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 2px;
+  background: white;
+  left: 3px;
+  top: 7px;
+}
+
+.emoji-error::before {
+  transform: rotate(45deg);
+}
+
+.emoji-error::after {
+  transform: rotate(-45deg);
+}
+
+/* ===== ICÔNE AVERTISSEMENT (⚠️) ===== */
+.emoji-warning {
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 14px solid #f59e0b;
+  position: relative;
+}
+
+.emoji-warning::before {
+  content: '!';
+  position: absolute;
+  left: -3px;
+  top: 2px;
+  color: white;
+  font-weight: bold;
+  font-size: 10px;
+  line-height: 1;
+}
+
+/* ===== ICÔNE FUSÉE (🚀) ===== */
+.emoji-rocket {
+  background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+  border-radius: 50% 50% 0 0;
+  position: relative;
+  transform: rotate(-45deg);
+}
+
+.emoji-rocket::before {
+  content: '';
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: white;
+  border-radius: 50%;
+  left: 6px;
+  top: 4px;
+}
+
+.emoji-rocket::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-left: 3px solid transparent;
+  border-right: 3px solid transparent;
+  border-top: 6px solid #f59e0b;
+  left: 5px;
+  bottom: -6px;
+}
+
+/* ===== ICÔNE LOUPE (🔍) ===== */
+.emoji-search {
+  position: relative;
+  background: transparent;
+}
+
+.emoji-search::before {
+  content: '';
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border: 2px solid #3b82f6;
+  border-radius: 50%;
+  left: 2px;
+  top: 2px;
+}
+
+.emoji-search::after {
+  content: '';
+  position: absolute;
+  width: 5px;
+  height: 2px;
+  background: #3b82f6;
+  transform: rotate(45deg);
+  right: 2px;
+  bottom: 2px;
+}
+
+/* ===== ICÔNE PAQUET (📦) ===== */
+.emoji-package {
+  background: #d97706;
+  border-radius: 2px;
+  position: relative;
+}
+
+.emoji-package::before {
+  content: '';
+  position: absolute;
+  width: 12px;
+  height: 1px;
+  background: #92400e;
+  left: 2px;
+  top: 7px;
+}
+
+.emoji-package::after {
+  content: '';
+  position: absolute;
+  width: 1px;
+  height: 8px;
+  background: #92400e;
+  left: 7px;
+  top: 4px;
+}
+
+/* ===== ICÔNE PRESSE-PAPIERS (📋) ===== */
+.emoji-clipboard {
+  background: white;
+  border: 2px solid #6b7280;
+  border-radius: 2px;
+  position: relative;
+}
+
+.emoji-clipboard::before {
+  content: '';
+  position: absolute;
+  width: 4px;
+  height: 2px;
+  background: #6b7280;
+  border-radius: 1px;
+  left: 4px;
+  top: -3px;
+}
+
+.emoji-clipboard::after {
+  content: '';
+  position: absolute;
+  width: 8px;
+  height: 1px;
+  background: #d1d5db;
+  left: 2px;
+  top: 6px;
+  box-shadow:
+    0 2px 0 0 #d1d5db,
+    0 4px 0 0 #d1d5db;
+}
+
+/* ===== ICÔNE INFO (ℹ️) ===== */
+.emoji-info {
+  background: #3b82f6;
+  border-radius: 50%;
+  position: relative;
+}
+
+.emoji-info::before {
+  content: 'i';
+  position: absolute;
+  color: white;
+  font-weight: bold;
+  font-size: 12px;
+  font-style: italic;
+  left: 5px;
+  top: 1px;
+}
+
+/* ===== ICÔNE COCHE (✓) ===== */
+.emoji-check {
+  background: transparent;
+  position: relative;
+}
+
+.emoji-check::after {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 6px;
+  width: 4px;
+  height: 7px;
+  border: solid #10b981;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* ===== VARIANTES DE TAILLES ===== */
+.emoji-icon.size-sm {
+  width: 12px;
+  height: 12px;
+}
+
+.emoji-icon.size-md {
+  width: 16px;
+  height: 16px;
+}
+
+.emoji-icon.size-lg {
+  width: 20px;
+  height: 20px;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes emoji-pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.emoji-icon.animated {
+  animation: emoji-pulse 1s ease-in-out infinite;
+}
+
+/* ===== SUPPORT POUR LES LOGS CONSOLE ===== */
+/* Ces styles ne s'appliqueront pas dans la console, mais sont utiles pour l'UI */
+.console-icon {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin-right: 4px;
+}

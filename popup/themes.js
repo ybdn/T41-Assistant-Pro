@@ -221,7 +221,7 @@ class ThemeManager {
     // Créer l'interface de sélection
     this.createThemeSelector();
 
-    console.log('✅ Gestionnaire de thèmes initialisé');
+    console.log('√ Gestionnaire de thèmes initialisé');
   }
 
   /**
@@ -246,7 +246,7 @@ class ThemeManager {
         }
       }
     } catch (error) {
-      console.error('❌ Erreur lors du chargement des préférences:', error);
+      console.error('X Erreur lors du chargement des préférences:', error);
     }
   }
 
@@ -264,7 +264,7 @@ class ThemeManager {
       await browser.storage.local.set({ [this.storageKey]: settings });
       console.log('💾 Préférences sauvegardées:', settings);
     } catch (error) {
-      console.error('❌ Erreur lors de la sauvegarde des préférences:', error);
+      console.error('X Erreur lors de la sauvegarde des préférences:', error);
     }
   }
 
@@ -353,7 +353,7 @@ class ThemeManager {
   createThemeSelector() {
     const themeToggle = document.querySelector('.theme-toggle');
     if (!themeToggle) {
-      console.error('❌ Conteneur theme-toggle non trouvé');
+      console.error('X Conteneur theme-toggle non trouvé');
       return;
     }
 
@@ -435,7 +435,7 @@ class ThemeManager {
     const autoCheckbox = document.getElementById('theme-auto-checkbox');
 
     if (!dropdownBtn || !dropdown || !autoCheckbox) {
-      console.error('❌ Éléments du sélecteur de thème non trouvés');
+      console.error('X Éléments du sélecteur de thème non trouvés');
       return;
     }
 

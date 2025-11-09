@@ -20,7 +20,7 @@ async function checkIfDetachedWindow() {
 
 // Attendre que le DOM soit chargé
 document.addEventListener("DOMContentLoaded", async () => {
-  console.log("🔄 T41 Assistant Pro chargé !");
+  console.log("[REFRESH] T41 Assistant Pro chargé !");
 
   // Vérifier si on est dans une fenêtre détachée
   isDetachedWindow = await checkIfDetachedWindow();
@@ -232,13 +232,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   // GESTIONNAIRE D'ÉVÉNEMENTS PRINCIPAL DU BOUTON LANCER
   if (nextActionButton) {
     nextActionButton.addEventListener("click", async (event) => {
-      console.log("🖱️ CLIC détecté sur le bouton d'action");
+      console.log("[CLIC] CLIC détecté sur le bouton d'action");
 
       try {
         let tab = await getActiveTab();
         if (!tab || !tab.id) {
           console.error(
-            "❌ Aucun onglet actif trouvé ou l'onglet n'a pas d'ID."
+            "X Aucun onglet actif trouvé ou l'onglet n'a pas d'ID."
           );
           showNotification("Aucun onglet actif", "error");
           return;
@@ -367,7 +367,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
       } catch (globalError) {
         console.error(
-          "❌ Erreur globale lors du clic sur le bouton:",
+          "X Erreur globale lors du clic sur le bouton:",
           globalError
         );
         showNotification("Erreur détectée", "error");
@@ -405,7 +405,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
       } catch (error) {
         console.error(
-          "❌ Erreur lors de l'exécution d'alphaMatchers.js :",
+          "X Erreur lors de l'exécution d'alphaMatchers.js :",
           error
         );
         showNotification("Tentative d'injection du script...", "info");
@@ -603,7 +603,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   // Signaler que l'initialisation est terminée
-  console.log("✅ Initialisation T41 Assistant Pro terminée avec succès");
+  console.log("√ Initialisation T41 Assistant Pro terminée avec succès");
 });
 
 // Système de thème - DÉSACTIVÉ (remplacé par themes.js)
@@ -699,7 +699,7 @@ window.showNotification = function (message, type) {
 
 // ===== GESTION DE LA TO DO LIST =====
 document.addEventListener("DOMContentLoaded", async () => {
-  console.log("🔄 Initialisation du widget To Do List");
+  console.log("[REFRESH] Initialisation du widget To Do List");
 
   // Récupérer les éléments du DOM
   const todoInput = document.getElementById("todo-input");
@@ -731,10 +731,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     try {
       const data = await browser.storage.local.get(STORAGE_KEY);
       todos = data[STORAGE_KEY] || [];
-      console.log("✅ Todos chargés:", todos.length);
+      console.log("√ Todos chargés:", todos.length);
       renderTodos();
     } catch (error) {
-      console.error("❌ Erreur lors du chargement des todos:", error);
+      console.error("X Erreur lors du chargement des todos:", error);
       todos = [];
     }
   }
@@ -747,7 +747,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       await browser.storage.local.set({ [STORAGE_KEY]: todos });
       console.log("💾 Todos sauvegardés:", todos.length);
     } catch (error) {
-      console.error("❌ Erreur lors de la sauvegarde des todos:", error);
+      console.error("X Erreur lors de la sauvegarde des todos:", error);
     }
   }
 
@@ -1048,5 +1048,5 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Charger les todos au démarrage
   await loadTodos();
 
-  console.log("✅ Widget To Do List initialisé avec succès");
+  console.log("√ Widget To Do List initialisé avec succès");
 });
