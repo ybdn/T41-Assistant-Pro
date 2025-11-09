@@ -188,17 +188,7 @@ body.theme-christmas .popup {
   position: relative;
 }
 
-body.theme-christmas .popup::after {
-  content: '🎄 ❄️ 🎅 ⛄ 🎁 ❄️';
-  position: absolute;
-  top: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 12px;
-  opacity: 0.3;
-  letter-spacing: 8px;
-  pointer-events: none;
-}
+/* Emojis animés gérés par themes-animations.js */
 
 body.theme-christmas .btn-primary {
   background: linear-gradient(135deg, var(--christmas-red), #b91c1c);
@@ -264,17 +254,7 @@ body.theme-genevieve::before {
   z-index: -1;
 }
 
-body.theme-genevieve .popup::after {
-  content: '⭐ 🛡️ ⚔️ 👮 ⭐';
-  position: absolute;
-  top: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 12px;
-  opacity: 0.25;
-  letter-spacing: 8px;
-  pointer-events: none;
-}
+/* Emojis animés gérés par themes-animations.js */
 
 body.theme-genevieve .btn-primary {
   background: linear-gradient(135deg, var(--genevieve-gold), #d97706);
@@ -343,17 +323,7 @@ body.theme-easter::before {
   z-index: -1;
 }
 
-body.theme-easter .popup::after {
-  content: '🌸 🐰 🥚 🌷 🌸';
-  position: absolute;
-  top: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 12px;
-  opacity: 0.4;
-  letter-spacing: 8px;
-  pointer-events: none;
-}
+/* Emojis animés gérés par themes-animations.js */
 
 body.theme-easter .btn-primary {
   background: linear-gradient(135deg, var(--easter-pink), var(--easter-purple));
@@ -426,23 +396,7 @@ body.theme-halloween::before {
   z-index: -1;
 }
 
-body.theme-halloween .popup::after {
-  content: '🎃 👻 🦇 🕷️ 🎃';
-  position: absolute;
-  top: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 12px;
-  opacity: 0.3;
-  letter-spacing: 8px;
-  pointer-events: none;
-  animation: spooky 3s ease-in-out infinite;
-}
-
-@keyframes spooky {
-  0%, 100% { opacity: 0.3; }
-  50% { opacity: 0.5; }
-}
+/* Emojis animés gérés par themes-animations.js */
 
 body.theme-halloween .btn-primary {
   background: linear-gradient(135deg, var(--halloween-orange), var(--halloween-purple));
@@ -522,23 +476,7 @@ body.theme-newyear::before {
   50% { opacity: 1; }
 }
 
-body.theme-newyear .popup::after {
-  content: '🎆 ✨ 🎉 🥂 🎊';
-  position: absolute;
-  top: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 12px;
-  opacity: 0.35;
-  letter-spacing: 8px;
-  pointer-events: none;
-  animation: sparkle 2s ease-in-out infinite;
-}
-
-@keyframes sparkle {
-  0%, 100% { opacity: 0.35; transform: translateX(-50%) scale(1); }
-  50% { opacity: 0.55; transform: translateX(-50%) scale(1.05); }
-}
+/* Emojis animés gérés par themes-animations.js */
 
 body.theme-newyear .btn-primary {
   background: linear-gradient(135deg, var(--newyear-blue), var(--newyear-purple));
@@ -614,17 +552,7 @@ body.theme-bastille::before {
   z-index: -1;
 }
 
-body.theme-bastille .popup::after {
-  content: '🇫🇷 🎆 🗼 🥖 🇫🇷';
-  position: absolute;
-  top: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 12px;
-  opacity: 0.4;
-  letter-spacing: 8px;
-  pointer-events: none;
-}
+/* Emojis animés gérés par themes-animations.js */
 
 body.theme-bastille .btn-primary {
   background: linear-gradient(135deg, var(--bastille-blue), #1e3a8a);

@@ -34,6 +34,7 @@ Le système peut fonctionner en **mode automatique** (détection automatique des
 - **Couleurs**: Rouge, vert et or
 - **Ambiance**: Festive avec des décorations de Noël
 - **Emojis**: 🎄 ❄️ 🎅 ⛄ 🎁
+- **Animation**: Chute de flocons de neige ❄️
 
 #### ⭐ Thème Sainte Geneviève
 - **ID**: `genevieve`
@@ -42,6 +43,7 @@ Le système peut fonctionner en **mode automatique** (détection automatique des
 - **Ambiance**: Élégante et solennelle
 - **Description**: En l'honneur de Sainte Geneviève, patronne des gendarmes
 - **Emojis**: ⭐ 🛡️ ⚔️ 👮
+- **Animation**: Étoiles scintillantes ✨
 
 #### 🌸 Thème Pâques
 - **ID**: `easter`
@@ -49,6 +51,7 @@ Le système peut fonctionner en **mode automatique** (détection automatique des
 - **Couleurs**: Rose, violet, jaune, vert et bleu pastel
 - **Ambiance**: Printanière et colorée
 - **Emojis**: 🌸 🐰 🥚 🌷
+- **Animation**: Éléments printaniers flottants 🌸
 
 #### 🎃 Thème Halloween
 - **ID**: `halloween`
@@ -56,6 +59,7 @@ Le système peut fonctionner en **mode automatique** (détection automatique des
 - **Couleurs**: Orange, violet et noir
 - **Ambiance**: Mystérieuse et sombre
 - **Emojis**: 🎃 👻 🦇 🕷️
+- **Animation**: Éléments effrayants volants 👻
 
 #### 🎆 Thème Nouvel An
 - **ID**: `newyear`
@@ -63,6 +67,7 @@ Le système peut fonctionner en **mode automatique** (détection automatique des
 - **Couleurs**: Bleu, or, argent et violet
 - **Ambiance**: Festive avec des effets de feux d'artifice
 - **Emojis**: 🎆 ✨ 🎉 🥂 🎊
+- **Animation**: Explosions de feux d'artifice 🎆
 
 #### 🇫🇷 Thème 14 Juillet
 - **ID**: `bastille`
@@ -70,6 +75,7 @@ Le système peut fonctionner en **mode automatique** (détection automatique des
 - **Couleurs**: Bleu, blanc et rouge (couleurs du drapeau français)
 - **Ambiance**: Patriotique et élégante
 - **Emojis**: 🇫🇷 🎆 🗼 🥖
+- **Animation**: Feux d'artifice montants 🎇
 
 ---
 
@@ -120,6 +126,23 @@ Le thème Pâques utilise un algorithme (Meeus/Jones/Butcher) pour calculer la d
 - Les changements de couleur utilisent des transitions CSS
 - Animation spéciale lors du changement de thème pour une meilleure expérience utilisateur
 
+### Animations d'Emojis
+
+Chaque thème festif dispose d'**animations d'emojis** uniques qui apparaissent en arrière-plan :
+
+- **🎄 Noël** : Flocons de neige qui tombent doucement avec rotation
+- **⭐ Sainte Geneviève** : Étoiles scintillantes avec effet de pulsation
+- **🌸 Pâques** : Éléments printaniers qui flottent vers le haut avec oscillation
+- **🎃 Halloween** : Éléments effrayants qui volent horizontalement de façon irrégulière
+- **🎆 Nouvel An** : Explosions de feux d'artifice avec effets de lumière
+- **🇫🇷 14 Juillet** : Feux d'artifice qui montent avec effet de dispersion
+
+**Caractéristiques techniques** :
+- Animations générées dynamiquement en JavaScript
+- Optimisées pour les performances (GPU acceleration)
+- Respect du paramètre `prefers-reduced-motion` pour l'accessibilité
+- Pas d'animations sur les thèmes Clair et Sombre pour préserver la sobriété
+
 ### Compatibilité
 
 - ✅ Compatible avec l'ancien système de thème sombre
@@ -149,10 +172,12 @@ Chaque thème utilise des variables CSS pour définir ses couleurs :
 
 ```
 popup/
-├── themes.js              # Logique du système de thèmes
-├── themes-festive.css     # Styles CSS des thèmes festifs
-├── styles.css             # Styles de base
-└── styles-additional.css  # Styles additionnels (thèmes Clair/Sombre)
+├── themes.js                # Logique du système de thèmes
+├── themes-festive.css       # Styles CSS des thèmes festifs
+├── themes-animations.js     # Animations d'emojis pour les thèmes
+├── themes-animations.css    # Styles CSS pour les animations
+├── styles.css               # Styles de base
+└── styles-additional.css    # Styles additionnels (thèmes Clair/Sombre)
 ```
 
 ---
@@ -178,6 +203,17 @@ window.themeManager.changeTheme('christmas', true)
 
 // Activer/désactiver le mode auto
 window.themeManager.toggleAutoMode()
+
+// === Commandes pour les animations ===
+
+// Accéder au gestionnaire d'animations
+window.themeAnimations
+
+// Démarrer les animations pour un thème
+window.themeAnimations.start('christmas')
+
+// Arrêter toutes les animations
+window.themeAnimations.stop()
 ```
 
 ### Logs Console
@@ -186,6 +222,7 @@ Le système affiche des logs détaillés :
 - `🎨 Initialisation du gestionnaire de thèmes`
 - `📖 Préférences chargées: {...}`
 - `🎨 Application du thème: [themeId]`
+- `🎬 Démarrage des animations pour le thème: [themeId]`
 - `💾 Préférences sauvegardées: {...}`
 - `✅ Gestionnaire de thèmes initialisé`
 
@@ -217,9 +254,11 @@ Tous les thèmes respectent les ratios de contraste WCAG 2.1 :
 
 - **8 thèmes au total**
 - **6 périodes festives françaises**
-- **~800 lignes de CSS** pour les thèmes
-- **~450 lignes de JavaScript** pour la logique
+- **6 types d'animations uniques**
+- **~1400 lignes de CSS** pour les thèmes et animations
+- **~900 lignes de JavaScript** pour la logique et animations
 - **Mode automatique intelligent** avec calcul de Pâques
+- **Optimisé pour les performances** avec GPU acceleration
 
 ---
 
@@ -229,9 +268,10 @@ Tous les thèmes respectent les ratios de contraste WCAG 2.1 :
 
 - [ ] Ajouter d'autres fêtes françaises (1er mai, 8 mai, 11 novembre, etc.)
 - [ ] Permettre la création de thèmes personnalisés
-- [ ] Ajouter des animations spéciales pour chaque thème
+- [x] ~~Ajouter des animations spéciales pour chaque thème~~ ✅ **Terminé !**
 - [ ] Synchronisation des thèmes entre appareils (via `browser.storage.sync`)
 - [ ] Mode "Surprise" qui change de thème aléatoirement
+- [ ] Paramètres avancés pour contrôler l'intensité des animations
 
 ---
 
@@ -239,11 +279,14 @@ Tous les thèmes respectent les ratios de contraste WCAG 2.1 :
 
 ### Version 2.2.0 (Actuelle)
 - ✨ Ajout du système de thèmes festifs français
-- ✨ 6 nouveaux thèmes festifs
-- ✨ Mode automatique avec détection des fêtes
-- ✨ Menu déroulant premium
-- ✨ Sauvegarde des préférences
-- ✨ Transitions fluides
+- ✨ 6 nouveaux thèmes festifs avec identités visuelles uniques
+- ✨ Animations d'emojis dynamiques pour chaque thème festif
+- ✨ Mode automatique avec détection intelligente des fêtes
+- ✨ Menu déroulant premium pour sélection manuelle
+- ✨ Sauvegarde des préférences utilisateur
+- ✨ Transitions fluides entre les thèmes
+- 🎬 6 types d'animations uniques (neige, étoiles, fleurs, fantômes, feux d'artifice)
+- ⚡ Optimisations de performance (GPU acceleration, respect de prefers-reduced-motion)
 - 🔧 Amélioration de l'accessibilité
 
 ### Version 2.1.0

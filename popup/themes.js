@@ -291,6 +291,11 @@ class ThemeManager {
     setTimeout(() => {
       this.body.classList.remove('theme-transition');
     }, 400);
+
+    // Démarrer les animations d'emojis pour les thèmes festifs
+    if (window.themeAnimations) {
+      window.themeAnimations.start(themeId);
+    }
   }
 
   /**
