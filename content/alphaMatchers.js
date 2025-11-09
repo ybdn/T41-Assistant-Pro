@@ -953,10 +953,10 @@
       logInfo("1️⃣ Extraction des valeurs des champs...");
 
       // Extraction des valeurs en utilisant la fonction robuste
-      // const idppGaspardValue = getValue(
-      //   "#formValidationCorrection\:identifiantGaspard",
-      //   "identifiantGaspard"
-      // );
+      const idppGaspardValue = getValue(
+        "#formValidationCorrection\\:identifiantGaspard",
+        "identifiantGaspard"
+      );
       const typeSaisieValue = getValue(
         "#formValidationCorrection:typeDeSignalisationValue",
         "typeDeSignalisation"
@@ -984,7 +984,7 @@
       );
 
       logInfo("Résumé des valeurs extraites:", {
-        // idppGaspardValue,
+        idppGaspardValue,
         typeSaisieValue,
         nomValue,
         prenomValue,
@@ -1003,7 +1003,7 @@
       }
 
       const validationResults = {
-        // idppGaspard: true,
+        identifiantGaspard: true,
         typeSaisie: true,
         nom: true,
         prenom: true,
@@ -1015,7 +1015,7 @@
       const errors = [];
 
       logInfo("Début de la vérification des données alphanumériques...", {
-        // idppGaspardValue,
+        idppGaspardValue,
         typeSaisieValue,
         nomValue,
         prenomValue,
@@ -1111,6 +1111,23 @@
             "Service de rattachement valide (Type Saisie != SM, 5 chiffres)."
           );
           // validationResults.serviceRattachement reste true par défaut
+        }
+      }
+
+      // Règle spécifique : Si terminal 11707 avec IDPP renseigné
+      if (serviceRattachementValue === "11707") {
+        logInfo(
+          "Terminal de saisie est 11707, vérification de la présence d'un IDPP."
+        );
+        if (idppGaspardValue && idppGaspardValue.trim() !== "") {
+          errors.push("Supprimer l'IDPP");
+          validationResults.identifiantGaspard = false;
+          logInfo(
+            "Erreur: IDPP renseigné alors que le terminal de saisie est 11707. IDPP: " +
+              idppGaspardValue
+          );
+        } else {
+          logInfo("Pas d'IDPP renseigné, validation OK pour terminal 11707.");
         }
       }
 
