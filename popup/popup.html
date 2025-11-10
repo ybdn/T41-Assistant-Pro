@@ -112,7 +112,7 @@
             <i class="fab fa-github github-icon"></i>ybdn
           </a>
         </p>
-        <div class="version-info">Version 2.1.1</div>
+        <div class="version-info">Version 2.1.2</div>
         <div id="debug-info" style="display: none"></div>
       </div>
     </div>
@@ -120,13 +120,45 @@
     <!-- Template pour les notifications -->
     <div class="notification-container" id="notification-container"></div>
 
-    <!-- Space Invaders Easter Egg Overlay -->
+    <!-- Game Menu Overlay -->
+    <div class="game-menu-overlay" id="game-menu-overlay">
+      <div class="game-menu-container">
+        <button class="game-close" id="game-menu-close-btn">&times;</button>
+
+        <div class="game-menu-header">
+          <h1 class="game-menu-title">T41 ARCADE</h1>
+          <p class="game-menu-subtitle">Choisissez votre jeu</p>
+        </div>
+
+        <div class="game-menu-grid">
+          <button class="game-menu-item" data-game="space-invaders">
+            <div class="game-menu-icon">🚀</div>
+            <div class="game-menu-name">SPACE DEFENDER</div>
+            <div class="game-menu-description">Détruisez les aliens !</div>
+          </button>
+
+          <button class="game-menu-item" data-game="snake">
+            <div class="game-menu-icon">🐍</div>
+            <div class="game-menu-name">T41 SNAKE</div>
+            <div class="game-menu-description">Mangez et grandissez !</div>
+          </button>
+
+          <button class="game-menu-item" data-game="floppy-bird">
+            <div class="game-menu-icon">🐦</div>
+            <div class="game-menu-name">FLOPPY BIRD</div>
+            <div class="game-menu-description">Volez entre les tuyaux !</div>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Game Overlay (for all games) -->
     <div class="game-overlay" id="game-overlay">
       <div class="game-container">
         <button class="game-close" id="game-close-btn">&times;</button>
 
         <div class="game-header">
-          <h1 class="game-title">T41 SPACE DEFENDER</h1>
+          <h1 class="game-title" id="game-title">T41 ARCADE</h1>
           <p class="game-subtitle">Easter Egg</p>
         </div>
 
@@ -156,7 +188,7 @@
           </select>
         </div>
 
-        <div class="game-instructions">
+        <div class="game-instructions" id="game-instructions">
           <kbd>←</kbd> <kbd>→</kbd> Déplacer • <kbd>SPACE</kbd> Tirer • <kbd>ESC</kbd> Quitter
         </div>
 
@@ -176,6 +208,8 @@
     <script src="themes-animations.js"></script>
     <script src="themes.js"></script>
     <script src="space-invaders.js"></script>
+    <script src="snake-game.js"></script>
+    <script src="floppy-bird-game.js"></script>
     <script src="easter-egg-init.js"></script>
   </body>
 </html>

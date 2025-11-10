@@ -641,20 +641,4 @@ class SpaceInvadersGame {
   }
 }
 
-// Initialize game when overlay opens
-function initSpaceInvaders() {
-  const overlay = document.getElementById('game-overlay');
-  overlay.classList.add('active');
-
-  const game = new SpaceInvadersGame('game-canvas');
-  game.start();
-
-  // Close button
-  document.getElementById('game-close-btn').onclick = () => game.close();
-
-  // Restart button
-  document.getElementById('game-restart-btn').onclick = () => game.restart();
-
-  // Store game instance
-  window.spaceInvadersGame = game;
-}
+// Game initialization is now handled by easter-egg-init.js
