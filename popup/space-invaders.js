@@ -5,8 +5,8 @@ class SpaceInvadersGame {
   constructor(canvasId) {
     this.canvas = document.getElementById(canvasId);
     this.ctx = this.canvas.getContext('2d');
-    this.width = 340;
-    this.height = 500;
+    this.width = 294;
+    this.height = 432;
     this.canvas.width = this.width;
     this.canvas.height = this.height;
 
@@ -62,7 +62,7 @@ class SpaceInvadersGame {
   }
 
   createStars() {
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 40; i++) {
       this.stars.push({
         x: Math.random() * this.width,
         y: Math.random() * this.height,
@@ -72,9 +72,9 @@ class SpaceInvadersGame {
   }
 
   createShields() {
-    const shieldY = this.height - 120;
-    for (let i = 0; i < 4; i++) {
-      const x = 35 + i * 75;
+    const shieldY = this.height - 100;
+    for (let i = 0; i < 3; i++) {
+      const x = 35 + i * 87;
       for (let row = 0; row < 3; row++) {
         for (let col = 0; col < 5; col++) {
           this.shields.push({
@@ -91,9 +91,9 @@ class SpaceInvadersGame {
 
   createAliens() {
     this.aliens = [];
-    const startY = 60;
+    const startY = 50;
     const rows = 3 + Math.floor(this.level / 3);
-    const cols = 8;
+    const cols = 6;
 
     for (let row = 0; row < rows; row++) {
       for (let col = 0; col < cols; col++) {
@@ -102,7 +102,7 @@ class SpaceInvadersGame {
         else if (row === 1) type = 2;
 
         this.aliens.push({
-          x: 15 + col * 38,
+          x: 20 + col * 42,
           y: startY + row * 35,
           width: 28,
           height: 24,
@@ -227,7 +227,7 @@ class SpaceInvadersGame {
       }
 
       // Game over if alien reaches bottom
-      if (alien.y + alien.height > this.height - 80) {
+      if (alien.y + alien.height > this.height - 70) {
         this.endGame();
       }
     }

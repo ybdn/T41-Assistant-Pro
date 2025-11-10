@@ -191,7 +191,7 @@ browser.action.onClicked.addListener(async (tab) => {
     const popupWindow = await browser.windows.create({
       url: browser.runtime.getURL('popup/popup.html?detached=true'),
       type: 'popup',
-      width: 340,
+      width: 350, // 350px pour obtenir 340px de contenu (Firefox soustrait ~10px pour les bordures)
       height: screenHeight,
     });
 
