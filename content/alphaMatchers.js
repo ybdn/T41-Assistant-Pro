@@ -231,6 +231,11 @@
   // Définition des étapes pour l'écran d'accueil
   const stepsEcranAccueil = [
     {
+      name: "Cliquer sur Traitement personnes",
+      selector: "a[href='#tabs:tab0']",
+      action: (element) => element.click(),
+    },
+    {
       name: "Cliquer sur l'onglet Station alpha",
       selector: "a[href='#tabs:tabsP:tabP2']",
       action: (element) => element.click(),
@@ -259,6 +264,30 @@
         if (element.value && element.value.trim() !== "") {
           element.value = "";
           element.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+      },
+    },
+    {
+      name: "Sélectionner Controle (si nécessaire)",
+      selector: "label#tabs\\:tabsP\\:FormulaireFiltreStationAlphaPersonneP\\:etapeTraitementPersonneP_label",
+      action: (element) => {
+        // Vérifier si "Contrôle" est déjà sélectionné
+        if (element.textContent.trim() !== "Contrôle") {
+          // Trouver le select sous-jacent
+          const selectElement = document.querySelector("select#tabs\\:tabsP\\:FormulaireFiltreStationAlphaPersonneP\\:etapeTraitementPersonneP_input");
+
+          if (selectElement) {
+            // Définir la valeur sur VALIDATION_FICHE (qui correspond à "Contrôle")
+            selectElement.value = "VALIDATION_FICHE";
+
+            // Déclencher l'événement change pour activer le comportement PrimeFaces
+            const changeEvent = new Event('change', { bubbles: true });
+            selectElement.dispatchEvent(changeEvent);
+
+            logInfo("✅ Filtre 'Contrôle' sélectionné");
+          } else {
+            logInfo("❌ Menu déroulant du filtre d'étape non trouvé");
+          }
         }
       },
     },
@@ -298,7 +327,7 @@
                 await new Promise(resolve => setTimeout(resolve, 1000));
 
                 // Revenir à cette étape de vérification
-                currentStepIndex = 4; // Étape de vérification
+                currentStepIndex = 6; // Étape de vérification (index ajusté après ajout de "Traitement personnes")
                 runEcranAccueilSteps();
               }
             } else {
@@ -315,30 +344,6 @@
             retryCountEcranAccueil = 0; // Réinitialiser le compteur en cas de succès
           }
         }, 1500); // Délai pour laisser le DOM se stabiliser
-      },
-    },
-    {
-      name: "Sélectionner Controle (si nécessaire)",
-      selector: "label#tabs\\:tabsP\\:FormulaireFiltreStationAlphaPersonneP\\:etapeTraitementPersonneP_label",
-      action: (element) => {
-        // Vérifier si "Contrôle" est déjà sélectionné
-        if (element.textContent.trim() !== "Contrôle") {
-          // Chercher et cliquer sur la jauge Controle
-          const jaugeSelector = "a[onclick*='actionTri'] div#tabs\\:tabsP\\:FormulaireJaugeStationAlphaP\\:j_idt545";
-          const jaugeFallback = "div#tabs\\:tabsP\\:FormulaireJaugeStationAlphaP\\:j_idt545";
-          const jaugeElement = document.querySelector(jaugeSelector) || document.querySelector(jaugeFallback);
-
-          if (jaugeElement) {
-            const parentLink = jaugeElement.closest('a');
-            if (parentLink) {
-              parentLink.click();
-            } else {
-              jaugeElement.click();
-            }
-          } else {
-            logInfo("❌ Jauge Contrôle non trouvée");
-          }
-        }
       },
     },
     {
