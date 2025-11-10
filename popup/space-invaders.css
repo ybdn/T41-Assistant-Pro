@@ -1,0 +1,229 @@
+/* Space Invaders Easter Egg - Overlay */
+
+.game-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.95);
+  z-index: 10000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease;
+}
+
+.game-overlay.active {
+  display: flex;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.game-container {
+  position: relative;
+  background: #000;
+  border: 3px solid #00ff88;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 0 30px rgba(0, 255, 136, 0.5);
+  animation: slideIn 0.4s ease;
+}
+
+@keyframes slideIn {
+  from {
+    transform: scale(0.8) translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+.game-header {
+  text-align: center;
+  margin-bottom: 15px;
+  color: #00ff88;
+  font-family: 'Courier New', monospace;
+}
+
+.game-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 0;
+  text-shadow: 0 0 10px rgba(0, 255, 136, 0.8);
+  letter-spacing: 2px;
+}
+
+.game-subtitle {
+  font-size: 12px;
+  color: #888;
+  margin: 5px 0;
+}
+
+.game-canvas {
+  display: block;
+  background: #000;
+  border: 2px solid #00ff88;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.game-hud {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+  color: #00ff88;
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+}
+
+.game-hud-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.game-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: transparent;
+  border: 2px solid #ff3333;
+  color: #ff3333;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 26px;
+  transition: all 0.2s;
+  font-weight: bold;
+}
+
+.game-close:hover {
+  background: #ff3333;
+  color: #000;
+  transform: rotate(90deg);
+}
+
+.game-over-screen {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.9);
+  border: 3px solid #00ff88;
+  padding: 30px;
+  text-align: center;
+  border-radius: 10px;
+  display: none;
+  z-index: 10;
+}
+
+.game-over-screen.active {
+  display: block;
+  animation: popIn 0.3s ease;
+}
+
+@keyframes popIn {
+  0% {
+    transform: translate(-50%, -50%) scale(0.5);
+    opacity: 0;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+}
+
+.game-over-title {
+  font-size: 32px;
+  color: #ff3333;
+  margin: 0 0 10px 0;
+  font-family: 'Courier New', monospace;
+  text-shadow: 0 0 15px rgba(255, 51, 51, 0.8);
+}
+
+.game-over-score {
+  font-size: 20px;
+  color: #00ff88;
+  margin: 10px 0;
+  font-family: 'Courier New', monospace;
+}
+
+.game-over-highscore {
+  font-size: 14px;
+  color: #ffa500;
+  margin: 5px 0 20px 0;
+  font-family: 'Courier New', monospace;
+}
+
+.game-restart-btn {
+  background: #00ff88;
+  color: #000;
+  border: none;
+  padding: 12px 30px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: 'Courier New', monospace;
+  transition: all 0.2s;
+  text-transform: uppercase;
+}
+
+.game-restart-btn:hover {
+  background: #00cc6a;
+  transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.6);
+}
+
+.game-instructions {
+  margin-top: 10px;
+  padding: 10px;
+  background: rgba(0, 255, 136, 0.1);
+  border-radius: 5px;
+  font-size: 11px;
+  color: #888;
+  font-family: 'Courier New', monospace;
+  text-align: center;
+}
+
+.game-instructions kbd {
+  background: #333;
+  padding: 2px 6px;
+  border-radius: 3px;
+  border: 1px solid #555;
+  color: #00ff88;
+  font-family: 'Courier New', monospace;
+  font-size: 10px;
+}
+
+/* Version cliquable */
+.version-info {
+  cursor: pointer;
+  transition: all 0.3s ease;
+  user-select: none;
+}
+
+.version-info:hover {
+  color: #00ff88;
+  transform: scale(1.05);
+  text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+}
+
+.version-info:active {
+  transform: scale(0.95);
+}
