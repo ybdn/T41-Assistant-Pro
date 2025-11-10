@@ -24,7 +24,7 @@ class SpaceInvadersGame {
       y: this.height - 60,
       width: 30,
       height: 30,
-      speed: 5,
+      speed: 3.5,
       color: '#00ff88'
     };
 
@@ -43,12 +43,41 @@ class SpaceInvadersGame {
 
     // Alien settings
     this.alienDirection = 1;
-    this.alienSpeed = 0.5;
-    this.alienShootChance = 0.001;
+    this.alienSpeed = 0.3;
+    this.alienShootChance = 0.0008;
     this.alienAnimFrame = 0;
 
     // High score
     this.highScore = parseInt(localStorage.getItem('t41SpaceInvadersHighScore') || '0');
+
+    // Difficulty settings
+    this.difficulty = 'normal';
+    this.difficultySettings = {
+      easy: {
+        playerSpeed: 4,
+        bulletSpeed: 6,
+        alienSpeed: 0.2,
+        alienBulletSpeed: 1.5,
+        alienShootChance: 0.0005,
+        alienSpeedIncrease: 0.1
+      },
+      normal: {
+        playerSpeed: 3.5,
+        bulletSpeed: 5,
+        alienSpeed: 0.3,
+        alienBulletSpeed: 2,
+        alienShootChance: 0.0008,
+        alienSpeedIncrease: 0.15
+      },
+      hard: {
+        playerSpeed: 3,
+        bulletSpeed: 4.5,
+        alienSpeed: 0.45,
+        alienBulletSpeed: 2.5,
+        alienShootChance: 0.0012,
+        alienSpeedIncrease: 0.2
+      }
+    };
 
     this.init();
   }
@@ -58,6 +87,8 @@ class SpaceInvadersGame {
     this.createShields();
     this.createAliens();
     this.setupEventListeners();
+    this.setupDifficultySelector();
+    this.applyDifficulty('normal');
     this.updateHUD();
   }
 
@@ -131,6 +162,39 @@ class SpaceInvadersGame {
     });
   }
 
+  setupDifficultySelector() {
+    const difficultySelect = document.getElementById('difficulty-select');
+    if (difficultySelect) {
+      difficultySelect.addEventListener('change', (e) => {
+        this.applyDifficulty(e.target.value);
+        // Enlever le focus pour éviter que les touches fléchées ne changent la sélection
+        difficultySelect.blur();
+      });
+
+      // Empêcher les touches fléchées de changer la difficulté pendant le jeu
+      difficultySelect.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+          e.preventDefault();
+          difficultySelect.blur();
+        }
+      });
+    }
+  }
+
+  applyDifficulty(difficulty) {
+    this.difficulty = difficulty;
+    const settings = this.difficultySettings[difficulty];
+
+    this.player.speed = settings.playerSpeed;
+    this.alienSpeed = settings.alienSpeed;
+    this.alienShootChance = settings.alienShootChance;
+
+    // Store for use in other methods
+    this.currentBulletSpeed = settings.bulletSpeed;
+    this.currentAlienBulletSpeed = settings.alienBulletSpeed;
+    this.currentAlienSpeedIncrease = settings.alienSpeedIncrease;
+  }
+
   shoot() {
     const now = Date.now();
     if (now - this.lastShot > this.shootDelay && !this.gameOver) {
@@ -139,7 +203,7 @@ class SpaceInvadersGame {
         y: this.player.y,
         width: 4,
         height: 12,
-        speed: 7
+        speed: this.currentBulletSpeed || 5
       });
       this.lastShot = now;
       this.playSound('shoot');
@@ -222,7 +286,7 @@ class SpaceInvadersGame {
           y: alien.y + alien.height,
           width: 4,
           height: 10,
-          speed: 3
+          speed: this.currentAlienBulletSpeed || 2
         });
       }
 
@@ -323,7 +387,7 @@ class SpaceInvadersGame {
 
   nextLevel() {
     this.level++;
-    this.alienSpeed += 0.2;
+    this.alienSpeed += this.currentAlienSpeedIncrease || 0.15;
     this.alienShootChance += 0.0002;
     this.score += 100 * this.level;
     this.createAliens();
@@ -351,13 +415,14 @@ class SpaceInvadersGame {
     this.lives = 3;
     this.level = 1;
     this.gameOver = false;
-    this.alienSpeed = 0.5;
-    this.alienShootChance = 0.001;
     this.bullets = [];
     this.alienBullets = [];
     this.particles = [];
     this.shields = [];
     this.player.x = this.width / 2 - 15;
+
+    // Reapply current difficulty settings
+    this.applyDifficulty(this.difficulty);
 
     this.createShields();
     this.createAliens();
