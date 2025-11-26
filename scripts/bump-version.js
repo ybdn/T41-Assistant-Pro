@@ -17,6 +17,7 @@ if (!ALLOWED.has(releaseType)) {
 
 const manifestPath = path.join(__dirname, '..', 'manifest.json');
 const popupPath = path.join(__dirname, '..', 'popup', 'popup.html');
+const publishPath = path.join(__dirname, '..', 'PUBLISH.md');
 
 const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
 const currentVersion = manifest.version;
@@ -53,6 +54,17 @@ if (!versionPattern.test(popupHtml)) {
 
 const updatedPopup = popupHtml.replace(versionPattern, `$1${newVersion}`);
 fs.writeFileSync(popupPath, updatedPopup, 'utf8');
+
+const publishMd = fs.readFileSync(publishPath, 'utf8');
+const publishPattern = /(\*\*Version\s*:\*\*\s+)(\d+\.\d+\.\d+)/;
+
+if (!publishPattern.test(publishMd)) {
+  console.error('Unable to locate version string in PUBLISH.md');
+  process.exit(1);
+}
+
+const updatedPublish = publishMd.replace(publishPattern, `$1${newVersion}`);
+fs.writeFileSync(publishPath, updatedPublish, 'utf8');
 
 // surface new version to callers (GitHub Actions step can capture stdout)
 console.log(newVersion);

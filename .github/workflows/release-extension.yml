@@ -78,15 +78,47 @@ jobs:
           NEW_VERSION=$(node scripts/bump-version.js "${{ steps.release_type.outputs.type }}")
           echo "version=$NEW_VERSION" >> "$GITHUB_OUTPUT"
 
-      - name: Install dependencies (if package exists)
+      - name: Commit version bump
         if: ${{ steps.should_run.outputs.run == 'true' }}
+        id: commit_version
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add manifest.json popup/popup.html PUBLISH.md
+
+          if git diff --cached --quiet; then
+            echo "No version changes detected."
+            echo "changes=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          git commit -m "chore: release v${{ steps.bump.outputs.version }}"
+          echo "changes=true" >> "$GITHUB_OUTPUT"
+
+      - name: Create and push tag
+        if: ${{ steps.commit_version.outputs.changes == 'true' }}
+        run: |
+          set -euo pipefail
+          git tag "v${{ steps.bump.outputs.version }}"
+          git push origin HEAD:main
+          git push origin "v${{ steps.bump.outputs.version }}"
+
+      - name: Clean old artifacts
+        if: ${{ steps.commit_version.outputs.changes == 'true' }}
+        run: |
+          rm -rf web-ext-artifacts
+          mkdir -p web-ext-artifacts
+
+      - name: Install dependencies (if package exists)
+        if: ${{ steps.commit_version.outputs.changes == 'true' }}
         run: |
           if [ -f package-lock.json ] || [ -f package.json ]; then
             npm ci
           fi
 
       - name: Sign extension with web-ext
-        if: ${{ steps.should_run.outputs.run == 'true' }}
+        if: ${{ steps.commit_version.outputs.changes == 'true' }}
         env:
           WEB_EXT_API_KEY: ${{ secrets.AMO_API_KEY }}
           WEB_EXT_API_SECRET: ${{ secrets.AMO_API_SECRET }}
@@ -101,43 +133,37 @@ jobs:
             --artifacts-dir=web-ext-artifacts \
             --api-key="${WEB_EXT_API_KEY}" \
             --api-secret="${WEB_EXT_API_SECRET}" \
-            --channel=listed
+            --channel=unlisted
 
       - name: Capture signed artifact
-        if: ${{ steps.should_run.outputs.run == 'true' }}
+        if: ${{ steps.commit_version.outputs.changes == 'true' }}
         id: signed_artifact
         run: |
           set -euo pipefail
-          python - <<'PY'
-import os
-from pathlib import Path
 
-artifacts = sorted(Path("web-ext-artifacts").glob("*.xpi"), key=lambda p: p.stat().st_mtime, reverse=True)
-if not artifacts:
-    raise SystemExit("No signed artifacts found in web-ext-artifacts/")
+          # Find the most recent .xpi file
+          ARTIFACT=$(ls -t web-ext-artifacts/*.xpi 2>/dev/null | head -1)
 
-with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as fh:
-    fh.write(f"file={artifacts[0]}\n")
-PY
-
-      - name: Commit version bump
-        if: ${{ steps.should_run.outputs.run == 'true' }}
-        run: |
-          set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add manifest.json popup/popup.html
-          if git diff --cached --quiet; then
-            echo "No version changes detected. Aborting."
+          if [ -z "$ARTIFACT" ]; then
+            echo "No signed artifacts found in web-ext-artifacts/"
             exit 1
           fi
-          git commit -m "chore: release v${{ steps.bump.outputs.version }}"
-          git tag "v${{ steps.bump.outputs.version }}"
-          git push origin HEAD:main
-          git push origin "v${{ steps.bump.outputs.version }}"
+
+          # Get file size (works on both Linux and macOS)
+          SIZE=$(stat -f%z "$ARTIFACT" 2>/dev/null || stat -c%s "$ARTIFACT" 2>/dev/null)
+
+          # Validate artifact size (should be > 100KB)
+          if [ "$SIZE" -lt 100000 ]; then
+            echo "Artifact $ARTIFACT is suspiciously small ($SIZE bytes)"
+            exit 1
+          fi
+
+          echo "Found artifact: $ARTIFACT ($SIZE bytes)"
+          echo "file=$ARTIFACT" >> "$GITHUB_OUTPUT"
+          echo "size=$SIZE" >> "$GITHUB_OUTPUT"
 
       - name: Publish GitHub release
-        if: ${{ steps.should_run.outputs.run == 'true' }}
+        if: ${{ steps.commit_version.outputs.changes == 'true' }}
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.bump.outputs.version }}
@@ -145,4 +171,7 @@ PY
           body: |
             Version: v${{ steps.bump.outputs.version }}
             Release type: ${{ steps.release_type.outputs.type }}
+            Artifact size: ${{ steps.signed_artifact.outputs.size }} bytes
+
+            📦 Téléchargez le fichier .xpi ci-dessous pour installer l'extension.
           files: ${{ steps.signed_artifact.outputs.file }}
