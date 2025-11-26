@@ -1199,7 +1199,7 @@
           "Terminal de saisie est 11707, vérification de la présence d'un IDPP."
         );
         if (idppGaspardValue && idppGaspardValue.trim() !== "") {
-          errors.push("Supprimer l'IDPP");
+          errors.push("Signalisation multiple : retirer l'IDPP");
           validationResults.identifiantGaspard = false;
           logInfo(
             "Erreur: IDPP renseigné alors que le terminal de saisie est 11707. IDPP: " +
@@ -1211,9 +1211,9 @@
       }
 
       // Règle 4 (partie Service Initiateur): Validations conditionnées par la présence de l'IDPP et le Type de Saisie
-      if (typeSaisieValue.toUpperCase() !== "SM") {
+      if (typeSaisieValue.toUpperCase() !== "SM" && typeSaisieValue.toUpperCase() !== "SN") {
         logInfo(
-          "Type de saisie n'est pas SM, poursuite de la vérification du Service Initiateur."
+          "Type de saisie n'est ni SM ni SN, poursuite de la vérification du Service Initiateur."
         );
         // --- Si IDPP/GASPARD EST renseigné ---
         // if (idppGaspardValue) {
@@ -1316,9 +1316,9 @@
         }
         // Fin NOUVELLE RÈGLE
       } else {
-        // Si Type de saisie EST SM
+        // Si Type de saisie EST SM ou SN
         logInfo(
-          "Type de saisie est SM, la vérification du Service Initiateur est ignorée."
+          "Type de saisie est SM ou SN, la vérification du Service Initiateur est ignorée."
         );
         // validationResults.serviceInitiateur reste true par défaut, ce qui est correct.
       }
@@ -1328,20 +1328,27 @@
       // if (!idppGaspardValue) {
       // Puisque idppGaspardValue est commenté, cette condition sera toujours vraie (comme si IDPP était absent).
       // Donc, les vérifications pour UNA et Service de Rattachement s'appliqueront comme si IDPP était toujours absent.
-      logInfo(
-        "IDPP/GASPARD non renseigné (ou ignoré), vérification des champs UNA et Service de Rattachement."
-      );
-      // Validation de Proc/UNA (si IDPP absent)
-      if (!unaValue) {
-        errors.push("L'UNA doit être au format 5/5/4");
-        validationResults.una = false;
-        logInfo("Erreur: UNA non renseigné (IDPP absent).");
-        // La vérification finale de errors.length > 0 gérera l'arrêt de la boucle
-      } else if (!/^\d{1,5}\/\d{1,5}\/\d{4}$/.test(unaValue)) {
-        errors.push("L'UNA doit être au format 5/5/4");
-        validationResults.una = false;
-        logInfo("Erreur: Format UNA invalide (IDPP absent).");
-        // La vérification finale de errors.length > 0 gérera l'arrêt de la boucle
+      // IMPORTANT: Validation UNA uniquement si Type n'est ni "SM" ni "SN"
+      if (typeSaisieValue.toUpperCase() !== "SM" && typeSaisieValue.toUpperCase() !== "SN") {
+        logInfo(
+          "IDPP/GASPARD non renseigné (ou ignoré), vérification des champs UNA et Service de Rattachement."
+        );
+        // Validation de Proc/UNA (si IDPP absent)
+        if (!unaValue) {
+          errors.push("L'UNA doit être au format 5/5/4");
+          validationResults.una = false;
+          logInfo("Erreur: UNA non renseigné (IDPP absent).");
+          // La vérification finale de errors.length > 0 gérera l'arrêt de la boucle
+        } else if (!/^\d{1,5}\/\d{1,5}\/\d{4}$/.test(unaValue)) {
+          errors.push("L'UNA doit être au format 5/5/4");
+          validationResults.una = false;
+          logInfo("Erreur: Format UNA invalide (IDPP absent).");
+          // La vérification finale de errors.length > 0 gérera l'arrêt de la boucle
+        }
+      } else {
+        logInfo(
+          "Type de saisie est SM ou SN, la vérification UNA est ignorée."
+        );
       }
 
       // Validation du Service de Rattachement (si IDPP absent ET Type Saisie == SM, car la vérif Type != SM est déjà faite plus haut)
