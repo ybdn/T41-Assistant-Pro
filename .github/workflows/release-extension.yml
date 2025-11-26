@@ -1,0 +1,119 @@
+name: Release Extension
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    if: github.event.head_commit == null || !startsWith(github.event.head_commit.message, 'chore: release')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Determine release type
+        id: release_type
+        env:
+          BEFORE: ${{ github.event.before }}
+        run: |
+          set -euo pipefail
+          RANGE=""
+          if [ -n "${BEFORE}" ] && [ "${BEFORE}" != "0000000000000000000000000000000000000000" ]; then
+            RANGE="${BEFORE}..HEAD"
+          fi
+          if [ -n "$RANGE" ]; then
+            COMMITS=$(git log "$RANGE" --pretty=%B || true)
+          else
+            COMMITS=$(git log -1 --pretty=%B || true)
+          fi
+          TYPE=patch
+          if echo "$COMMITS" | grep -E 'BREAKING CHANGE|!:' >/dev/null; then
+            TYPE=major
+          elif echo "$COMMITS" | grep -E '^feat(\(.+\))?!?:' >/dev/null; then
+            TYPE=minor
+          fi
+          echo "type=$TYPE" >> "$GITHUB_OUTPUT"
+
+      - name: Bump extension version
+        id: bump
+        run: |
+          set -euo pipefail
+          NEW_VERSION=$(node scripts/bump-version.js "${{ steps.release_type.outputs.type }}")
+          echo "version=$NEW_VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Install dependencies (if package exists)
+        run: |
+          if [ -f package-lock.json ] || [ -f package.json ]; then
+            npm ci
+          fi
+
+      - name: Sign extension with web-ext
+        env:
+          WEB_EXT_API_KEY: ${{ secrets.AMO_API_KEY }}
+          WEB_EXT_API_SECRET: ${{ secrets.AMO_API_SECRET }}
+        run: |
+          set -euo pipefail
+          if [ -z "${WEB_EXT_API_KEY}" ] || [ -z "${WEB_EXT_API_SECRET}" ]; then
+            echo "AMO credentials are not configured. Please add AMO_API_KEY and AMO_API_SECRET secrets."
+            exit 1
+          fi
+          npx --yes web-ext sign \
+            --source-dir=. \
+            --artifacts-dir=web-ext-artifacts \
+            --api-key="${WEB_EXT_API_KEY}" \
+            --api-secret="${WEB_EXT_API_SECRET}" \
+            --channel=listed
+
+      - name: Capture signed artifact
+        id: signed_artifact
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+import os
+from pathlib import Path
+
+artifacts = sorted(Path("web-ext-artifacts").glob("*.xpi"), key=lambda p: p.stat().st_mtime, reverse=True)
+if not artifacts:
+    raise SystemExit("No signed artifacts found in web-ext-artifacts/")
+
+with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as fh:
+    fh.write(f"file={artifacts[0]}\n")
+PY
+
+      - name: Commit version bump
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add manifest.json popup/popup.html
+          if git diff --cached --quiet; then
+            echo "No version changes detected. Aborting."
+            exit 1
+          fi
+          git commit -m "chore: release v${{ steps.bump.outputs.version }}"
+          git tag "v${{ steps.bump.outputs.version }}"
+          git push origin HEAD:main
+          git push origin "v${{ steps.bump.outputs.version }}"
+
+      - name: Publish GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.bump.outputs.version }}
+          name: T41 Assistant Pro v${{ steps.bump.outputs.version }}
+          body: |
+            Version: v${{ steps.bump.outputs.version }}
+            Release type: ${{ steps.release_type.outputs.type }}
+          files: ${{ steps.signed_artifact.outputs.file }}
