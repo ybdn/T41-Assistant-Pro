@@ -1,28 +1,33 @@
 {
   "manifest_version": 3,
   "name": "T41 Assistant Pro",
-  "version": "2.1.2",
+  "version": "2.1.3",
   "description": "Extension Firefox qui assiste les opérateurs FAED lors du contrôle des fiches de signalisation. Elle participe à la fiabilisation des données avant intégration en base grâce au contrôle des données alphanumériques et augmente la productivité grâce à la sélection des éléments du DOM pour valider les onglets.",
   "author": "ybdn - Yoann Baudrin",
-
-  "permissions": ["tabs", "activeTab", "scripting", "storage"],
-
+  "permissions": [
+    "tabs",
+    "activeTab",
+    "scripting",
+    "storage"
+  ],
   "host_permissions": [
     "https://faed.ppsso.gendarmerie.fr/*",
     "https://faed.sso.gendarmerie.fr/*"
   ],
-
   "background": {
-    "scripts": ["background/backgroundScript.js"]
+    "scripts": [
+      "background/backgroundScript.js"
+    ]
   },
-
   "content_scripts": [
     {
       "matches": [
         "https://faed.ppsso.gendarmerie.fr/*",
         "https://faed.sso.gendarmerie.fr/*"
       ],
-      "js": ["content/alphaMatchers.js"]
+      "js": [
+        "content/alphaMatchers.js"
+      ]
     }
   ],
   "action": {
@@ -32,19 +37,19 @@
       "48": "icons/icon-48.png"
     }
   },
-
   "icons": {
     "16": "icons/icon-16.png",
     "32": "icons/icon-32.png",
     "48": "icons/icon-48.png",
     "128": "icons/icon-128.png"
   },
-
   "browser_specific_settings": {
     "gecko": {
       "id": "t41-assistant-pro@ybdn-dfaedgn",
       "data_collection_permissions": {
-        "required": ["none"]
+        "required": [
+          "none"
+        ]
       }
     }
   }
