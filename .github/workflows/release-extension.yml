@@ -10,21 +10,44 @@ permissions:
 
 jobs:
   release:
-    if: ${{ github.event.head_commit == null || !startsWith(github.event.head_commit.message, 'chore: release') }}
     runs-on: ubuntu-latest
 
     steps:
+      - name: Decide whether to run release
+        id: should_run
+        run: |
+          set -euo pipefail
+          MSG="${COMMIT_MESSAGE}"
+          if [ -z "$MSG" ]; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [[ "$MSG" == chore:\ release* ]]; then
+            echo "run=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          fi
+        env:
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+
+      - name: Skip notice
+        if: ${{ steps.should_run.outputs.run != 'true' }}
+        run: echo "Release commit detected, skipping workflow."
+
       - name: Checkout
+        if: ${{ steps.should_run.outputs.run == 'true' }}
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Use Node.js
+        if: ${{ steps.should_run.outputs.run == 'true' }}
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
       - name: Determine release type
+        if: ${{ steps.should_run.outputs.run == 'true' }}
         id: release_type
         env:
           BEFORE: ${{ github.event.before }}
@@ -48,6 +71,7 @@ jobs:
           echo "type=$TYPE" >> "$GITHUB_OUTPUT"
 
       - name: Bump extension version
+        if: ${{ steps.should_run.outputs.run == 'true' }}
         id: bump
         run: |
           set -euo pipefail
@@ -55,12 +79,14 @@ jobs:
           echo "version=$NEW_VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Install dependencies (if package exists)
+        if: ${{ steps.should_run.outputs.run == 'true' }}
         run: |
           if [ -f package-lock.json ] || [ -f package.json ]; then
             npm ci
           fi
 
       - name: Sign extension with web-ext
+        if: ${{ steps.should_run.outputs.run == 'true' }}
         env:
           WEB_EXT_API_KEY: ${{ secrets.AMO_API_KEY }}
           WEB_EXT_API_SECRET: ${{ secrets.AMO_API_SECRET }}
@@ -78,6 +104,7 @@ jobs:
             --channel=listed
 
       - name: Capture signed artifact
+        if: ${{ steps.should_run.outputs.run == 'true' }}
         id: signed_artifact
         run: |
           set -euo pipefail
@@ -94,6 +121,7 @@ with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as fh:
 PY
 
       - name: Commit version bump
+        if: ${{ steps.should_run.outputs.run == 'true' }}
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
@@ -109,6 +137,7 @@ PY
           git push origin "v${{ steps.bump.outputs.version }}"
 
       - name: Publish GitHub release
+        if: ${{ steps.should_run.outputs.run == 'true' }}
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.bump.outputs.version }}
