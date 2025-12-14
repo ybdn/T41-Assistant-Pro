@@ -17,14 +17,15 @@ class SpaceInvadersGame {
     this.gameOver = false;
     this.paused = false;
     this.animationFrame = null;
+    this.lastTime = 0;
 
-    // Player
+    // Player (speeds in pixels/second)
     this.player = {
       x: this.width / 2 - 15,
       y: this.height - 60,
       width: 30,
       height: 30,
-      speed: 3.5,
+      speed: 210,           // pixels/second (was 3.5/frame @ 60fps = 210)
       color: '#00ff88'
     };
 
@@ -41,41 +42,41 @@ class SpaceInvadersGame {
     this.shields = [];
     this.stars = [];
 
-    // Alien settings
+    // Alien settings (speeds in pixels/second)
     this.alienDirection = 1;
-    this.alienSpeed = 0.3;
+    this.alienSpeed = 18;           // pixels/second (was 0.3/frame @ 60fps = 18)
     this.alienShootChance = 0.0008;
     this.alienAnimFrame = 0;
 
     // High score
     this.highScore = parseInt(localStorage.getItem('t41SpaceInvadersHighScore') || '0');
 
-    // Difficulty settings
+    // Difficulty settings (speeds in pixels/second)
     this.difficulty = 'normal';
     this.difficultySettings = {
       easy: {
-        playerSpeed: 4,
-        bulletSpeed: 6,
-        alienSpeed: 0.2,
-        alienBulletSpeed: 1.5,
+        playerSpeed: 240,           // pixels/second
+        bulletSpeed: 360,           // pixels/second
+        alienSpeed: 12,             // pixels/second
+        alienBulletSpeed: 90,       // pixels/second
         alienShootChance: 0.0005,
-        alienSpeedIncrease: 0.1
+        alienSpeedIncrease: 6       // pixels/second per level
       },
       normal: {
-        playerSpeed: 3.5,
-        bulletSpeed: 5,
-        alienSpeed: 0.3,
-        alienBulletSpeed: 2,
+        playerSpeed: 210,
+        bulletSpeed: 300,
+        alienSpeed: 18,
+        alienBulletSpeed: 120,
         alienShootChance: 0.0008,
-        alienSpeedIncrease: 0.15
+        alienSpeedIncrease: 9
       },
       hard: {
-        playerSpeed: 3,
-        bulletSpeed: 4.5,
-        alienSpeed: 0.45,
-        alienBulletSpeed: 2.5,
+        playerSpeed: 180,
+        bulletSpeed: 270,
+        alienSpeed: 27,
+        alienBulletSpeed: 150,
         alienShootChance: 0.0012,
-        alienSpeedIncrease: 0.2
+        alienSpeedIncrease: 12
       }
     };
 
@@ -210,37 +211,37 @@ class SpaceInvadersGame {
     }
   }
 
-  update() {
+  update(dt) {
     if (this.gameOver || this.paused) return;
 
-    // Update player
+    // Update player with delta time
     if (this.keys['ArrowLeft'] && this.player.x > 0) {
-      this.player.x -= this.player.speed;
+      this.player.x -= this.player.speed * dt;
     }
     if (this.keys['ArrowRight'] && this.player.x < this.width - this.player.width) {
-      this.player.x += this.player.speed;
+      this.player.x += this.player.speed * dt;
     }
 
-    // Update bullets
+    // Update bullets with delta time
     this.bullets = this.bullets.filter(bullet => {
-      bullet.y -= bullet.speed;
+      bullet.y -= bullet.speed * dt;
       return bullet.y > 0;
     });
 
-    // Update alien bullets
+    // Update alien bullets with delta time
     this.alienBullets = this.alienBullets.filter(bullet => {
-      bullet.y += bullet.speed;
+      bullet.y += bullet.speed * dt;
       return bullet.y < this.height;
     });
 
-    // Update aliens
-    this.updateAliens();
+    // Update aliens with delta time
+    this.updateAliens(dt);
 
-    // Update particles
+    // Update particles with delta time
     this.particles = this.particles.filter(p => {
-      p.x += p.vx;
-      p.y += p.vy;
-      p.life--;
+      p.x += p.vx * dt * 60; // Scale to maintain visual effect
+      p.y += p.vy * dt * 60;
+      p.life -= dt * 60;
       return p.life > 0;
     });
 
@@ -258,35 +259,35 @@ class SpaceInvadersGame {
     }
   }
 
-  updateAliens() {
+  updateAliens(dt) {
     let moveDown = false;
     const aliveAliens = this.aliens.filter(a => a.alive);
 
     // Check boundaries
     for (let alien of aliveAliens) {
       if ((alien.x <= 0 && this.alienDirection < 0) ||
-          (alien.x >= this.width - alien.width && this.alienDirection > 0)) {
+        (alien.x >= this.width - alien.width && this.alienDirection > 0)) {
         moveDown = true;
         this.alienDirection *= -1;
         break;
       }
     }
 
-    // Move aliens
+    // Move aliens with delta time
     for (let alien of aliveAliens) {
-      alien.x += this.alienSpeed * this.alienDirection;
+      alien.x += this.alienSpeed * this.alienDirection * dt;
       if (moveDown) {
         alien.y += 15;
       }
 
-      // Alien shooting
-      if (Math.random() < this.alienShootChance * this.level) {
+      // Alien shooting (probability scaled by dt to be frame-rate independent)
+      if (Math.random() < this.alienShootChance * this.level * dt * 60) {
         this.alienBullets.push({
           x: alien.x + alien.width / 2 - 2,
           y: alien.y + alien.height,
           width: 4,
           height: 10,
-          speed: this.currentAlienBulletSpeed || 2
+          speed: this.currentAlienBulletSpeed || 120
         });
       }
 
@@ -347,9 +348,9 @@ class SpaceInvadersGame {
 
   collision(rect1, rect2) {
     return rect1.x < rect2.x + rect2.width &&
-           rect1.x + rect1.width > rect2.x &&
-           rect1.y < rect2.y + rect2.height &&
-           rect1.y + rect1.height > rect2.y;
+      rect1.x + rect1.width > rect2.x &&
+      rect1.y < rect2.y + rect2.height &&
+      rect1.y + rect1.height > rect2.y;
   }
 
   createExplosion(x, y, type) {
@@ -592,7 +593,7 @@ class SpaceInvadersGame {
 
     gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
 
-    switch(type) {
+    switch (type) {
       case 'shoot':
         oscillator.frequency.setValueAtTime(400, audioCtx.currentTime);
         oscillator.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.1);
@@ -622,14 +623,19 @@ class SpaceInvadersGame {
     oscillator.stop(audioCtx.currentTime + 0.3);
   }
 
-  gameLoop() {
-    this.update();
+  gameLoop(currentTime) {
+    // Calculate delta time in seconds, cap at 100ms to prevent huge jumps
+    const dt = Math.min((currentTime - this.lastTime) / 1000, 0.1);
+    this.lastTime = currentTime;
+
+    this.update(dt);
     this.draw();
-    this.animationFrame = requestAnimationFrame(() => this.gameLoop());
+    this.animationFrame = requestAnimationFrame((time) => this.gameLoop(time));
   }
 
   start() {
-    this.gameLoop();
+    this.lastTime = performance.now();
+    this.gameLoop(this.lastTime);
   }
 
   close() {

@@ -20,8 +20,9 @@ class SnakeGame {
     this.gameOver = false;
     this.paused = false;
     this.animationFrame = null;
-    this.gameSpeed = 100; // ms per frame
+    this.gameSpeed = 100; // ms per frame for snake movement (Fixed Time Step)
     this.lastUpdateTime = 0;
+    this.lastFrameTime = 0; // For particle delta time
 
     // Snake
     this.snake = [
@@ -65,7 +66,7 @@ class SnakeGame {
     this.keyHandler = (e) => {
       if (this.gameOver) return;
 
-      switch(e.key) {
+      switch (e.key) {
         case 'ArrowUp':
           if (this.direction.y === 0) {
             this.nextDirection = { x: 0, y: -1 };
@@ -142,10 +143,13 @@ class SnakeGame {
     this.foodColor = colors[Math.floor(Math.random() * colors.length)];
   }
 
-  update(currentTime) {
+  update(currentTime, dt) {
     if (this.gameOver || this.paused) return;
 
+    // Snake movement uses Fixed Time Step pattern
     if (currentTime - this.lastUpdateTime < this.gameSpeed) {
+      // Only update particles between snake updates
+      this.updateParticles(dt);
       return;
     }
     this.lastUpdateTime = currentTime;
@@ -160,7 +164,7 @@ class SnakeGame {
 
     // Check wall collision
     if (head.x < 0 || head.x >= this.tileCount ||
-        head.y < 0 || head.y >= this.tileCountY) {
+      head.y < 0 || head.y >= this.tileCountY) {
       this.endGame();
       return;
     }
@@ -186,11 +190,15 @@ class SnakeGame {
       this.snake.pop();
     }
 
-    // Update particles
+    // Update particles with delta time
+    this.updateParticles(dt);
+  }
+
+  updateParticles(dt) {
     this.particles = this.particles.filter(p => {
-      p.x += p.vx;
-      p.y += p.vy;
-      p.life--;
+      p.x += p.vx * dt;
+      p.y += p.vy * dt;
+      p.life -= dt;
       return p.life > 0;
     });
   }
@@ -204,11 +212,11 @@ class SnakeGame {
       this.particles.push({
         x: centerX,
         y: centerY,
-        vx: Math.cos(angle) * 2,
-        vy: Math.sin(angle) * 2,
+        vx: Math.cos(angle) * 120, // pixels/second (was 2/frame @ 60fps = 120)
+        vy: Math.sin(angle) * 120,
         color: this.foodColor,
         size: 3,
-        life: 20
+        life: 0.33 // seconds (was 20 frames @ 60fps ≈ 0.33s)
       });
     }
   }
@@ -359,7 +367,7 @@ class SnakeGame {
 
     gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
 
-    switch(type) {
+    switch (type) {
       case 'eat':
         oscillator.frequency.setValueAtTime(600, audioCtx.currentTime);
         oscillator.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.1);
@@ -378,14 +386,20 @@ class SnakeGame {
   }
 
   gameLoop(currentTime) {
-    this.update(currentTime);
+    // Calculate delta time in seconds for particles, cap at 100ms
+    const dt = Math.min((currentTime - this.lastFrameTime) / 1000, 0.1);
+    this.lastFrameTime = currentTime;
+
+    this.update(currentTime, dt);
     this.draw();
     this.animationFrame = requestAnimationFrame((time) => this.gameLoop(time));
   }
 
   start() {
-    this.lastUpdateTime = performance.now();
-    this.gameLoop(this.lastUpdateTime);
+    const now = performance.now();
+    this.lastUpdateTime = now;
+    this.lastFrameTime = now;
+    this.gameLoop(now);
   }
 
   close() {

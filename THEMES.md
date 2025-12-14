@@ -281,6 +281,19 @@ Tous les thèmes respectent les ratios de contraste WCAG 2.1 :
 ## 📝 Notes de Version
 
 ### Version 2.2.0 (Actuelle)
+- 🎮 **Nouveau jeu : T41 Asteroids** - Détruisez les astéroïdes avec physique d'inertie !
+- ⚡ **Pattern Delta Time** - Tous les jeux sont maintenant indépendants du taux de rafraîchissement (60Hz, 144Hz, 240Hz)
+- 🚀 Physique de vaisseau avec propulsion, inertie et friction
+- 💥 Astéroïdes qui se divisent (large → medium → small)
+- 🔄 Screen wrapping pour vaisseau et astéroïdes
+- ✨ Effets de particules pour explosions et propulsion
+- 🛡️ Invincibilité temporaire après collision
+- 🎚️ 3 niveaux de difficulté (Facile, Normal, Difficile)
+- 🏆 Système de high score sauvegardé
+- 🔧 Correction du bug audio sur tous les jeux
+- 🎮 Floppy Bird, Snake et Space Invaders convertis au Delta Time
+
+### Version 2.1.3
 - ✨ Ajout du système de thèmes festifs français
 - ✨ 6 nouveaux thèmes festifs avec identités visuelles uniques
 - ✨ Système d'animations unifié avec icônes rebondissantes

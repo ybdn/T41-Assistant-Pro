@@ -1,215 +1,212 @@
 <!DOCTYPE html>
 <html lang="fr">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>T41 Assistant Pro</title>
-    <link rel="stylesheet" href="styles.css" />
-    <link rel="stylesheet" href="styles-additional.css" />
-    <link rel="stylesheet" href="themes-festive.css" />
-    <link rel="stylesheet" href="themes-animations.css" />
-    <link rel="stylesheet" href="themes-fixes.css" />
-    <link rel="stylesheet" href="vendor/font-awesome.min.css" />
-    <link rel="stylesheet" href="space-invaders.css" />
-    <!-- Twemoji pour les emojis colorés -->
-    <script src="vendor/twemoji.min.js"></script>
-    <!-- Chargement d'abord du polyfill pour s'assurer que l'API browser est disponible -->
-    <script src="browser-polyfill-fixed.js"></script>
-  </head>
-  <body>
-    <div class="popup" id="popup-container">
-      <!-- En-tête avec logo et titre -->
-      <header class="header">
-        <div class="header-content">
-          <button id="icon-trigger" class="icon-button tooltip">
-            <img src="/icons/icon-48.png" alt="T41 Logo" class="app-icon" />
-            <span class="tooltip-text">Vérifier les données</span>
-          </button>
-          <h1 class="app-title">T41 Assistant Pro</h1>
-          <div class="theme-toggle tooltip">
-            <button id="theme-switch" class="icon-button">
-              <i class="fas fa-moon"></i>
-              <span class="tooltip-text">Changer le thème</span>
-            </button>
-          </div>
-        </div>
-      </header>
 
-      <!-- Carte principale avec statut et actions -->
-      <div class="card slide-in" id="script-card">
-        <div class="card-header">
-          <h2 class="card-title">Traitement des fiches</h2>
-          <div class="status-badge" id="status-badge">
-            <i class="fas fa-circle-info"></i>
-            <span>Prêt</span>
-          </div>
-        </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>T41 Assistant Pro</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles-additional.css" />
+  <link rel="stylesheet" href="themes-festive.css" />
+  <link rel="stylesheet" href="themes-animations.css" />
+  <link rel="stylesheet" href="themes-fixes.css" />
+  <link rel="stylesheet" href="vendor/font-awesome.min.css" />
+  <link rel="stylesheet" href="space-invaders.css" />
+  <!-- Twemoji pour les emojis colorés -->
+  <script src="vendor/twemoji.min.js"></script>
+  <!-- Chargement d'abord du polyfill pour s'assurer que l'API browser est disponible -->
+  <script src="browser-polyfill-fixed.js"></script>
+</head>
 
-        <div class="status-indicator" id="status-container">
-          <div class="status-animation">
-            <span class="status-dot" id="status-dot"></span>
-            <svg class="status-ring" width="20" height="20" viewBox="0 0 20 20">
-              <circle cx="10" cy="10" r="8" fill="none" stroke-width="2" />
-            </svg>
-          </div>
-          <span class="status-message" id="status-message"
-            >Boucle inactive</span
-          >
-        </div>
-
-        <div class="button-container">
-          <button class="btn btn-primary" id="next-action">
-            <i class="fas fa-play"></i>
-            <span>Lancer</span>
+<body>
+  <div class="popup" id="popup-container">
+    <!-- En-tête avec logo et titre -->
+    <header class="header">
+      <div class="header-content">
+        <button id="icon-trigger" class="icon-button tooltip">
+          <img src="/icons/icon-48.png" alt="T41 Logo" class="app-icon" />
+          <span class="tooltip-text">Vérifier les données</span>
+        </button>
+        <h1 class="app-title">T41 Assistant Pro</h1>
+        <div class="theme-toggle tooltip">
+          <button id="theme-switch" class="icon-button">
+            <i class="fas fa-moon"></i>
+            <span class="tooltip-text">Changer le thème</span>
           </button>
         </div>
       </div>
+    </header>
 
-      <!-- Widget To Do List -->
-      <div class="card todo-card slide-in">
-        <div class="card-header">
-          <h2 class="card-title">Ma liste de tâches</h2>
-          <div class="todo-count">
-            <span id="todo-count">(0)</span>
-          </div>
-        </div>
-
-        <!-- Input pour ajouter une tâche -->
-        <div class="todo-input-container">
-          <input
-            type="text"
-            id="todo-input"
-            class="todo-input"
-            placeholder="Ajouter une tâche..."
-            maxlength="100"
-          />
-          <button id="add-todo-btn" class="btn-add-todo">
-            <i class="fas fa-plus"></i>
-          </button>
-        </div>
-
-        <!-- Liste des tâches -->
-        <div class="todo-list-container" id="todo-list-container">
-          <div class="todo-empty-state" id="todo-empty-state">
-            <i class="fas fa-clipboard-list"></i>
-            <p>Aucune tâche pour le moment</p>
-            <span>Ajoutez votre première tâche ci-dessus</span>
-          </div>
-          <ul class="todo-list" id="todo-list"></ul>
+    <!-- Carte principale avec statut et actions -->
+    <div class="card slide-in" id="script-card">
+      <div class="card-header">
+        <h2 class="card-title">Traitement des fiches</h2>
+        <div class="status-badge" id="status-badge">
+          <i class="fas fa-circle-info"></i>
+          <span>Prêt</span>
         </div>
       </div>
 
-      <!-- Section des crédits et informations -->
-      <div class="card info-card">
-        <p class="info-text">
-          T41 Assistant Pro • © 2025
-          <a
-            href="https://github.com/ybdn"
-            target="_blank"
-            rel="noopener"
-            class="dev-link"
-          >
-            <i class="fab fa-github github-icon"></i>ybdn
-          </a>
-        </p>
-        <div class="version-info">Version 2.1.3</div>
-        <div id="debug-info" style="display: none"></div>
+      <div class="status-indicator" id="status-container">
+        <div class="status-animation">
+          <span class="status-dot" id="status-dot"></span>
+          <svg class="status-ring" width="20" height="20" viewBox="0 0 20 20">
+            <circle cx="10" cy="10" r="8" fill="none" stroke-width="2" />
+          </svg>
+        </div>
+        <span class="status-message" id="status-message">Boucle inactive</span>
+      </div>
+
+      <div class="button-container">
+        <button class="btn btn-primary" id="next-action">
+          <i class="fas fa-play"></i>
+          <span>Lancer</span>
+        </button>
       </div>
     </div>
 
-    <!-- Template pour les notifications -->
-    <div class="notification-container" id="notification-container"></div>
-
-    <!-- Game Menu Overlay -->
-    <div class="game-menu-overlay" id="game-menu-overlay">
-      <div class="game-menu-container">
-        <button class="game-close" id="game-menu-close-btn">&times;</button>
-
-        <div class="game-menu-header">
-          <h1 class="game-menu-title">T41 ARCADE</h1>
-          <p class="game-menu-subtitle">Choisissez votre jeu</p>
+    <!-- Widget To Do List -->
+    <div class="card todo-card slide-in">
+      <div class="card-header">
+        <h2 class="card-title">Ma liste de tâches</h2>
+        <div class="todo-count">
+          <span id="todo-count">(0)</span>
         </div>
+      </div>
 
-        <div class="game-menu-grid">
-          <button class="game-menu-item" data-game="space-invaders">
-            <div class="game-menu-icon">🚀</div>
-            <div class="game-menu-name">SPACE DEFENDER</div>
-            <div class="game-menu-description">Détruisez les aliens !</div>
-          </button>
+      <!-- Input pour ajouter une tâche -->
+      <div class="todo-input-container">
+        <input type="text" id="todo-input" class="todo-input" placeholder="Ajouter une tâche..." maxlength="100" />
+        <button id="add-todo-btn" class="btn-add-todo">
+          <i class="fas fa-plus"></i>
+        </button>
+      </div>
 
-          <button class="game-menu-item" data-game="snake">
-            <div class="game-menu-icon">🐍</div>
-            <div class="game-menu-name">T41 SNAKE</div>
-            <div class="game-menu-description">Mangez et grandissez !</div>
-          </button>
-
-          <button class="game-menu-item" data-game="floppy-bird">
-            <div class="game-menu-icon">🐦</div>
-            <div class="game-menu-name">FLOPPY BIRD</div>
-            <div class="game-menu-description">Volez entre les tuyaux !</div>
-          </button>
+      <!-- Liste des tâches -->
+      <div class="todo-list-container" id="todo-list-container">
+        <div class="todo-empty-state" id="todo-empty-state">
+          <i class="fas fa-clipboard-list"></i>
+          <p>Aucune tâche pour le moment</p>
+          <span>Ajoutez votre première tâche ci-dessus</span>
         </div>
+        <ul class="todo-list" id="todo-list"></ul>
       </div>
     </div>
 
-    <!-- Game Overlay (for all games) -->
-    <div class="game-overlay" id="game-overlay">
-      <div class="game-container">
-        <button class="game-close" id="game-close-btn">&times;</button>
+    <!-- Section des crédits et informations -->
+    <div class="card info-card">
+      <p class="info-text">
+        T41 Assistant Pro • © 2025
+        <a href="https://github.com/ybdn" target="_blank" rel="noopener" class="dev-link">
+          <i class="fab fa-github github-icon"></i>ybdn
+        </a>
+      </p>
+      <div class="version-info">Version 2.2.0</div>
+      <div id="debug-info" style="display: none"></div>
+    </div>
+  </div>
 
-        <div class="game-header">
-          <h1 class="game-title" id="game-title">T41 ARCADE</h1>
-          <p class="game-subtitle">Easter Egg</p>
-        </div>
+  <!-- Template pour les notifications -->
+  <div class="notification-container" id="notification-container"></div>
 
-        <canvas id="game-canvas" class="game-canvas" width="294" height="432"></canvas>
+  <!-- Game Menu Overlay -->
+  <div class="game-menu-overlay" id="game-menu-overlay">
+    <div class="game-menu-container">
+      <button class="game-close" id="game-menu-close-btn">&times;</button>
 
-        <div class="game-hud">
-          <div class="game-hud-item">
-            <span>SCORE:</span>
-            <span id="score-display">0</span>
-          </div>
-          <div class="game-hud-item">
-            <span>LEVEL:</span>
-            <span id="level-display">1</span>
-          </div>
-          <div class="game-hud-item">
-            <span>LIVES:</span>
-            <span id="lives-display">💚💚💚</span>
-          </div>
-        </div>
+      <div class="game-menu-header">
+        <h1 class="game-menu-title">T41 ARCADE</h1>
+        <p class="game-menu-subtitle">Choisissez votre jeu</p>
+      </div>
 
-        <div class="game-difficulty-selector">
-          <label for="difficulty-select">DIFFICULTÉ:</label>
-          <select id="difficulty-select" class="difficulty-select">
-            <option value="easy">FACILE</option>
-            <option value="normal" selected>NORMAL</option>
-            <option value="hard">DIFFICILE</option>
-          </select>
-        </div>
+      <div class="game-menu-grid">
+        <button class="game-menu-item" data-game="space-invaders">
+          <div class="game-menu-icon">🚀</div>
+          <div class="game-menu-name">SPACE DEFENDER</div>
+          <div class="game-menu-description">Détruisez les aliens !</div>
+        </button>
 
-        <div class="game-instructions" id="game-instructions">
-          <kbd>←</kbd> <kbd>→</kbd> Déplacer • <kbd>SPACE</kbd> Tirer • <kbd>ESC</kbd> Quitter
-        </div>
+        <button class="game-menu-item" data-game="snake">
+          <div class="game-menu-icon">🐍</div>
+          <div class="game-menu-name">T41 SNAKE</div>
+          <div class="game-menu-description">Mangez et grandissez !</div>
+        </button>
 
-        <!-- Game Over Screen -->
-        <div class="game-over-screen" id="game-over-screen">
-          <h2 class="game-over-title">GAME OVER</h2>
-          <p class="game-over-score">SCORE: <span id="final-score">0</span></p>
-          <p class="game-over-highscore">🏆 HIGH SCORE: <span id="high-score-display">0</span></p>
-          <button class="game-restart-btn" id="game-restart-btn">REJOUER</button>
-        </div>
+        <button class="game-menu-item" data-game="floppy-bird">
+          <div class="game-menu-icon">🐦</div>
+          <div class="game-menu-name">FLOPPY BIRD</div>
+          <div class="game-menu-description">Volez entre les tuyaux !</div>
+        </button>
+
+        <button class="game-menu-item" data-game="asteroids">
+          <div class="game-menu-icon">☄️</div>
+          <div class="game-menu-name">ASTEROIDS</div>
+          <div class="game-menu-description">Détruisez les astéroïdes !</div>
+        </button>
       </div>
     </div>
+  </div>
 
-    <!-- Chargement du script JS principal -->
-    <script src="popup-consolidated.js"></script>
-    <script src="ripple-fix.js"></script>
-    <script src="themes-animations.js"></script>
-    <script src="themes.js"></script>
-    <script src="space-invaders.js"></script>
-    <script src="snake-game.js"></script>
-    <script src="floppy-bird-game.js"></script>
-    <script src="easter-egg-init.js"></script>
-  </body>
+  <!-- Game Overlay (for all games) -->
+  <div class="game-overlay" id="game-overlay">
+    <div class="game-container">
+      <button class="game-close" id="game-close-btn">&times;</button>
+
+      <div class="game-header">
+        <h1 class="game-title" id="game-title">T41 ARCADE</h1>
+        <p class="game-subtitle">Easter Egg</p>
+      </div>
+
+      <canvas id="game-canvas" class="game-canvas" width="294" height="432"></canvas>
+
+      <div class="game-hud">
+        <div class="game-hud-item">
+          <span>SCORE:</span>
+          <span id="score-display">0</span>
+        </div>
+        <div class="game-hud-item">
+          <span>LEVEL:</span>
+          <span id="level-display">1</span>
+        </div>
+        <div class="game-hud-item">
+          <span>LIVES:</span>
+          <span id="lives-display">💚💚💚</span>
+        </div>
+      </div>
+
+      <div class="game-difficulty-selector">
+        <label for="difficulty-select">DIFFICULTÉ:</label>
+        <select id="difficulty-select" class="difficulty-select">
+          <option value="easy">FACILE</option>
+          <option value="normal" selected>NORMAL</option>
+          <option value="hard">DIFFICILE</option>
+        </select>
+      </div>
+
+      <div class="game-instructions" id="game-instructions">
+        <kbd>←</kbd> <kbd>→</kbd> Déplacer • <kbd>SPACE</kbd> Tirer • <kbd>ESC</kbd> Quitter
+      </div>
+
+      <!-- Game Over Screen -->
+      <div class="game-over-screen" id="game-over-screen">
+        <h2 class="game-over-title">GAME OVER</h2>
+        <p class="game-over-score">SCORE: <span id="final-score">0</span></p>
+        <p class="game-over-highscore">🏆 HIGH SCORE: <span id="high-score-display">0</span></p>
+        <button class="game-restart-btn" id="game-restart-btn">REJOUER</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chargement du script JS principal -->
+  <script src="popup-consolidated.js"></script>
+  <script src="ripple-fix.js"></script>
+  <script src="themes-animations.js"></script>
+  <script src="themes.js"></script>
+  <script src="space-invaders.js"></script>
+  <script src="snake-game.js"></script>
+  <script src="floppy-bird-game.js"></script>
+  <script src="asteroids-game.js"></script>
+  <script src="easter-egg-init.js"></script>
+</body>
+
 </html>

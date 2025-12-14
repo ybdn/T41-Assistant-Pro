@@ -16,30 +16,31 @@ class FloppyBirdGame {
     this.started = false;
     this.paused = false;
     this.animationFrame = null;
+    this.lastTime = 0;
 
-    // Bird
+    // Bird (velocities in pixels/second)
     this.bird = {
       x: 80,
       y: this.height / 2,
       width: 20,
       height: 20,
       velocity: 0,
-      gravity: 0.35,
-      jumpStrength: -6.5,
+      gravity: 1200,        // pixels/second² (was 0.35/frame @ 60fps ≈ 1260)
+      jumpStrength: -390,   // pixels/second (was -6.5/frame @ 60fps ≈ -390)
       rotation: 0
     };
 
-    // Pipes
+    // Pipes (speeds in pixels/second)
     this.pipes = [];
     this.pipeWidth = 40;
     this.pipeGap = 130;
-    this.pipeSpeed = 1.5;
+    this.pipeSpeed = 90;           // pixels/second (was 1.5/frame @ 60fps = 90)
     this.pipeSpawnDistance = 200;
     this.lastPipeX = this.width;
 
-    // Background
+    // Background (speed in pixels/second)
     this.bgOffset = 0;
-    this.bgSpeed = 1;
+    this.bgSpeed = 60;             // pixels/second (was 1/frame @ 60fps = 60)
 
     // Particles
     this.particles = [];
@@ -47,12 +48,12 @@ class FloppyBirdGame {
     // High score
     this.highScore = parseInt(localStorage.getItem('t41FloppyBirdHighScore') || '0');
 
-    // Difficulty settings
+    // Difficulty settings (velocities in pixels/second, gravity in pixels/second²)
     this.difficulty = 'normal';
     this.difficultySettings = {
-      easy: { gravity: 0.3, jumpStrength: -6, pipeGap: 150, pipeSpeed: 1.2 },
-      normal: { gravity: 0.35, jumpStrength: -6.5, pipeGap: 130, pipeSpeed: 1.5 },
-      hard: { gravity: 0.45, jumpStrength: -7, pipeGap: 110, pipeSpeed: 2 }
+      easy: { gravity: 1000, jumpStrength: -360, pipeGap: 150, pipeSpeed: 72 },
+      normal: { gravity: 1200, jumpStrength: -390, pipeGap: 130, pipeSpeed: 90 },
+      hard: { gravity: 1500, jumpStrength: -420, pipeGap: 110, pipeSpeed: 120 }
     };
 
     this.init();
@@ -127,15 +128,15 @@ class FloppyBirdGame {
     this.playSound('jump');
   }
 
-  update() {
+  update(dt) {
     if (this.gameOver || this.paused || !this.started) return;
 
-    // Update bird
-    this.bird.velocity += this.bird.gravity;
-    this.bird.y += this.bird.velocity;
+    // Update bird physics with delta time
+    this.bird.velocity += this.bird.gravity * dt;
+    this.bird.y += this.bird.velocity * dt;
 
     // Bird rotation based on velocity
-    this.bird.rotation = Math.min(Math.max(this.bird.velocity * 3, -30), 90);
+    this.bird.rotation = Math.min(Math.max(this.bird.velocity * 0.3, -30), 90);
 
     // Check ground and ceiling collision
     if (this.bird.y + this.bird.height > this.height || this.bird.y < 0) {
@@ -143,8 +144,8 @@ class FloppyBirdGame {
       return;
     }
 
-    // Update background
-    this.bgOffset -= this.bgSpeed;
+    // Update background with delta time
+    this.bgOffset -= this.bgSpeed * dt;
     if (this.bgOffset < -this.width) {
       this.bgOffset = 0;
     }
@@ -154,9 +155,9 @@ class FloppyBirdGame {
       this.spawnPipe();
     }
 
-    // Update pipes
+    // Update pipes with delta time
     this.pipes.forEach(pipe => {
-      pipe.x -= this.pipeSpeed;
+      pipe.x -= this.pipeSpeed * dt;
 
       // Check collision
       if (this.checkCollision(pipe)) {
@@ -177,12 +178,13 @@ class FloppyBirdGame {
     // Remove off-screen pipes
     this.pipes = this.pipes.filter(pipe => pipe.x > -this.pipeWidth);
 
-    // Update particles
+    // Update particles with delta time
+    const particleGravity = 720; // pixels/second² for particle gravity
     this.particles = this.particles.filter(p => {
-      p.x += p.vx;
-      p.y += p.vy;
-      p.vy += 0.2; // gravity
-      p.life--;
+      p.x += p.vx * dt * 60; // Scale to maintain visual effect
+      p.y += p.vy * dt * 60;
+      p.vy += particleGravity * dt;
+      p.life -= dt * 60; // Decrement based on time
       return p.life > 0;
     });
   }
@@ -203,10 +205,10 @@ class FloppyBirdGame {
   checkCollision(pipe) {
     // Check if bird is in pipe x range
     if (this.bird.x + this.bird.width > pipe.x &&
-        this.bird.x < pipe.x + this.pipeWidth) {
+      this.bird.x < pipe.x + this.pipeWidth) {
       // Check if bird hits top or bottom pipe
       if (this.bird.y < pipe.topHeight ||
-          this.bird.y + this.bird.height > pipe.bottomY) {
+        this.bird.y + this.bird.height > pipe.bottomY) {
         return true;
       }
     }
@@ -395,7 +397,7 @@ class FloppyBirdGame {
 
     gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
 
-    switch(type) {
+    switch (type) {
       case 'jump':
         oscillator.frequency.setValueAtTime(400, audioCtx.currentTime);
         oscillator.frequency.exponentialRampToValueAtTime(600, audioCtx.currentTime + 0.1);
@@ -418,14 +420,19 @@ class FloppyBirdGame {
     oscillator.stop(audioCtx.currentTime + 0.5);
   }
 
-  gameLoop() {
-    this.update();
+  gameLoop(currentTime) {
+    // Calculate delta time in seconds, cap at 100ms to prevent huge jumps
+    const dt = Math.min((currentTime - this.lastTime) / 1000, 0.1);
+    this.lastTime = currentTime;
+
+    this.update(dt);
     this.draw();
-    this.animationFrame = requestAnimationFrame(() => this.gameLoop());
+    this.animationFrame = requestAnimationFrame((time) => this.gameLoop(time));
   }
 
   start() {
-    this.gameLoop();
+    this.lastTime = performance.now();
+    this.gameLoop(this.lastTime);
   }
 
   close() {

@@ -22,15 +22,21 @@ const gameConfigs = {
     subtitle: 'Yoann, le pro du code',
     instructions: '<kbd>SPACE</kbd> ou <kbd>CLIC</kbd> Sauter • <kbd>ESC</kbd> Quitter',
     gameClass: FloppyBirdGame
+  },
+  'asteroids': {
+    title: 'T41 ASTEROIDS',
+    subtitle: 'Yoann, le destroyer de rochers',
+    instructions: '<kbd>←</kbd> <kbd>→</kbd> Tourner • <kbd>↑</kbd> Propulsion • <kbd>SPACE</kbd> Tirer • <kbd>ESC</kbd> Quitter',
+    gameClass: AsteroidsGame
   }
 };
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   const versionInfo = document.querySelector('.version-info');
 
   if (versionInfo) {
     // Add click event to version element to open menu
-    versionInfo.addEventListener('click', function() {
+    versionInfo.addEventListener('click', function () {
       console.log('🎮 T41 Arcade Menu activated!');
       openGameMenu();
     });
@@ -60,7 +66,7 @@ function setupGameMenu() {
   // Game selection buttons
   const gameItems = document.querySelectorAll('.game-menu-item');
   gameItems.forEach(item => {
-    item.addEventListener('click', function() {
+    item.addEventListener('click', function () {
       const gameType = this.getAttribute('data-game');
       closeGameMenu();
       setTimeout(() => {
