@@ -2,9 +2,9 @@
 
 ## Vue d'ensemble
 
-T41 Assistant Pro dispose d'un système de thèmes visuels avancé qui inclut 8 thèmes au total :
+T41 Assistant Pro dispose d'un système de thèmes visuels avancé qui inclut 9 thèmes au total :
 - 2 thèmes standards (Clair et Sombre)
-- 6 thèmes festifs basés sur les fêtes françaises
+- 7 thèmes festifs basés sur les fêtes françaises et culturelles
 
 Le système peut fonctionner en **mode automatique** (détection automatique des fêtes) ou en **mode manuel** (sélection libre par l'utilisateur).
 
@@ -77,6 +77,15 @@ Le système peut fonctionner en **mode automatique** (détection automatique des
 - **Emojis animés**: 🎆 🎇 ✨ 💫 🇫🇷 (12 particules)
 - **Animation**: Icônes rebondissantes en mouvement
 
+#### 🌙 Thème Aïd
+- **ID**: `eid`
+- **Période**: Aïd el-Fitr (1er Chawwal) et Aïd el-Adha (10 Dhoul Hijja), calculées dynamiquement via le calendrier hégirien
+- **Couleurs**: Vert émeraude, or, crème et bleu-vert
+- **Ambiance**: Élégante, chaleureuse et spirituelle
+- **Description**: Fêtes de l'Aïd el-Fitr et de l'Aïd el-Adha
+- **Emojis animés**: 🌙 ✨ 🕌 🤲 ☪️ 🐑 🔪 🩸 🛁 (15 particules)
+- **Animation**: Icônes rebondissantes en mouvement
+
 ---
 
 ## 🚀 Utilisation
@@ -120,6 +129,10 @@ Pour choisir manuellement un thème :
 ### Calcul Automatique de Pâques
 
 Le thème Pâques utilise un algorithme (Meeus/Jones/Butcher) pour calculer la date de Pâques chaque année. Le thème s'active 7 jours avant jusqu'à 48 heures après cette date.
+
+### Calcul Automatique de l'Aïd
+
+Le thème Aïd utilise l'algorithme tabular islamique (conversion Hégirien → Grégorien) pour calculer les dates approximatives de l'Aïd el-Fitr et de l'Aïd el-Adha chaque année. Le thème s'active 2 jours avant jusqu'à 3 jours après chaque fête. La précision est de ±1 jour (le calendrier islamique réel dépend de l'observation lunaire).
 
 ### Transitions Fluides
 
@@ -241,7 +254,7 @@ Tous les thèmes respectent les ratios de contraste WCAG 2.1 :
 ### Thèmes Clairs vs Sombres
 
 - Thèmes clairs : Pâques, 14 Juillet
-- Thèmes sombres : Noël, Sainte Geneviève, Halloween, Nouvel An, Sombre
+- Thèmes sombres : Noël, Sainte Geneviève, Halloween, Nouvel An, Aïd, Sombre
 
 ### Navigation au Clavier
 
@@ -254,8 +267,8 @@ Tous les thèmes respectent les ratios de contraste WCAG 2.1 :
 
 ## 📊 Statistiques
 
-- **8 thèmes au total**
-- **6 périodes festives françaises**
+- **9 thèmes au total**
+- **7 périodes festives** (françaises et culturelles)
 - **Système d'animation unifié** avec rebonds dynamiques
 - **10 à 14 particules** animées par thème
 - **~1000 lignes de CSS** pour les thèmes et animations
@@ -281,6 +294,10 @@ Tous les thèmes respectent les ratios de contraste WCAG 2.1 :
 ## 📝 Notes de Version
 
 ### Version 2.2.0 (Actuelle)
+- 🌙 **Nouveau thème festif : Aïd** - Célébrez l'Aïd el-Fitr et l'Aïd el-Adha
+- 🔮 Calcul automatique des dates via le calendrier hégirien
+- 💫 Palette émeraude et or avec animations dédiées
+- 🏮 15 particules animées (🌙✨🕌🤲☪️🐑🔪🩸🛁)
 - 🎮 **Nouveau jeu : T41 Asteroids** - Détruisez les astéroïdes avec physique d'inertie !
 - ⚡ **Pattern Delta Time** - Tous les jeux sont maintenant indépendants du taux de rafraîchissement (60Hz, 144Hz, 240Hz)
 - 🚀 Physique de vaisseau avec propulsion, inertie et friction

@@ -76,6 +76,12 @@ class ThemeAnimations {
         icons: [],
         count: 0,
         speed: 0
+      },
+      eid: {
+        // Thème Aïd : base (beaucoup) + complément/sacrifice (peu)
+        icons: ['🌙', '🌙', '🌙', '✨', '✨', '✨', '🕌', '🕌', '☪️', '☪️', '⭐', '⭐', '🐑', '🐑', '🎁', '🎊'],
+        count: 15,
+        speed: 1.2
       }
     };
 

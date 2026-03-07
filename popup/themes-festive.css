@@ -170,15 +170,23 @@ body.theme-christmas {
 }
 
 body.theme-christmas::before {
-  content: '';
+  content: "";
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   background-image:
-    radial-gradient(circle at 20% 30%, rgba(220, 38, 38, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 80% 70%, rgba(22, 163, 74, 0.1) 0%, transparent 50%);
+    radial-gradient(
+      circle at 20% 30%,
+      rgba(220, 38, 38, 0.1) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 80% 70%,
+      rgba(22, 163, 74, 0.1) 0%,
+      transparent 50%
+    );
   pointer-events: none;
   z-index: -1;
 }
@@ -198,17 +206,31 @@ body.theme-christmas .btn-primary:hover {
 }
 
 body.theme-christmas .card::before {
-  background: linear-gradient(90deg, var(--christmas-red), var(--christmas-green), var(--christmas-gold));
+  background: linear-gradient(
+    90deg,
+    var(--christmas-red),
+    var(--christmas-green),
+    var(--christmas-gold)
+  );
 }
 
 body.theme-christmas .app-title {
-  background: linear-gradient(135deg, var(--christmas-red), var(--christmas-gold), var(--christmas-green));
+  background: linear-gradient(
+    135deg,
+    var(--christmas-red),
+    var(--christmas-gold),
+    var(--christmas-green)
+  );
   background-clip: text;
   -webkit-background-clip: text;
 }
 
 body.theme-christmas .card-title::before {
-  background: linear-gradient(180deg, var(--christmas-red), var(--christmas-green));
+  background: linear-gradient(
+    180deg,
+    var(--christmas-red),
+    var(--christmas-green)
+  );
 }
 
 /* ===== THÈME PÂQUES 🌸 ===== */
@@ -229,7 +251,11 @@ body.theme-easter {
   --theme-badge-text: #a21caf;
   --theme-button-hover: rgba(236, 72, 153, 0.12);
   --theme-link: #db2777;
-  --theme-gradient: linear-gradient(135deg, rgba(251, 207, 232, 0.3), rgba(253, 242, 248, 0.5));
+  --theme-gradient: linear-gradient(
+    135deg,
+    rgba(251, 207, 232, 0.3),
+    rgba(253, 242, 248, 0.5)
+  );
   --theme-glass: rgba(255, 255, 255, 0.8);
 
   /* Couleurs spécifiques Pâques */
@@ -241,15 +267,23 @@ body.theme-easter {
 }
 
 body.theme-easter::before {
-  content: '';
+  content: "";
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   background-image:
-    radial-gradient(circle at 70% 20%, rgba(236, 72, 153, 0.1) 0%, transparent 40%),
-    radial-gradient(circle at 30% 80%, rgba(168, 85, 247, 0.08) 0%, transparent 40%);
+    radial-gradient(
+      circle at 70% 20%,
+      rgba(236, 72, 153, 0.1) 0%,
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at 30% 80%,
+      rgba(168, 85, 247, 0.08) 0%,
+      transparent 40%
+    );
   pointer-events: none;
   z-index: -1;
 }
@@ -264,7 +298,14 @@ body.theme-easter .btn-primary:hover {
 }
 
 body.theme-easter .card::before {
-  background: linear-gradient(90deg, var(--easter-pink), var(--easter-purple), var(--easter-yellow), var(--easter-green), var(--easter-blue));
+  background: linear-gradient(
+    90deg,
+    var(--easter-pink),
+    var(--easter-purple),
+    var(--easter-yellow),
+    var(--easter-green),
+    var(--easter-blue)
+  );
   height: 3px;
 }
 
@@ -312,21 +353,33 @@ body.theme-halloween {
 }
 
 body.theme-halloween::before {
-  content: '';
+  content: "";
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   background-image:
-    radial-gradient(circle at 20% 30%, rgba(249, 115, 22, 0.08) 0%, transparent 50%),
-    radial-gradient(circle at 80% 70%, rgba(147, 51, 234, 0.06) 0%, transparent 50%);
+    radial-gradient(
+      circle at 20% 30%,
+      rgba(249, 115, 22, 0.08) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 80% 70%,
+      rgba(147, 51, 234, 0.06) 0%,
+      transparent 50%
+    );
   pointer-events: none;
   z-index: -1;
 }
 
 body.theme-halloween .btn-primary {
-  background: linear-gradient(135deg, var(--halloween-orange), var(--halloween-purple));
+  background: linear-gradient(
+    135deg,
+    var(--halloween-orange),
+    var(--halloween-purple)
+  );
   box-shadow: 0 4px 12px rgba(249, 115, 22, 0.4);
 }
 
@@ -335,23 +388,40 @@ body.theme-halloween .btn-primary:hover {
 }
 
 body.theme-halloween .card::before {
-  background: linear-gradient(90deg, var(--halloween-orange), var(--halloween-purple));
+  background: linear-gradient(
+    90deg,
+    var(--halloween-orange),
+    var(--halloween-purple)
+  );
 }
 
 body.theme-halloween .app-title {
-  background: linear-gradient(135deg, var(--halloween-orange), var(--halloween-purple));
+  background: linear-gradient(
+    135deg,
+    var(--halloween-orange),
+    var(--halloween-purple)
+  );
   background-clip: text;
   -webkit-background-clip: text;
   animation: glow 2s ease-in-out infinite;
 }
 
 @keyframes glow {
-  0%, 100% { filter: drop-shadow(0 0 2px rgba(249, 115, 22, 0.5)); }
-  50% { filter: drop-shadow(0 0 6px rgba(249, 115, 22, 0.8)); }
+  0%,
+  100% {
+    filter: drop-shadow(0 0 2px rgba(249, 115, 22, 0.5));
+  }
+  50% {
+    filter: drop-shadow(0 0 6px rgba(249, 115, 22, 0.8));
+  }
 }
 
 body.theme-halloween .card-title::before {
-  background: linear-gradient(180deg, var(--halloween-orange), var(--halloween-purple));
+  background: linear-gradient(
+    180deg,
+    var(--halloween-orange),
+    var(--halloween-purple)
+  );
 }
 
 /* ===== THÈME NOUVEL AN 🎆 ===== */
@@ -383,28 +453,49 @@ body.theme-newyear {
 }
 
 body.theme-newyear::before {
-  content: '';
+  content: "";
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   background-image:
-    radial-gradient(circle at 30% 20%, rgba(59, 130, 246, 0.1) 0%, transparent 30%),
-    radial-gradient(circle at 70% 60%, rgba(251, 191, 36, 0.08) 0%, transparent 30%),
-    radial-gradient(circle at 50% 90%, rgba(167, 139, 250, 0.06) 0%, transparent 30%);
+    radial-gradient(
+      circle at 30% 20%,
+      rgba(59, 130, 246, 0.1) 0%,
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 70% 60%,
+      rgba(251, 191, 36, 0.08) 0%,
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 50% 90%,
+      rgba(167, 139, 250, 0.06) 0%,
+      transparent 30%
+    );
   pointer-events: none;
   z-index: -1;
   animation: fireworks 4s ease-in-out infinite;
 }
 
 @keyframes fireworks {
-  0%, 100% { opacity: 0.8; }
-  50% { opacity: 1; }
+  0%,
+  100% {
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 
 body.theme-newyear .btn-primary {
-  background: linear-gradient(135deg, var(--newyear-blue), var(--newyear-purple));
+  background: linear-gradient(
+    135deg,
+    var(--newyear-blue),
+    var(--newyear-purple)
+  );
   box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
 }
 
@@ -413,17 +504,32 @@ body.theme-newyear .btn-primary:hover {
 }
 
 body.theme-newyear .card::before {
-  background: linear-gradient(90deg, var(--newyear-blue), var(--newyear-gold), var(--newyear-silver), var(--newyear-purple));
+  background: linear-gradient(
+    90deg,
+    var(--newyear-blue),
+    var(--newyear-gold),
+    var(--newyear-silver),
+    var(--newyear-purple)
+  );
   animation: shimmer 3s linear infinite;
 }
 
 @keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
 }
 
 body.theme-newyear .app-title {
-  background: linear-gradient(135deg, var(--newyear-blue), var(--newyear-gold), var(--newyear-purple));
+  background: linear-gradient(
+    135deg,
+    var(--newyear-blue),
+    var(--newyear-gold),
+    var(--newyear-purple)
+  );
   background-clip: text;
   -webkit-background-clip: text;
   background-size: 200% 200%;
@@ -431,8 +537,13 @@ body.theme-newyear .app-title {
 }
 
 @keyframes gradientShift {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
 }
 
 /* ===== THÈME 14 JUILLET 🇫🇷 ===== */
@@ -453,7 +564,11 @@ body.theme-bastille {
   --theme-badge-text: #475569;
   --theme-button-hover: rgba(30, 64, 175, 0.12);
   --theme-link: #1e40af;
-  --theme-gradient: linear-gradient(135deg, rgba(219, 234, 254, 0.5), rgba(248, 250, 252, 0.8));
+  --theme-gradient: linear-gradient(
+    135deg,
+    rgba(219, 234, 254, 0.5),
+    rgba(248, 250, 252, 0.8)
+  );
   --theme-glass: rgba(255, 255, 255, 0.85);
 
   /* Couleurs spécifiques 14 Juillet */
@@ -463,7 +578,7 @@ body.theme-bastille {
 }
 
 body.theme-bastille::before {
-  content: '';
+  content: "";
   position: fixed;
   top: 0;
   left: 0;
@@ -471,7 +586,13 @@ body.theme-bastille::before {
   bottom: 0;
   background-image:
     linear-gradient(to right, rgba(30, 64, 175, 0.05) 0%, transparent 33%),
-    linear-gradient(to right, transparent 33%, rgba(255, 255, 255, 0.1) 33%, rgba(255, 255, 255, 0.1) 66%, transparent 66%),
+    linear-gradient(
+      to right,
+      transparent 33%,
+      rgba(255, 255, 255, 0.1) 33%,
+      rgba(255, 255, 255, 0.1) 66%,
+      transparent 66%
+    ),
     linear-gradient(to right, transparent 66%, rgba(220, 38, 38, 0.05) 66%);
   pointer-events: none;
   z-index: -1;
@@ -487,23 +608,193 @@ body.theme-bastille .btn-primary:hover {
 }
 
 body.theme-bastille .card::before {
-  background: linear-gradient(90deg, var(--bastille-blue), var(--bastille-white), var(--bastille-red));
+  background: linear-gradient(
+    90deg,
+    var(--bastille-blue),
+    var(--bastille-white),
+    var(--bastille-red)
+  );
   height: 4px;
 }
 
 body.theme-bastille .app-title {
-  background: linear-gradient(135deg, var(--bastille-blue), var(--bastille-red));
+  background: linear-gradient(
+    135deg,
+    var(--bastille-blue),
+    var(--bastille-red)
+  );
   background-clip: text;
   -webkit-background-clip: text;
 }
 
 body.theme-bastille .card-title::before {
-  background: linear-gradient(180deg, var(--bastille-blue), var(--bastille-white), var(--bastille-red));
+  background: linear-gradient(
+    180deg,
+    var(--bastille-blue),
+    var(--bastille-white),
+    var(--bastille-red)
+  );
 }
 
 body.theme-bastille .status-dot.active {
-  background: linear-gradient(135deg, var(--bastille-blue), var(--bastille-red));
+  background: linear-gradient(
+    135deg,
+    var(--bastille-blue),
+    var(--bastille-red)
+  );
   box-shadow: 0 0 12px var(--bastille-blue);
+}
+
+/* ===== THÈME AÏD 🌙 ===== */
+
+body.theme-eid {
+  /* Remplacement des variables de base — Royal Purple & Gold */
+  --primary: #9333ea;
+  --primary-dark: #7e22ce;
+  --primary-light: #c084fc;
+  --primary-bg: rgba(147, 51, 234, 0.15);
+  --body-bg: #1a0a2e;
+  --card-bg: #2d1545;
+  --neutral-50: #1f0f35;
+  --neutral-100: #2d1545;
+  --neutral-200: #3d1f65;
+  --neutral-300: #5b2d8e;
+  --neutral-400: #b088d0;
+  --neutral-600: #b088d0;
+  --neutral-700: #e8d5f5;
+  --neutral-900: #fff8e7;
+  --overlay-light: rgba(26, 10, 46, 0.8);
+  --glass-bg: rgba(45, 21, 69, 0.85);
+  --glass-border: rgba(212, 175, 55, 0.18);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+  --success: #a855f7;
+  --success-light: rgba(168, 85, 247, 0.15);
+
+  /* Variables --theme-* */
+  --theme-bg: #1a0a2e;
+  --theme-card-bg: #2d1545;
+  --theme-text: #e8d5f5;
+  --theme-text-dark: #fff8e7;
+  --theme-text-light: #b088d0;
+  --theme-border: #3d1f65;
+  --theme-shadow: 0 4px 12px rgba(212, 175, 55, 0.15);
+  --theme-shadow-hover: 0 8px 24px rgba(212, 175, 55, 0.25);
+  --theme-primary-bg: rgba(147, 51, 234, 0.2);
+  --theme-header-border: #5b2d8e;
+  --theme-input-bg: #1f0f35;
+  --theme-badge-bg: #2d1545;
+  --theme-badge-text: #d4af37;
+  --theme-button-hover: rgba(147, 51, 234, 0.3);
+  --theme-link: #d4af37;
+  --theme-gradient: linear-gradient(135deg, #2d1545 0%, #1a0a2e 50%, #120825 100%);
+  --theme-glass: rgba(45, 21, 69, 0.85);
+
+  /* Couleurs spécifiques Aïd — Royal Purple & Gold */
+  --eid-purple: #9333ea;
+  --eid-purple-deep: #4c1d95;
+  --eid-gold: #d4af37;
+  --eid-gold-light: #f4d03f;
+  --eid-cream: #fff8e1;
+}
+
+body.theme-eid::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image:
+    radial-gradient(circle at 50% 0%, rgba(212, 175, 55, 0.2) 0%, transparent 45%),
+    radial-gradient(circle at 15% 50%, rgba(147, 51, 234, 0.15) 0%, transparent 40%),
+    radial-gradient(circle at 85% 70%, rgba(126, 34, 206, 0.12) 0%, transparent 40%),
+    radial-gradient(circle at 50% 100%, rgba(76, 29, 149, 0.1) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: -1;
+  animation: eidGlow 4s ease-in-out infinite;
+}
+
+@keyframes eidGlow {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; }
+}
+
+body.theme-eid .popup {
+  background: var(--theme-gradient);
+  position: relative;
+}
+
+body.theme-eid .header {
+  border-bottom-color: var(--eid-gold) !important;
+  box-shadow: 0 2px 12px rgba(212, 175, 55, 0.2);
+}
+
+body.theme-eid .btn-primary {
+  background: linear-gradient(135deg, var(--eid-purple), var(--eid-purple-deep));
+  box-shadow: 0 4px 16px rgba(147, 51, 234, 0.5);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+body.theme-eid .btn-primary:hover {
+  background: linear-gradient(135deg, #a855f7, var(--eid-purple));
+  box-shadow: 0 6px 20px rgba(147, 51, 234, 0.6);
+}
+
+body.theme-eid .card {
+  border: 1px solid rgba(147, 51, 234, 0.25);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(212, 175, 55, 0.1);
+}
+
+body.theme-eid .card::before {
+  background: linear-gradient(90deg, var(--eid-purple), var(--eid-gold), var(--eid-purple));
+  height: 3px;
+  animation: eidShimmer 3s linear infinite;
+  background-size: 200% 100%;
+}
+
+@keyframes eidShimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+body.theme-eid .app-title {
+  background: linear-gradient(135deg, var(--eid-gold-light), var(--eid-purple), var(--eid-gold));
+  background-clip: text;
+  -webkit-background-clip: text;
+  background-size: 200% 200%;
+  animation: eidTitleShift 4s ease infinite;
+  filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.4));
+}
+
+@keyframes eidTitleShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+body.theme-eid .card-title::before {
+  background: linear-gradient(180deg, var(--eid-gold), var(--eid-purple));
+}
+
+body.theme-eid .card-title {
+  color: var(--eid-gold) !important;
+}
+
+body.theme-eid .status-dot.active {
+  background: var(--eid-purple);
+  box-shadow: 0 0 10px var(--eid-purple), 0 0 20px rgba(147, 51, 234, 0.4);
+}
+
+body.theme-eid .icon-button {
+  color: var(--eid-gold);
+}
+
+body.theme-eid .icon-button:hover {
+  background: rgba(147, 51, 234, 0.2);
+  color: var(--eid-gold-light);
+}
+
+body.theme-eid .theme-dropdown-btn {
+  color: var(--eid-gold);
 }
 
 /* ===== ANIMATIONS ET TRANSITIONS GLOBALES ===== */
@@ -557,7 +848,8 @@ body.theme-christmas .notification,
 body.theme-easter .notification,
 body.theme-halloween .notification,
 body.theme-newyear .notification,
-body.theme-bastille .notification {
+body.theme-bastille .notification,
+body.theme-eid .notification {
   background-color: var(--theme-card-bg);
   color: var(--theme-text);
   border-color: var(--theme-border);
@@ -568,7 +860,8 @@ body.theme-christmas .notification-message,
 body.theme-easter .notification-message,
 body.theme-halloween .notification-message,
 body.theme-newyear .notification-message,
-body.theme-bastille .notification-message {
+body.theme-bastille .notification-message,
+body.theme-eid .notification-message {
   color: var(--theme-text);
 }
 
@@ -576,7 +869,8 @@ body.theme-christmas .notification-close,
 body.theme-easter .notification-close,
 body.theme-halloween .notification-close,
 body.theme-newyear .notification-close,
-body.theme-bastille .notification-close {
+body.theme-bastille .notification-close,
+body.theme-eid .notification-close {
   color: var(--theme-text-light);
 }
 
@@ -584,7 +878,8 @@ body.theme-christmas .notification-close:hover,
 body.theme-easter .notification-close:hover,
 body.theme-halloween .notification-close:hover,
 body.theme-newyear .notification-close:hover,
-body.theme-bastille .notification-close:hover {
+body.theme-bastille .notification-close:hover,
+body.theme-eid .notification-close:hover {
   background-color: var(--theme-button-hover);
   color: var(--theme-text);
 }
@@ -592,25 +887,29 @@ body.theme-bastille .notification-close:hover {
 /* Couleurs de fond spécifiques par type et thème */
 body.theme-christmas .notification.success,
 body.theme-halloween .notification.success,
-body.theme-newyear .notification.success {
+body.theme-newyear .notification.success,
+body.theme-eid .notification.success {
   background-color: rgba(16, 185, 129, 0.15);
 }
 
 body.theme-christmas .notification.error,
 body.theme-halloween .notification.error,
-body.theme-newyear .notification.error {
+body.theme-newyear .notification.error,
+body.theme-eid .notification.error {
   background-color: rgba(239, 68, 68, 0.15);
 }
 
 body.theme-christmas .notification.info,
 body.theme-halloween .notification.info,
-body.theme-newyear .notification.info {
+body.theme-newyear .notification.info,
+body.theme-eid .notification.info {
   background-color: rgba(59, 130, 246, 0.15);
 }
 
 body.theme-christmas .notification.warning,
 body.theme-halloween .notification.warning,
-body.theme-newyear .notification.warning {
+body.theme-newyear .notification.warning,
+body.theme-eid .notification.warning {
   background-color: rgba(245, 158, 11, 0.15);
 }
 
@@ -652,6 +951,7 @@ body.theme-bastille .notification.warning {
 body.theme-christmas .theme-dropdown,
 body.theme-halloween .theme-dropdown,
 body.theme-newyear .theme-dropdown,
+body.theme-eid .theme-dropdown,
 body.dark-theme .theme-dropdown {
   background: var(--theme-card-bg);
   border-color: var(--theme-border);
@@ -661,6 +961,7 @@ body.dark-theme .theme-dropdown {
 body.theme-christmas .theme-dropdown-header,
 body.theme-halloween .theme-dropdown-header,
 body.theme-newyear .theme-dropdown-header,
+body.theme-eid .theme-dropdown-header,
 body.dark-theme .theme-dropdown-header {
   background: var(--theme-primary-bg);
   border-bottom-color: var(--theme-border);
@@ -669,6 +970,7 @@ body.dark-theme .theme-dropdown-header {
 body.theme-christmas .theme-option:hover,
 body.theme-halloween .theme-option:hover,
 body.theme-newyear .theme-option:hover,
+body.theme-eid .theme-option:hover,
 body.dark-theme .theme-option:hover {
   background: var(--theme-button-hover);
 }
@@ -676,6 +978,7 @@ body.dark-theme .theme-option:hover {
 body.theme-christmas .theme-dropdown-list::-webkit-scrollbar-thumb,
 body.theme-halloween .theme-dropdown-list::-webkit-scrollbar-thumb,
 body.theme-newyear .theme-dropdown-list::-webkit-scrollbar-thumb,
+body.theme-eid .theme-dropdown-list::-webkit-scrollbar-thumb,
 body.dark-theme .theme-dropdown-list::-webkit-scrollbar-thumb {
   background: var(--theme-border);
 }

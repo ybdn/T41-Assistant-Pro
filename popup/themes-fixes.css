@@ -254,6 +254,7 @@
 body.theme-christmas .ripple-wave,
 body.theme-halloween .ripple-wave,
 body.theme-newyear .ripple-wave,
+body.theme-eid .ripple-wave,
 body.dark-theme .ripple-wave {
   border-color: rgba(255, 255, 255, 0.3) !important;
 }
@@ -263,4 +264,156 @@ body.theme-easter .ripple-wave,
 body.theme-bastille .ripple-wave,
 body.theme-light .ripple-wave {
   border-color: rgba(0, 0, 0, 0.15) !important;
+}
+
+/* ===== CORRECTIONS SPÉCIFIQUES THÈME AÏD ===== */
+/* Royal Purple & Gold — overrides !important */
+
+body.theme-eid .header {
+  border-bottom: 2px solid #d4af37 !important;
+  box-shadow: 0 2px 12px rgba(212, 175, 55, 0.2) !important;
+}
+
+body.theme-eid .header::after {
+  background-color: #d4af37 !important;
+}
+
+body.theme-eid .popup {
+  background: linear-gradient(135deg, #2d1545 0%, #1a0a2e 50%, #120825 100%) !important;
+}
+
+body.theme-eid .card {
+  background-color: #2d1545 !important;
+  border: 1px solid rgba(147, 51, 234, 0.3) !important;
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.1), inset 0 1px 0 rgba(212, 175, 55, 0.08) !important;
+}
+
+body.theme-eid .card::before {
+  background: linear-gradient(90deg, #9333ea, #d4af37, #9333ea) !important;
+  height: 3px !important;
+  opacity: 1 !important;
+}
+
+body.theme-eid .app-title {
+  background: linear-gradient(135deg, #f4d03f, #9333ea, #d4af37) !important;
+  background-clip: text !important;
+  -webkit-background-clip: text !important;
+  color: transparent !important;
+  background-size: 200% 200% !important;
+  animation: eidTitleGlow 4s ease infinite !important;
+}
+
+body.theme-eid .card-title {
+  color: #d4af37 !important;
+}
+
+body.theme-eid .card-title::before {
+  background: linear-gradient(180deg, #d4af37, #9333ea) !important;
+}
+
+body.theme-eid .btn-primary {
+  background: linear-gradient(135deg, #9333ea, #4c1d95) !important;
+  box-shadow: 0 4px 16px rgba(147, 51, 234, 0.5) !important;
+  border: 1px solid rgba(212, 175, 55, 0.3) !important;
+}
+
+body.theme-eid .btn-primary:hover {
+  background: linear-gradient(135deg, #a855f7, #9333ea) !important;
+  box-shadow: 0 6px 20px rgba(147, 51, 234, 0.6) !important;
+}
+
+body.theme-eid .icon-button {
+  color: #d4af37 !important;
+}
+
+body.theme-eid .icon-button:hover {
+  background: rgba(147, 51, 234, 0.2) !important;
+  color: #f4d03f !important;
+}
+
+body.theme-eid .status-indicator {
+  background-color: rgba(147, 51, 234, 0.1) !important;
+  border-color: #3d1f65 !important;
+}
+
+body.theme-eid .status-message {
+  color: #e8d5f5 !important;
+}
+
+body.theme-eid .info-text {
+  color: #b088d0 !important;
+  border-top-color: #3d1f65 !important;
+}
+
+body.theme-eid .dev-link {
+  color: #d4af37 !important;
+}
+
+body.theme-eid .version-info {
+  color: #b088d0 !important;
+}
+
+body.theme-eid .todo-input {
+  background-color: #1f0f35 !important;
+  color: #e8d5f5 !important;
+  border-color: #3d1f65 !important;
+}
+
+body.theme-eid .todo-input::placeholder {
+  color: #6b4a8a !important;
+}
+
+body.theme-eid .btn-add-todo {
+  background: linear-gradient(135deg, #9333ea, #4c1d95) !important;
+  color: white !important;
+}
+
+body.theme-eid .todo-item {
+  color: #e8d5f5 !important;
+  border-color: #3d1f65 !important;
+}
+
+body.theme-eid .todo-empty-state {
+  color: #6b4a8a !important;
+}
+
+body.theme-eid .todo-empty-state i {
+  color: #5b2d8e !important;
+}
+
+body.theme-eid .todo-count {
+  color: #d4af37 !important;
+}
+
+body.theme-eid {
+  background-color: #1a0a2e !important;
+  color: #e8d5f5 !important;
+}
+
+body.theme-eid .notification {
+  background-color: #2d1545 !important;
+  color: #e8d5f5 !important;
+  border-color: #3d1f65 !important;
+}
+
+body.theme-eid .notification-message {
+  color: #e8d5f5 !important;
+}
+
+body.theme-eid .notification-close {
+  color: #b088d0 !important;
+}
+
+body.theme-eid .tooltip-text {
+  background-color: #1f0f35 !important;
+  color: #e8d5f5 !important;
+}
+
+body.theme-eid .tooltip-text::after {
+  border-color: #1f0f35 transparent transparent transparent !important;
+}
+
+@keyframes eidTitleGlow {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
 }

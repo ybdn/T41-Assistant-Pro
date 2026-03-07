@@ -59,6 +59,14 @@ const THEMES = {
     festive: true,
     period: { start: { month: 7, day: 14 }, end: { month: 7, day: 14 } },
     description: 'Fête nationale française'
+  },
+  eid: {
+    id: 'eid',
+    name: 'Aïd',
+    icon: '🌙', // Emoji croissant de lune
+    festive: true,
+    period: 'eid', // Calculé dynamiquement via le calendrier hégirien
+    description: 'Aïd Moubarak ! Célébrez l\'Aïd el-Fitr et l\'Aïd el-Adha'
   }
 };
 
@@ -103,6 +111,82 @@ function isEasterPeriod(date) {
 
   // 7 jours avant (-7) jusqu'à 2 jours après (+2)
   return diffDays >= -7 && diffDays <= 2;
+}
+
+// ===== CALCUL DES DATES DE L'AÏD (CALENDRIER HÉGIRIEN) =====
+
+/**
+ * Calcule une date grégorienne approximative à partir d'une date hégirienne.
+ * Basé sur l'algorithme de Kuwaiti / approximation tabular du calendrier islamique.
+ * Précision : ±1 jour (le calendrier réel dépend de l'observation lunaire).
+ * @param {number} hYear - Année hégirienne
+ * @param {number} hMonth - Mois hégirien (1-12)
+ * @param {number} hDay - Jour hégirien
+ * @returns {Date} - Date grégorienne approximative
+ */
+function hijriToGregorian(hYear, hMonth, hDay) {
+  // Algorithme tabular islamique (type II, époque civile)
+  const jd = Math.floor((11 * hYear + 3) / 30)
+           + 354 * hYear
+           + 30 * hMonth
+           - Math.floor((hMonth - 1) / 2)
+           + hDay
+           + 1948440 - 385;
+
+  // Conversion Julian Day Number → Grégorien
+  const z = jd;
+  const a = z;
+  const alpha = Math.floor((z - 1867216.25) / 36524.25);
+  const aa = z + 1 + alpha - Math.floor(alpha / 4);
+  const b = aa + 1524;
+  const c = Math.floor((b - 122.1) / 365.25);
+  const d = Math.floor(365.25 * c);
+  const e = Math.floor((b - d) / 30.6001);
+
+  const day = b - d - Math.floor(30.6001 * e);
+  const month = (e < 14) ? e - 1 : e - 13;
+  const year = (month > 2) ? c - 4716 : c - 4715;
+
+  return new Date(year, month - 1, day);
+}
+
+/**
+ * Calcule l'année hégirienne approximative pour une date grégorienne donnée.
+ * @param {Date} date - La date grégorienne
+ * @returns {number} - L'année hégirienne approximative
+ */
+function getApproxHijriYear(date) {
+  // Approximation : 1 année hégirienne ≈ 354.36667 jours
+  const epoch = new Date(622, 6, 16); // 16 juillet 622 CE (époque hégirienne)
+  const diffDays = (date - epoch) / (1000 * 60 * 60 * 24);
+  return Math.floor(diffDays / 354.36667) + 1;
+}
+
+/**
+ * Vérifie si une date est dans la période de l'Aïd (Aïd el-Fitr ou Aïd el-Adha)
+ * Aïd el-Fitr = 1er Chawwal (mois 10)
+ * Aïd el-Adha = 10 Dhoul Hijja (mois 12)
+ * Chaque période s'étend de -2 à +3 jours autour de la date
+ * @param {Date} date - La date à vérifier
+ * @returns {boolean}
+ */
+function isEidPeriod(date) {
+  const hYear = getApproxHijriYear(date);
+
+  // Tester les deux Aïds pour l'année hégirienne courante et la suivante
+  for (const year of [hYear - 1, hYear, hYear + 1]) {
+    // Aïd el-Fitr : 1er jour de Chawwal (mois 10)
+    const eidFitr = hijriToGregorian(year, 10, 1);
+    const diffFitr = (date - eidFitr) / (1000 * 60 * 60 * 24);
+    if (diffFitr >= -2 && diffFitr <= 3) return true;
+
+    // Aïd el-Adha : 10ème jour de Dhoul Hijja (mois 12)
+    const eidAdha = hijriToGregorian(year, 12, 10);
+    const diffAdha = (date - eidAdha) / (1000 * 60 * 60 * 24);
+    if (diffAdha >= -2 && diffAdha <= 3) return true;
+  }
+
+  return false;
 }
 
 // ===== DÉTECTION AUTOMATIQUE DES FÊTES =====
@@ -160,6 +244,14 @@ function detectFestiveTheme() {
     // Cas spécial pour Pâques
     if (theme.period === 'easter') {
       if (isEasterPeriod(today)) {
+        return theme.id;
+      }
+      continue;
+    }
+
+    // Cas spécial pour l'Aïd
+    if (theme.period === 'eid') {
+      if (isEidPeriod(today)) {
         return theme.id;
       }
       continue;
