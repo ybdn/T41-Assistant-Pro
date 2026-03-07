@@ -365,6 +365,34 @@
     },
   ];
 
+  let currentProcessOutcome = null;
+
+  async function incrementStat(statName) {
+    try {
+      const data = await browser.storage.local.get("t41_stats");
+      const stats = data.t41_stats || { validated: 0, correction: 0, rejected: 0, fingerErrors: 0, total: 0 };
+      if (stats[statName] !== undefined) {
+          stats[statName]++;
+          if (statName === 'validated' || statName === 'correction' || statName === 'rejected') {
+              stats.total++;
+          }
+          await browser.storage.local.set({ t41_stats: stats });
+      }
+    } catch (e) {
+      logInfo("Erreur mise à jour stat: " + e);
+    }
+  }
+
+  document.addEventListener("click", (event) => {
+    const target = event.target.closest("button, a, input[type='button'], input[type='submit']");
+    if (target) {
+      const text = (target.textContent || target.value || target.title || "").toLowerCase();
+      if (text.includes("rejeter") || (target.id && target.id.toLowerCase().includes("rejet"))) {
+        incrementStat("rejected");
+      }
+    }
+  });
+
   // Fonction pour journaliser les informations avec un format cohérent
   function logInfo(message, data = null) {
     const timestamp = new Date().toISOString().substr(11, 8);
@@ -1402,10 +1430,12 @@
         );
         await handleValidationError(errors); // Applique les corrections (cocher oui, coller erreurs)
         correctionsApplied = true; // Marquer que les corrections ont été faites
+        currentProcessOutcome = "correction";
         logInfo(
           "Corrections automatiques appliquées. Poursuite du traitement."
         );
       } else {
+        currentProcessOutcome = "validated";
         logInfo(
           "✅ VALIDATION RÉUSSIE: Toutes les données sont conformes. Poursuite du traitement."
         );
@@ -2392,6 +2422,10 @@
       logInfo(
         "Toutes les étapes de la fiche sont terminées (runAutomatedSteps)."
       );
+      if (currentProcessOutcome) {
+         incrementStat(currentProcessOutcome);
+         currentProcessOutcome = null;
+      }
       // Informer la popup
       browser.runtime
         .sendMessage({
@@ -2441,6 +2475,9 @@
 
       moveToNextStepAutomated();
     } catch (error) {
+      if (error && error.message && error.message.includes("Erreur RDK détectée")) {
+          incrementStat("fingerErrors");
+      }
       logInfo(
         `Erreur lors de l'exécution de l'étape ${currentStepIndex} (${step.name}): ${error.message}`,
         error

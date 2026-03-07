@@ -27,6 +27,12 @@
             <span class="tooltip-text">Vérifier les données</span>
           </button>
           <h1 class="app-title">T41 Assistant Pro</h1>
+          <div class="stats-toggle tooltip" style="margin-right: 10px;">
+            <button id="stats-switch" class="icon-button">
+              <i class="fas fa-chart-bar"></i>
+              <span class="tooltip-text">Statistiques</span>
+            </button>
+          </div>
           <div class="theme-toggle tooltip">
             <button id="theme-switch" class="icon-button">
               <i class="fas fa-moon"></i>
@@ -216,6 +222,40 @@
             REJOUER
           </button>
         </div>
+      </div>
+    </div>
+
+    <!-- Stats Modal Overlay -->
+    <div class="game-overlay" id="stats-overlay">
+      <div class="card" style="width: 90%; max-width: 320px; z-index: 1001; margin: auto; position: relative; top: 50%; transform: translateY(-50%);">
+        <div class="card-header">
+          <h2 class="card-title"><i class="fas fa-chart-bar"></i> Statistiques</h2>
+          <button class="icon-button" id="stats-close-btn" style="color: var(--text-color);"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="stats-grid" style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
+          <div class="stat-item" style="display: flex; justify-content: space-between; padding: 10px; background: var(--neutral-100); border: 1px solid var(--neutral-200); border-radius: 6px;">
+            <span><i class="fas fa-check-circle" style="color: #2e7d32; margin-right: 5px;"></i> Validées</span>
+            <span id="stat-validated" style="font-weight: bold;">0</span>
+          </div>
+          <div class="stat-item" style="display: flex; justify-content: space-between; padding: 10px; background: var(--neutral-100); border: 1px solid var(--neutral-200); border-radius: 6px;">
+            <span><i class="fas fa-edit" style="color: #f57f17; margin-right: 5px;"></i> En correction</span>
+            <span id="stat-correction" style="font-weight: bold;">0</span>
+          </div>
+          <div class="stat-item" style="display: flex; justify-content: space-between; padding: 10px; background: var(--neutral-100); border: 1px solid var(--neutral-200); border-radius: 6px;">
+            <span><i class="fas fa-times-circle" style="color: #c62828; margin-right: 5px;"></i> Rejetées</span>
+            <span id="stat-rejected" style="font-weight: bold;">0</span>
+          </div>
+          <div class="stat-item" style="display: flex; justify-content: space-between; padding: 10px; background: var(--neutral-100); border: 1px solid var(--neutral-200); border-radius: 6px;">
+            <span><i class="fas fa-hand-paper" style="color: #0277bd; margin-right: 5px;"></i> Erreurs doigts</span>
+            <span id="stat-finger-errors" style="font-weight: bold;">0</span>
+          </div>
+          <div style="border-top: 1px solid var(--border-color); margin: 5px 0;"></div>
+          <div class="stat-item" style="display: flex; justify-content: space-between; padding: 10px; background: var(--primary-color); color: white; border-radius: 6px;">
+            <span><i class="fas fa-chart-pie" style="margin-right: 5px;"></i> Total traitées</span>
+            <span id="stat-total" style="font-weight: bold;">0</span>
+          </div>
+        </div>
+        <button id="stats-reset-btn" class="btn" style="width: 100%; margin-top: 15px; background: transparent; color: var(--text-color); border: 1px solid var(--border-color);">Réinitialiser les statistiques</button>
       </div>
     </div>
 

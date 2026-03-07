@@ -62,7 +62,7 @@ const THEMES = {
   },
   eid: {
     id: 'eid',
-    name: 'Aïd',
+    name: 'Ramadan moubarak les khoyas !',
     icon: '🌙', // Emoji croissant de lune
     festive: true,
     period: 'eid', // Calculé dynamiquement via le calendrier hégirien

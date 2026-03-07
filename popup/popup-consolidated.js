@@ -1050,3 +1050,65 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   console.log("✅ Widget To Do List initialisé avec succès");
 });
+
+// ===== GESTION DES STATISTIQUES =====
+document.addEventListener("DOMContentLoaded", async () => {
+  const statsSwitchBtn = document.getElementById("stats-switch");
+  const statsOverlay = document.getElementById("stats-overlay");
+  const statsCloseBtn = document.getElementById("stats-close-btn");
+  const statsResetBtn = document.getElementById("stats-reset-btn");
+
+  if (!statsSwitchBtn || !statsOverlay) return;
+
+  const statValidated = document.getElementById("stat-validated");
+  const statCorrection = document.getElementById("stat-correction");
+  const statRejected = document.getElementById("stat-rejected");
+  const statFingerErrors = document.getElementById("stat-finger-errors");
+  const statTotal = document.getElementById("stat-total");
+
+  const loadStats = async () => {
+    try {
+      const data = await browser.storage.local.get("t41_stats");
+      const stats = data.t41_stats || {
+        validated: 0,
+        correction: 0,
+        rejected: 0,
+        fingerErrors: 0,
+        total: 0
+      };
+      if (statValidated) statValidated.textContent = stats.validated;
+      if (statCorrection) statCorrection.textContent = stats.correction;
+      if (statRejected) statRejected.textContent = stats.rejected;
+      if (statFingerErrors) statFingerErrors.textContent = stats.fingerErrors;
+      if (statTotal) statTotal.textContent = stats.total;
+    } catch (e) {
+      console.error("Erreur de chargement des stats:", e);
+    }
+  };
+
+  statsSwitchBtn.addEventListener("click", async () => {
+    await loadStats();
+    statsOverlay.style.display = "flex";
+  });
+
+  statsCloseBtn.addEventListener("click", () => {
+    statsOverlay.style.display = "none";
+  });
+
+  statsResetBtn.addEventListener("click", async () => {
+    if (confirm("Voulez-vous vraiment réinitialiser toutes vos statistiques ?")) {
+      const emptyStats = {
+        validated: 0,
+        correction: 0,
+        rejected: 0,
+        fingerErrors: 0,
+        total: 0
+      };
+      await browser.storage.local.set({ t41_stats: emptyStats });
+      await loadStats();
+      if (typeof window.showNotification === "function") {
+         window.showNotification("Statistiques réinitialisées", "success");
+      }
+    }
+  });
+});
