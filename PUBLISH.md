@@ -53,7 +53,7 @@ Le fichier ZIP sera créé dans `./web-ext-artifacts/`
 
 ## Version actuelle
 
-**Version :** 2.5.0
+**Version :** 2.5.2
 **ID :** t41-assistant-pro@ybdn-dfaedgn
 
 ## Notes importantes
