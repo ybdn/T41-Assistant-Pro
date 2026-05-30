@@ -8,22 +8,25 @@ Copier-coller le **contenu de chaque fichier** dans une nouvelle issue (titre = 
 
 | # | Fichier | Phase | Bloque |
 |---|---|---|---|
-| 1 | `01-security-and-hygiene.md` | 0 + 1 | toutes les autres |
-| 2 | `02-cleanup-dead-code.md` | 1 | 4, 5 |
-| 3 | `03-tooling.md` | 2 | 4, 5, 9 |
-| 4 | `04-restructure-folders.md` | 3 | 5, 6, 7 |
-| 5 | `05-modularize-alphamatchers.md` | 4.b | 9 |
-| 6 | `06-modularize-popup.md` | 4.a | 7, 9 |
-| 7 | `07-isolate-arcade.md` | 4.c | — |
-| 8 | `08-css-consolidation.md` | 5 | — |
-| 9 | `09-tests-and-ci.md` | 5 + 6 | — |
+| 1 | `01-securite-et-hygiene.md` | 0 + 1 | toutes les autres |
+| 2 | `02-nettoyer-code-mort.md` | 1 | 4, 5 |
+| 3 | `03-outillage.md` | 2 | 4, 5, 9, 10 |
+| 4 | `04-restructurer-dossiers.md` | 3 | 5, 6, 7 |
+| 5 | `05-modulariser-alphamatchers.md` | 4.b | 9 |
+| 6 | `06-modulariser-popup.md` | 4.a | 7, 9 |
+| 7 | `07-isoler-arcade.md` | 4.c | — |
+| 8 | `08-consolidation-css.md` | 5 | — |
+| 9 | `09-tests-et-ci.md` | 5 + 6 | — |
 | 10 | `10-appliquer-conventions.md` | 2 | 4, 5, 6 |
 
 ## Labels suggérés à créer sur GitHub
 
-- `security` (rouge)
-- `tech-debt` (orange)
+Tous en français, conformément à `docs/CONVENTIONS.md §6.3` :
+
+- `securite` (rouge)
+- `dette-technique` (orange)
 - `refactor` (jaune)
-- `tooling` (bleu)
+- `outillage` (bleu)
 - `docs` (vert)
-- `good-first-issue` (violet)
+- `tests` (turquoise)
+- `bonne-premiere-issue` (violet)
