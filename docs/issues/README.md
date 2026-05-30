@@ -17,6 +17,7 @@ Copier-coller le **contenu de chaque fichier** dans une nouvelle issue (titre = 
 | 7 | `07-isolate-arcade.md` | 4.c | — |
 | 8 | `08-css-consolidation.md` | 5 | — |
 | 9 | `09-tests-and-ci.md` | 5 + 6 | — |
+| 10 | `10-appliquer-conventions.md` | 2 | 4, 5, 6 |
 
 ## Labels suggérés à créer sur GitHub
 
