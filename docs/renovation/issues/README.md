@@ -21,7 +21,7 @@ Copier-coller le **contenu de chaque fichier** dans une nouvelle issue (titre = 
 
 ## Labels suggérés à créer sur GitHub
 
-Tous en français, conformément à `docs/CONVENTIONS.md §6.3` :
+Tous en français, conformément à `../CONVENTIONS.md §6.3` :
 
 - `securite` (rouge)
 - `dette-technique` (orange)

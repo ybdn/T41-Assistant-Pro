@@ -174,4 +174,4 @@ C'est testable en théorie, mais aucune séparation = aucun test possible aujour
 | Sortir `.amo-upload-uuid` et `web-ext-artifacts/` | Créer `package.json` + ESLint + Prettier | Isoler l'easter-egg arcade | ADR + CHANGELOG automatisé |
 | Scinder `PUBLISH.md` (retirer secrets) | Restructurer dossiers (`src/`, `tools/`, `docs/`) | Refondre les CSS (`-fixes`, `-additional`) | i18n via `_locales/` |
 
-Voir `docs/REORGANIZATION_PLAN.md` pour le plan d'exécution et `docs/issues/` pour les tickets GitHub prêts à coller.
+Voir `PLAN.md` pour le plan d'exécution et `issues/` pour les tickets GitHub prêts à coller.

@@ -5,7 +5,7 @@
 
 ## Contexte
 
-`docs/CONVENTIONS.md` formalise les règles du projet :
+`../CONVENTIONS.md` formalise les règles du projet :
 - code **intégralement en français** (variables, commentaires, commits, PR, issues),
 - format imposé par Prettier + ESLint,
 - limites de taille (fichier < 500 l, fonction < 50 l, etc.),
@@ -42,12 +42,12 @@ L'existant ne respecte pas tout (vocabulaire mixte FR/EN dans `alphaMatchers.js`
 ⚠️ **Ne pas franciser et refactorer dans la même PR.** Une PR de francisation = uniquement des renommages.
 
 ### Documentation
-- [ ] Mettre à jour `README.md` avec un lien vers `docs/CONVENTIONS.md` et un avertissement "code 100% français"
-- [ ] Mettre à jour `.github/COMMIT_CONVENTIONS.md` → soit le supprimer (remplacé), soit le faire pointer sur `docs/CONVENTIONS.md §6.2`
+- [ ] Mettre à jour `README.md` avec un lien vers `../CONVENTIONS.md` et un avertissement "code 100% français"
+- [ ] Mettre à jour `.github/COMMIT_CONVENTIONS.md` → soit le supprimer (remplacé), soit le faire pointer sur `../CONVENTIONS.md §6.2`
 
 ## Critère d'acceptation
 
-- `docs/CONVENTIONS.md` référencé depuis `README.md`
+- `../CONVENTIONS.md` référencé depuis `README.md`
 - Gabarits PR / Issue présents
 - ESLint + Prettier configurés et passants
 - Hook pre-commit actif

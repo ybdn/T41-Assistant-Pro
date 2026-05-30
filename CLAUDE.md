@@ -114,7 +114,7 @@ docs/          # documentation, ADR, issues
 tests/         # vitest + playwright
 ```
 
-⚠️ **État actuel ≠ état cible.** Voir `docs/REORGANIZATION_PLAN.md` pour la feuille de route.
+⚠️ **État actuel ≠ état cible.** Voir `docs/renovation/PLAN.md` pour la feuille de route.
 
 ---
 
@@ -125,9 +125,10 @@ Lire **avant** toute contribution significative :
 | Fichier | Contenu |
 |---|---|
 | `docs/CONVENTIONS.md` | Règles de code, nommage, commits, sécurité — **la référence** |
-| `docs/AUDIT.md` | État des lieux du projet (dette, scores KISS) |
-| `docs/REORGANIZATION_PLAN.md` | Plan de rénovation en 7 phases |
-| `docs/issues/` | Issues GitHub prêtes à coller |
+| `docs/renovation/AUDIT.md` | État des lieux du projet (dette, scores KISS) |
+| `docs/renovation/PLAN.md` | Plan de rénovation en 7 phases |
+| `docs/renovation/ETUDE-CONTRADICTOIRE.md` | Critique du plan et des issues |
+| `docs/renovation/issues/` | Issues GitHub prêtes à coller |
 | `docs/THEMES.md` | Spécification des thèmes festifs |
 | `docs/PUBLISH.md` | Procédure de publication AMO (sans secrets) |
 
@@ -177,7 +178,7 @@ npm run bump
 
 ### En cas de doute
 - Sur une règle → `docs/CONVENTIONS.md`
-- Sur l'architecture cible → `docs/REORGANIZATION_PLAN.md`
+- Sur l'architecture cible → `docs/renovation/PLAN.md`
 - Sur une fonctionnalité → `README.md`
 - Sinon → poser la question à l'utilisateur.
 

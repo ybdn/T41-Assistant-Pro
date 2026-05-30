@@ -1,6 +1,6 @@
 # Plan de réorganisation — T41 Assistant Pro
 
-Ce plan opérationnalise l'[audit](AUDIT.md) en respectant strictement les [conventions](CONVENTIONS.md) du projet (tout en français, KISS).
+Ce plan opérationnalise l'[audit](AUDIT.md) en respectant strictement les [conventions](../CONVENTIONS.md) du projet (tout en français, KISS).
 
 Il suit le principe **KISS** : on déplace, on supprime, on isole — on ne refactor pas tant qu'on n'a pas un socle propre.
 
@@ -97,30 +97,32 @@ T41-Assistant-Pro/
 │   └── analyseur.js               # ex analyzer.js
 │
 ├── docs/
-│   ├── AUDIT.md
-│   ├── REORGANIZATION_PLAN.md
-│   ├── CONVENTIONS.md
-│   ├── ARCHITECTURE.md
+│   ├── CONVENTIONS.md             # règles de code (la référence)
+│   ├── ARCHITECTURE.md            # architecture courante (post-rénovation)
 │   ├── PUBLICATION.md             # ex PUBLISH.md, sans secrets
 │   ├── THEMES.md
 │   ├── UI.md
-│   ├── COMMIT_CONVENTIONS.md      # ou supprimé (remplacé par CONVENTIONS.md §6)
 │   ├── adr/
 │   │   ├── 0001-manifest-v3.md
 │   │   ├── 0002-fenetre-popup-detachee.md
 │   │   ├── 0003-isoler-arcade.md
 │   │   └── 0004-esbuild-pour-content.md
-│   └── issues/
-│       ├── 01-securite-et-hygiene.md
-│       ├── 02-nettoyer-code-mort.md
-│       ├── 03-outillage.md
-│       ├── 04-restructurer-dossiers.md
-│       ├── 05-modulariser-alphamatchers.md
-│       ├── 06-modulariser-popup.md
-│       ├── 07-isoler-arcade.md
-│       ├── 08-consolidation-css.md
-│       ├── 09-tests-et-ci.md
-│       └── 10-appliquer-conventions.md
+│   └── renovation/                # chantier de rénovation (temporaire)
+│       ├── README.md
+│       ├── AUDIT.md
+│       ├── PLAN.md
+│       ├── ETUDE-CONTRADICTOIRE.md
+│       └── issues/
+│           ├── 01-securite-et-hygiene.md
+│           ├── 02-nettoyer-code-mort.md
+│           ├── 03-outillage.md
+│           ├── 04-restructurer-dossiers.md
+│           ├── 05-modulariser-alphamatchers.md
+│           ├── 06-modulariser-popup.md
+│           ├── 07-isoler-arcade.md
+│           ├── 08-consolidation-css.md
+│           ├── 09-tests-et-ci.md
+│           └── 10-appliquer-conventions.md
 │
 ├── tests/                         # À créer en phase 5
 │   ├── unitaires/
@@ -173,7 +175,7 @@ T41-Assistant-Pro/
 - Créer `.gitignore`, `.editorconfig`.
 - Supprimer fichiers morts (cf. issue #2).
 - Fusionner `.web-extignore` / `.web-ext-ignore`.
-- Mettre à jour `README.md` (structure réelle, lien vers `docs/CONVENTIONS.md`).
+- Mettre à jour `README.md` (structure réelle, lien vers `../CONVENTIONS.md`).
 - Créer `CHANGELOG.md` (depuis git log) et `CONTRIBUTING.md`.
 
 **Critère de sortie :** `git status` propre, repo allégé de ~1,5 Mo (artefacts + backups).
@@ -208,7 +210,7 @@ T41-Assistant-Pro/
    - `THEMES.md` → `docs/THEMES.md`
    - `PUBLISH.md` (épuré) → `docs/PUBLICATION.md`
    - `popup/UI-documentation.md` → `docs/UI.md`
-   - `.github/COMMIT_CONVENTIONS.md` → fusionner dans `docs/CONVENTIONS.md` puis supprimer
+   - `.github/COMMIT_CONVENTIONS.md` → fusionner dans `../CONVENTIONS.md` puis supprimer
 5. Mettre à jour :
    - `manifest.json` (chemins relatifs à `src/`),
    - `popup.html` (vendor),
