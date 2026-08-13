@@ -8,27 +8,36 @@ const gameConfigs = {
   'space-invaders': {
     title: 'T41 SPACE DEFENDER',
     subtitle: 'Yoann est incroyable',
-    instructions: '<kbd>←</kbd> <kbd>→</kbd> Déplacer • <kbd>SPACE</kbd> Tirer • <kbd>ESC</kbd> Quitter',
-    gameClass: SpaceInvadersGame
+    instructions:
+      '<kbd>←</kbd> <kbd>→</kbd> Déplacer • <kbd>SPACE</kbd> Tirer • <kbd>ESC</kbd> Quitter',
+    gameClass: SpaceInvadersGame,
   },
-  'snake': {
+  snake: {
     title: 'T41 SNAKE',
-    subtitle: 'Yoann est le meilleur du FAED',
-    instructions: '<kbd>←</kbd> <kbd>→</kbd> <kbd>↑</kbd> <kbd>↓</kbd> Diriger • <kbd>ESC</kbd> Quitter',
-    gameClass: SnakeGame
+    subtitle: "Qui a automatisé le contrôle de fiches ? Yoann, le seul l'unique",
+    instructions:
+      '<kbd>←</kbd> <kbd>→</kbd> <kbd>↑</kbd> <kbd>↓</kbd> Diriger • <kbd>ESC</kbd> Quitter',
+    gameClass: SnakeGame,
   },
   'floppy-bird': {
     title: 'FLOPPY BIRD',
-    subtitle: 'Yoann, le pro du code',
+    subtitle: 'Yoann, tu as notre reconnaissance éternelle',
     instructions: '<kbd>SPACE</kbd> ou <kbd>CLIC</kbd> Sauter • <kbd>ESC</kbd> Quitter',
-    gameClass: FloppyBirdGame
+    gameClass: FloppyBirdGame,
   },
-  'asteroids': {
+  asteroids: {
     title: 'T41 ASTEROIDS',
-    subtitle: 'Yoann, le destroyer de rochers',
-    instructions: '<kbd>←</kbd> <kbd>→</kbd> Tourner • <kbd>↑</kbd> Propulsion • <kbd>SPACE</kbd> Tirer • <kbd>ESC</kbd> Quitter',
-    gameClass: AsteroidsGame
-  }
+    subtitle: 'Gloire à Yoann',
+    instructions:
+      '<kbd>←</kbd> <kbd>→</kbd> Tourner • <kbd>↑</kbd> Propulsion • <kbd>SPACE</kbd> Tirer • <kbd>ESC</kbd> Quitter',
+    gameClass: AsteroidsGame,
+  },
+  bonneteau: {
+    title: 'BONNETEAU',
+    subtitle: 'Yoann est un génie',
+    instructions: '<kbd>CLIC</kbd> Choisir un gobelet • <kbd>ESC</kbd> Quitter',
+    gameClass: BonneteauGame,
+  },
 };
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -65,7 +74,7 @@ function setupGameMenu() {
 
   // Game selection buttons
   const gameItems = document.querySelectorAll('.game-menu-item');
-  gameItems.forEach(item => {
+  gameItems.forEach((item) => {
     item.addEventListener('click', function () {
       const gameType = this.getAttribute('data-game');
       closeGameMenu();
